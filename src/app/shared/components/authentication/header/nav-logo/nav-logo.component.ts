@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-nav-logo',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  templateUrl: './nav-logo.component.html',
+  styleUrl: './nav-logo.component.css'
 })
-export class HeaderComponent {
+export class NavLogoComponent {
 
 }
