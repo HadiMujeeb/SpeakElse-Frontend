@@ -59,7 +59,8 @@ export class RegisterFormComponent {
       response => {
         // Handle successful registration here
         console.log(response);
-        this.router.navigate(['']);
+        const email = this.registrationForm.value.email
+        this.router.navigate(['/auth/otp'],{queryParams:{email}});
       },
       error => {
         // console.error("Registration failed", error); // Logs: Registration failed Error: Email already exists

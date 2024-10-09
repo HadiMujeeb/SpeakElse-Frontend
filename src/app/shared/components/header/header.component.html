@@ -1,26 +1,40 @@
 <nav class="navbar bg-[#C8A1E0] text-[#F7EFE5]">
     <div class="container mx-auto flex justify-between items-center p-5">
-        <div class="flex items-center"> <!-- Added flex for better alignment -->
-            <img src="../../../../assets/images/letter-s (1).png" alt="Logo" class="h-8 w-auto mr-2">
-            <!-- Adjust the size -->
-            <a href="#" class="text-xl font-bold">SpeakElse</a>
-        </div>
-
-        <div class="flex-grow flex justify-center">
-            <ul class="nav-links flex space-x-4">
-                <li><a href="#home" class="hover:text-gray-300">Rooms</a></li>
-                <li><a href="#about" class="hover:text-gray-300">MentorShip</a></li>
-                <li><a href="#services" class="hover:text-gray-300">Support</a></li>
+      <div class="flex items-center">
+        <img src="../../../../assets/images/letter-s (1).png" alt="Logo" class="h-8 w-auto mr-2">
+        <a href="#" class="text-xl font-bold">SpeakElse</a>
+      </div>
+  
+      <div class="flex-grow flex justify-center">
+        <ul class="nav-links flex space-x-4">
+          <li><a href="/" class="hover:text-gray-300">Rooms</a></li>
+          <li><a href="/" class="hover:text-gray-300">MentorShip</a></li>
+          <li><a href="/" class="hover:text-gray-300">Support</a></li>
+        </ul>
+      </div>
+  
+      <div class="flex justify-between items-end space-x-2 text-[#F7EFE5]">
+        <!-- Show Sign In/Sign Up if not logged in -->
+        <ng-container *ngIf="!isLoggedIn; else profileMenu">
+          <button routerLink="/auth/login" class="bg-[#E2BFD9] py-2 px-4 rounded-full hover:bg-[#D39AC6] transition duration-300">
+            Sign In
+          </button>
+          <button routerLink="/auth/register" class="bg-[#674188] py-2 px-4 rounded-full hover:bg-[#50316B] transition duration-300">
+            Sign Up
+          </button>
+        </ng-container>
+  
+        <!-- Show Profile Icon if logged in -->
+        <ng-template #profileMenu>
+          <div class="relative">
+            <img src="path-to-your-profile-image.jpg" alt="Profile" class="h-8 w-8 rounded-full cursor-pointer">
+            <ul class="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg hidden">
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-200">Profile</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-200" (click)="onLogout()">Logout</a></li>/   
             </ul>
-        </div>
-        <div class="flex justify-between items-end space-x-2 text-[#F7EFE5]">
-            <button routerLink="/auth/login" class="bg-[#E2BFD9] py-2 px-4 rounded-full hover:bg-[#D39AC6] transition duration-300">
-                Sign In
-            </button>
-            <button routerLink="/auth/register" class="bg-[#674188] py-2 px-4 rounded-full hover:bg-[#50316B] transition duration-300">
-                Sign Up
-            </button>
-        </div>  
-
+          </div>
+        </ng-template>
+      </div>
     </div>
-</nav>
+  </nav>
+  
