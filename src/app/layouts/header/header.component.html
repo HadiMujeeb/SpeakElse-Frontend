@@ -1,0 +1,54 @@
+<header class="bg-[#C8A1E0] text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <img [src]="logoUrl" alt="Logo" class="h-10 w-auto">
+        <span class="text-2xl font-bold">{{ brandName }}</span>
+      </div>
+  
+      <!-- Navigation -->
+      <nav class="hidden md:flex space-x-6">
+        <ng-container *ngFor="let link of navLinks">
+          <a [href]="link.url" class="hover:text-purple-200 transition duration-300">{{ link.label }}</a>
+        </ng-container>
+      </nav>
+  
+      <!-- Authentication Buttons or Profile Menu -->
+      <div class="flex items-center space-x-3">
+        <ng-container *ngIf="!isLoggedIn; else profileMenu">
+          <button routerLink="/auth/login" class="bg-[#E2BFD9] text-white px-4 py-2 rounded-lg hover:bg-purple-100 transition duration-300">
+            Sign In
+          </button>
+          <button routerLink="/auth/register" class="bg-[#674188] text-white px-4 py-2 rounded-lg hover:bg-purple-100 transition duration-300">
+            Sign Up
+          </button>
+        </ng-container>
+  
+        <!-- Show Profile Icon if logged in -->
+        <ng-template #profileMenu>
+          <div class="relative mr-3">
+            <!-- Profile Image -->
+            <img 
+              src="../../../../../assets/images/letter-s (1).png" 
+              alt="Profile" 
+              class="h-10 w-10 rounded-full cursor-pointer" 
+              (click)="toggleDropdown()">
+  
+            <!-- Dropdown Menu -->
+            <ul 
+              class="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg transition-all duration-300 ease-in-out"
+              [ngClass]="{'hidden': !dropdownVisible}" 
+              (mouseleave)="dropdownVisible = false">
+              <li>
+                <a routerLink="/user-profile" class="block px-4 py-2 hover:bg-gray-200 transition duration-300">Profile</a>
+              </li>
+              <li>
+                <a class="block px-4 py-2 hover:bg-gray-200 transition duration-300" (click)="onLogout()">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </header>
+  

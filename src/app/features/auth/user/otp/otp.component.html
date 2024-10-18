@@ -1,0 +1,72 @@
+<body class="min-h-screen flex flex-col items-center justify-center p-4"
+    style="background: linear-gradient(to right, #C8A1E0 , #674188 );">
+
+    <!-- Navigation Bar -->
+    <app-nav-logo class="absolute top-0 left-0 w-full"></app-nav-logo>
+
+    <!-- OTP Form Container -->
+    <div class="otp-container flex flex-col items-center justify-center min-h-screen w-full">
+        <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Enter OTP</h2>
+            
+            <!-- Display Timer -->
+            <div class="text-center text-lg mb-4">
+                <span *ngIf="isTimerRunning">Time left: {{ timeLeft$| async }} seconds</span>
+                <span *ngIf="!isTimerRunning" class="text-red-500">Time expired!</span>
+            </div>
+
+            <!-- OTP Form -->
+            <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" class="space-y-6">
+                <!-- OTP Input Fields -->
+                <div class="otp-input-group flex justify-center space-x-3">
+                    <input 
+                        type="text" 
+                        formControlName="digit1" 
+                        maxlength="1" 
+                        (keyup)="onDigitInput($event)" 
+                        class="w-12 h-12 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xl"
+                    />
+                    <input 
+                        type="text" 
+                        formControlName="digit2" 
+                        maxlength="1" 
+                        (keyup)="onDigitInput($event)" 
+                        class="w-12 h-12 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xl"
+                    />
+                    <input 
+                        type="text" 
+                        formControlName="digit3" 
+                        maxlength="1" 
+                        (keyup)="onDigitInput($event)" 
+                        class="w-12 h-12 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xl"
+                    />
+                    <input 
+                        type="text" 
+                        formControlName="digit4" 
+                        maxlength="1" 
+                        (keyup)="onDigitInput($event)" 
+                        class="w-12 h-12 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xl"
+                    />
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    [disabled]="!otpForm.valid || !isTimerRunning" 
+                    class="w-full py-3 bg-indigo-600 text-white rounded-md text-lg font-medium hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-300 ease-in-out">
+                    Verify OTP
+                </button>
+            </form>
+
+            <!-- Resend OTP Button (Visible when timer ends) -->
+            <button 
+        (click)="resendOtp()" 
+        [disabled]="disableResendButton" 
+        class="w-full py-3 mt-4 bg-gray-300 text-gray-700 rounded-md text-lg font-medium hover:bg-gray-400 transition duration-300 ease-in-out"
+        [ngClass]="{'cursor-not-allowed bg-gray-400': disableResendButton, 'hover:bg-gray-400': !disableResendButton}">
+    Resend OTP
+</button>
+
+        </div>
+    </div>
+</body>

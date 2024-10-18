@@ -1,0 +1,33 @@
+<!-- profile-sidebar.component.html -->
+<nav class="w-64 h-screen bg-white p-4 flex flex-col">
+    <div class="mb-8 text-center">
+      <h1 class="text-2xl font-bold text-purple-600">SpeakElse</h1>
+    </div>
+    <ul class="flex-grow space-y-2">
+      <li>
+        <a routerLink="/profile" class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+          <i class="fas fa-user"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/sessions" class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+          <i class="fas fa-book"></i>
+          <span>My Session</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/settings" class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+      </li>
+      <li>
+        <a (click)="logout()" class="flex items-center space-x-2 text-red-600 hover:text-red-800">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Log out</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  

@@ -1,7 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -11,19 +12,39 @@ import { CommonModule } from '@angular/common';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
-isLoggedIn:boolean = false;
-AuthService = inject(AuthUserService);
+  isLoggedIn: boolean = false; 
+  dropdownVisible: boolean = false;
+  private subscriptions: Subscription = new Subscription();
 
-ngOnInit(): void {
-  this.AuthService.isLoggedIn().subscribe(status =>{
-    this.isLoggedIn = status
-  })
-}
+  constructor(private authService: AuthUserService, private router: Router) {}
 
-onLogout(){
-  this.AuthService.logout();
-}
+  ngOnInit(): void {
+    // Subscribe to the isLoggedIn$ observable
+    this.subscriptions.add(
+      this.authService.isLoggedIn$().subscribe(loggedIn => {
+        this.isLoggedIn = loggedIn; // Update the local variable
+        console.log('Login Status:', this.isLoggedIn); // Optional: Log the status
+      })
+    );
+  }
 
+  ngOnDestroy(): void {
+    // Unsubscribe to avoid memory leaks
+    this.subscriptions.unsubscribe();
+  }
 
+  toggleDropdown(): void {
+    this.dropdownVisible = !this.dropdownVisible;
+  }
 
+  onLogout(): void {
+    this.authService.logoutRequest().subscribe({
+      next: () => {
+        this.router.navigate(['/auth/login']); 
+      },
+      error: (err) => {
+        console.error('Logout error:', err);
+      }
+    });
+  }
 }

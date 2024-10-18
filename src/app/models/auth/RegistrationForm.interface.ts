@@ -1,6 +1,7 @@
 export interface IUserRegisterationCredentials {
     name: string;
     email: string;
+    country:string;
     password: string;
     confirmPassword: string
 
