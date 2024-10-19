@@ -8,17 +8,7 @@ import { Subscription } from 'rxjs';
 export const formGuard: CanActivateFn = (route, state): Observable<boolean> => {
   const authService = inject(AuthUserService);
   const router = inject(Router);
-  
-  authService.isLoggedIn$().subscribe(isLoggedIn => {
-    console.log(isLoggedIn,"eiufueifnf");
-    if (isLoggedIn) {
-      
-      router.navigate(['/']);
-      return of(false);
-    }else{
-      return of(true)
-    }
-  });
+
 
   return of(true);
 };

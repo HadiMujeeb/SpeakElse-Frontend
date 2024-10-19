@@ -1,0 +1,12 @@
+.custom-modal .modal-dialog {
+    max-width: 400px; /* Adjust width as needed */
+    margin: 0 auto;    /* Center horizontally */
+    top: 50%;          /* Start from the middle of the screen */
+    transform: translateY(-50%); /* Center vertically */
+    position: relative;
+  }
+  
+  .custom-modal .modal-content {
+    border-radius: 8px; /* Rounded corners */
+  }
+  

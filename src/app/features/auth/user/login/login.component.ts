@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { NavLogoComponent } from '../../../../shared/components/authentication/header/nav-logo/nav-logo.component';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +11,7 @@ import { FormImageComponent } from '../../../../shared/reusable/form-image/form-
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 import { IUserLoginCredentials } from '../../../../models/auth/LoginForm.interface';
+import { NavLogoComponent } from '../../../../shared/reusable/nav-logo/nav-logo.component';
 
 
 

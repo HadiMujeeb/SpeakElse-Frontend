@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { FooterComponent } from '../../layouts/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthUserService } from '../../core/services/user/auth-user.service';

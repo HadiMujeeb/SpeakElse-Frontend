@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { OtpFromComponent } from '../../../../shared/components/authentication/authForm/otp-from/otp-from.component';
 import {
   FormBuilder,
   FormGroup,
@@ -16,7 +15,7 @@ import { VerifyOtpRequest } from '../../../../models/auth/OTPRequest.interface';
 @Component({
   selector: 'app-otp',
   standalone: true,
-  imports: [OtpFromComponent, ReactiveFormsModule, NavLogoComponent,CommonModule,AsyncPipe],
+  imports: [ReactiveFormsModule, NavLogoComponent,CommonModule,AsyncPipe],
   templateUrl: './otp.component.html',
   styleUrl: './otp.component.css',
 })
