@@ -16,18 +16,16 @@ import { AdminLoginComponent } from '../app/features/auth/admin/admin-login/admi
 import { FormModalComponent } from '../app/shared/reusable/modals/form-modal/form-modal.component';
 
 export const routes: Routes = [
+  {path:'',redirectTo:'user/home',pathMatch:'full'},
   {
     path: 'auth',
     children: [
       { path: 'login', component: LoginComponent, canActivate: [formGuard] },
       {
-        path: 'register',
-        component: RegisterComponent,
-        canActivate: [formGuard],
-      },
-      { path: 'otp', component: OTPComponent },
-      { path: 'resetpassword', component: ResetPasswordComponent },
-      { path: 'resetlink', component: ResetPasswordMailComponent },
+        path: 'register',component: RegisterComponent, canActivate: [formGuard], },
+      { path: 'otp', component: OTPComponent ,canActivate: [formGuard]},
+      { path: 'resetpassword', component: ResetPasswordComponent ,canActivate: [formGuard]},
+      { path: 'resetlink', component: ResetPasswordMailComponent ,canActivate: [formGuard]},
     ],
   },
 
@@ -36,8 +34,7 @@ export const routes: Routes = [
     path:'user',
     children:[
       {path:'home',component:HomepageComponent,canActivate: [authGuard],},
-      {path:'profile',component:ProfileComponent},
-      {path:'modal',component:FormModalComponent},
+      {path:'profile',component:ProfileComponent,canActivate: [authGuard]},
     ]
 
   },

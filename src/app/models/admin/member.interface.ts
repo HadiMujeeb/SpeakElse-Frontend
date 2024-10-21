@@ -8,6 +8,9 @@ export interface IMembersListResponse {
     name: string;
     email: string;
     role: string;
+    avatar: string;
     profession: string;
+    country: string;
+    language: string;
     isBlocked: boolean;
-  }
+}

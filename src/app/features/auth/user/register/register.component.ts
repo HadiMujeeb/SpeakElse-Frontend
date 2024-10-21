@@ -29,7 +29,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class RegisterComponent implements OnInit {
   registrationForm!: FormGroup;
-  fields = registerField;
+  fields = this.filterFields(registerField);
   loginError:string|null =null
   AuthUserServices = inject(AuthUserService);
   router = inject(Router);
@@ -52,7 +52,6 @@ export class RegisterComponent implements OnInit {
           ],
         ],
         email: ['', [Validators.required, Validators.email]],
-        country: ['', [Validators.required]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
       },
@@ -63,8 +62,14 @@ export class RegisterComponent implements OnInit {
   private passwordMatchValidator(form: FormGroup) {
     return form.get('password')?.value === form.get('confirmPassword')?.value
       ? null
-      : { mismatch: true };
+      : { mismatch: true }; 
   }
+
+  private filterFields(fields: any[]): any[] {
+    const excludedFields = ['country', 'role', 'description', 'language', 'profession','avatar'];
+    return fields.filter(field => !excludedFields.includes(field.name));
+  }
+
 
   getErrorMessage(fieldName: string): string {
     const field = this.fields.find((f) => f.name === fieldName);
@@ -75,7 +80,7 @@ export class RegisterComponent implements OnInit {
         const firstErrorType = Object.keys(control.errors)[0];
 
         const errorMessage = field.errors.find(
-          (err) => err.type === firstErrorType
+          (err:any) => err.type === firstErrorType
         )?.message;
         
         return errorMessage || '';

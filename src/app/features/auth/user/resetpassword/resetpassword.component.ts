@@ -4,7 +4,7 @@ import { resetPasswordField } from '../../../../shared/reusable/formFieldConfig/
 import { CommonModule } from '@angular/common';
 import { NavLogoComponent } from '../../../../shared/reusable/nav-logo/nav-logo.component';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-resetpassword',
@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './resetpassword.component.css'
 })
 export class ResetPasswordComponent{
-
+  router  = inject(Router)
   authUserServices = inject(AuthUserService)
   resetPasswordForm!: FormGroup;
   resetPasswordFields = resetPasswordField;
@@ -70,6 +70,7 @@ export class ResetPasswordComponent{
         this.authUserServices.requestResetPassword(token, password).subscribe(
           response => {
             console.log('Password reset successful:', response);
+            this.router.navigate(['auth/login'])
           },
           error => {
             console.error('Error resetting password:', error);

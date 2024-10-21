@@ -1,50 +1,51 @@
-<div class="modal-header bg-blue-600 text-white p-4">
-    <h4 class="modal-title text-lg font-semibold">Edit Member</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
-  </div>
-  
-  <div class="modal-body p-6">
-    <form [formGroup]="memberForm" class="space-y-4">
-      <div>
-        <label for="memberName" class="block text-gray-700">Name</label>
-        <input 
-          type="text" 
-          id="memberName" 
-          formControlName="name"
-          placeholder="Enter member name" 
-          class="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          required 
-        />
-        <div *ngIf="memberForm.get('name')?.invalid && memberForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
-          Name is required.
+<!-- Main modal -->
+<div id="edit-user-modal" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Edit User Information
+                </h3>
+                <button type="button" (click)="onClose()" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 max-h-96 overflow-y-auto"> <!-- Added max height and overflow for scrolling -->
+                <form [formGroup]="memberForm" (ngSubmit)="onSubmit()"enctype="multipart/form-data" class="space-y-4">
+                    <div *ngFor="let field of fields">
+                      <label [for]="field.name" class="block mb-2 text-sm font-medium text-gray-900">{{ field.label }}</label>
+                      <input *ngIf="field.type !== 'select' && field.type !== 'file'" 
+                             [type]="field.type" 
+                             [formControlName]="field.name" 
+                             [placeholder]="field.placeholder" 
+                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" />
+                
+                      <select *ngIf="field.type === 'select'" 
+                              [formControlName]="field.name" 
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                        <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
+                      </select>
+
+                      <input *ngIf="field.type === 'file'" 
+                      type="file" 
+                      (change)="onFileSelected($event)" 
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" />
+                      
+                      <div *ngIf="memberForm.get(field.name)?.invalid && memberForm.get(field.name)?.touched">
+                        <div *ngFor="let error of field.errors">
+                          <span *ngIf="memberForm.get(field.name)?.hasError(error.type)" class="text-red-500 text-sm">{{ error.message }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5">Save Changes</button>
+                </form>
+            </div>
         </div>
-      </div>
-  
-      <div>
-        <label for="memberEmail" class="block text-gray-700">Email</label>
-        <input 
-          type="email" 
-          id="memberEmail" 
-          formControlName="email"
-          placeholder="Enter member email" 
-          class="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          required 
-        />
-        <div *ngIf="memberForm.get('email')?.invalid && memberForm.get('email')?.touched" class="text-red-500 text-sm mt-1">
-          Enter a valid email.
-        </div>
-      </div>
-    </form>
-  </div>
-  
-  <div class="modal-footer bg-gray-50 p-4">
-    <button 
-      type="button" 
-      class="btn btn-outline-secondary px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
-      (click)="activeModal.dismiss('Cancel click')">Cancel</button>
-    <button 
-      type="button" 
-      class="btn btn-primary px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-      (click)="saveMemberData()">Save</button>
-  </div>
-  
+    </div>
+</div>

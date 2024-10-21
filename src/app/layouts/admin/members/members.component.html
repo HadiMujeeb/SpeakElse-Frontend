@@ -17,7 +17,7 @@
       </div>
   
       <div class="p-4">
-        <button (click)="addMember()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Add Member</button>
+        <button (click)="openAddMember()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Add Member</button>
   
         <!-- member-table.component.html -->
 <!-- member-table.component.html -->
@@ -40,9 +40,9 @@
             </td>
             <td class="border px-4 py-2">{{ member.profession }}</td> <!-- New cell for Profession -->
             <td class="border px-4 py-2">
-              <button (click)="openEditModal()" class="bg-transparent border-none">
+              <button (click)="openEditModal(member)" class="bg-transparent border-none">
                 <i class="fas fa-edit text-blue-500 hover:text-blue-700"></i> <!-- Edit icon -->
-            </button>
+              </button>
             </td>
             <td class="border px-4 py-2">
               <button (click)="toggleBlockMember(member.id)" class="bg-transparent border-none">
@@ -69,8 +69,14 @@
     </div>
   </div>
 
-  <!-- Trigger button -->
-  <!-- <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" (click)="openEditMemberModal()">
-    Edit Member
-  </button> -->
-  
+<!-- Conditionally render the form modal -->
+<div *ngIf="isEditModalOpen">
+  <app-form-modal 
+  [ActionType]="ActionType"
+  [fields]="fields" 
+    [member]="selectedMember" 
+    (close)="closeEditModal()"
+    (submit)="requestEditMember($event)"
+    (AddMember)="requestAddMemberData($event)">
+  </app-form-modal>
+</div>

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
 import { IUserRegisterationCredentials, IRegisterSuccessfullResponse } from '../../../models/auth/RegistrationForm.interface';
 import { ILoginSuccessResponse, IUserLoginCredentials } from '../../../models/auth/LoginForm.interface';
 import { VerifyOtpReponse, VerifyOtpRequest } from '../../../models/auth/OTPRequest.interface';
@@ -73,8 +73,10 @@ export class AuthUserService {
   isLoggedIn$(): Observable<boolean> {
     return this.isLoggedInSubject.asObservable();
   }
-
-
+  isUserExisted$(): Observable<boolean> {
+    const user = localStorage.getItem('userData'); // Adjust as needed
+    return of(user !== null); // Return as Observable
+  }
   logoutRequest(): Observable<any> {
     const url: string = `${this.api}/logout`;
 

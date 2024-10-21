@@ -12,9 +12,10 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
   return authService.getProtectedData().pipe(
     map((response) => {
 
-      authService.setUserData(response.user);
+      
 
       if (response.status == 200 || response.status == 304) {
+        localStorage.setItem("userData",JSON.stringify(response.user));
         authService.isLoggedInSubject.next(true);
         return true;
       }
@@ -23,6 +24,7 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
       return true;
     }),
     catchError(() => {
+      localStorage.clear()
       authService.isLoggedInSubject.next(false);
       return of(true);
     })

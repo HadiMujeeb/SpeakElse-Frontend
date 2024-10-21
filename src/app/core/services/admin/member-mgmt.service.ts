@@ -5,6 +5,7 @@ import { IMember, IMembersListResponse } from '../../../models/admin/member.inte
 import { HttpClient } from '@angular/common/http';
 import { IErrorResponse } from '../../../models/Error.interface';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,10 +43,19 @@ export class MemberMgmtService {
       );
   }
 
-  requestEditMemberData(memberId: string, updatedData: Partial<IMember>): Observable<IErrorResponse> {
+  requestEditMemberData( updatedData:IMember,file:File|null): Observable<IErrorResponse> {
     const url: string = `${this.api}/editMemberData`;
-  
-    return this.httpClient.put<IErrorResponse>(url, { memberId, ...updatedData })
+    const formData :FormData = new FormData();
+    for (const key in updatedData) {
+      if (updatedData.hasOwnProperty(key) && updatedData[key as keyof IMember] !== undefined) {
+        const value = updatedData[key as keyof IMember];
+        formData.append(key, String(value));
+      }
+    }
+    if (file) {
+      formData.append('image', file, file.name);
+    }
+    return this.httpClient.put<IErrorResponse>(url, formData)
       .pipe(
         map((response: IErrorResponse) => response as IErrorResponse),
         catchError((err: IErrorResponse) => {
@@ -54,10 +64,21 @@ export class MemberMgmtService {
       );
   }
 
-  requestAddMemberData(newMemberData: IMember): Observable<IErrorResponse> {
+  requestAddMemberData(newMember: IMember,file:File|null): Observable<IErrorResponse> {
     const url: string = `${this.api}/addMember`;
-  
-    return this.httpClient.post<IErrorResponse>(url, newMemberData)
+    const formData :FormData = new FormData();
+    for (const key in newMember) {
+      if (newMember.hasOwnProperty(key) && newMember[key as keyof IMember] !== undefined) {
+        const value = newMember[key as keyof IMember];
+        formData.append(key, String(value));
+      }
+    }
+    if (file) {
+      formData.append('image', file, file.name);
+    }
+
+  console.log(formData,"daaa")
+    return this.httpClient.post<IErrorResponse>(url, formData)
       .pipe(
         map((response: IErrorResponse) => response as IErrorResponse),
         catchError((err: IErrorResponse) => {

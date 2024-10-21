@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthUserService } from '../../../../core/services/user/auth-user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-side-bar',
@@ -14,4 +16,19 @@ export class ProfileSideBarComponent {
     { icon: 'calendar', label: 'My Session' },
     { icon: 'cog', label: 'Setting' },
   ];
+
+  authUserSerivices = inject(AuthUserService);
+  router = inject(Router);
+
+  onLogout():void{
+    this.authUserSerivices.logoutRequest().subscribe(
+      response =>{
+        this.router.navigate(['/user/home'])
+        console.log("logout successfully",response.message)
+      },error =>{
+        console.error("logout error",error.message)
+      }
+    )
+  }
+
 }

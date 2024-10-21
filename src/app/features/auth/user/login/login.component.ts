@@ -54,7 +54,7 @@ export class LoginComponent {
       response =>{
         console.log('Login successful:', response);
        
-        this.router.navigate(['/'])
+        this.router.navigate(['/user/home'])
         
       },
       error =>{

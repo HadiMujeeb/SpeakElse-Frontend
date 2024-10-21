@@ -29,7 +29,7 @@
           <div class="relative mr-3">
             <!-- Profile Image -->
             <img 
-              src="../../../../../assets/images/letter-s (1).png" 
+              [src]="user.avatar"
               alt="Profile" 
               class="h-10 w-10 rounded-full cursor-pointer" 
               (click)="toggleDropdown()">
@@ -40,7 +40,7 @@
               [ngClass]="{'hidden': !dropdownVisible}" 
               (mouseleave)="dropdownVisible = false">
               <li>
-                <a routerLink="/user-profile" class="block px-4 py-2 hover:bg-gray-200 transition duration-300">Profile</a>
+                <a routerLink="/user/profile" class="block px-4 py-2 hover:bg-gray-200 transition duration-300">Profile</a>
               </li>
               <li>
                 <a class="block px-4 py-2 hover:bg-gray-200 transition duration-300" (click)="onLogout()">Logout</a>

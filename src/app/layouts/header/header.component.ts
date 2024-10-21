@@ -3,6 +3,7 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { Router, RouterLink } from '@angular/router';
 import { AuthUserService } from '../../core/services/user/auth-user.service';
 import { Subscription } from 'rxjs';
+import { IMember } from '../../models/admin/member.interface';
 
 @Component({
   selector: 'app-header',
@@ -15,9 +16,9 @@ export class HeaderComponent implements OnInit {
 
   AuthUserServices = inject(AuthUserService);
   router = inject(Router)
-  private subscription :Subscription = new Subscription()
+  private subscription :Subscription = new Subscription();
 
-
+  user!:IMember
   @Input() logoUrl: string = "../../../assets/images/letter-s (1).png";
   @Input() brandName: string = 'SpeakElse';
   @Input() navLinks: { label: string; url: string }[] = [
@@ -38,7 +39,10 @@ export class HeaderComponent implements OnInit {
  ngOnInit(): void {
   this.subscription= this.AuthUserServices.isLoggedIn$().subscribe(isLoggedIn =>{
     this.isLoggedIn =isLoggedIn;
-    console.log(this.isLoggedIn,"codeeede")
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      this.user = JSON.parse(userData); 
+    }
    })
  }
 

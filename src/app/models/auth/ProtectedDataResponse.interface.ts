@@ -1,9 +1,8 @@
+import { IMember } from "../admin/member.interface";
+
 export interface IProtectedDataResponse {
     message: string;
     status:number;
-    user: {
-      id: string;     
-      name: string;    
-      email: string;   
+    user: IMember   
     };
-  } 
+  
