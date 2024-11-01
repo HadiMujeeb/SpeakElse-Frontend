@@ -24,7 +24,7 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
       return true;
     }),
     catchError(() => {
-      localStorage.clear()
+      localStorage
       authService.isLoggedInSubject.next(false);
       return of(true);
     })

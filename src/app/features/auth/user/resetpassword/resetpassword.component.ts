@@ -1,38 +1,50 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { resetPasswordField } from '../../../../shared/reusable/formFieldConfig/resetpasswordconfig';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { resetPasswordField } from '../../../../shared/FieldConfigs/resetpasswordconfig';
 import { CommonModule } from '@angular/common';
-import { NavLogoComponent } from '../../../../shared/reusable/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-resetpassword',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule,NavLogoComponent ],
+  imports: [ReactiveFormsModule, CommonModule, NavLogoComponent],
   templateUrl: './resetpassword.component.html',
-  styleUrl: './resetpassword.component.css'
+  styleUrl: './resetpassword.component.css',
 })
-export class ResetPasswordComponent{
-  router  = inject(Router)
-  authUserServices = inject(AuthUserService)
+export class ResetPasswordComponent {
+  router = inject(Router);
+  authUserServices = inject(AuthUserService);
   resetPasswordForm!: FormGroup;
   resetPasswordFields = resetPasswordField;
 
-  constructor(private fb: FormBuilder,private route: ActivatedRoute) {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.resetPasswordForm = this.fb.group({
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]]
-    }, { validator: this.passwordMatchValidator });
+    this.resetPasswordForm = this.fb.group(
+      {
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validator: this.passwordMatchValidator }
+    );
   }
 
   // Custom validator to check if passwords match
   passwordMatchValidator(formGroup: FormGroup): any {
     const password = formGroup.get('newPassword');
     const confirmPassword = formGroup.get('confirmPassword');
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
+    if (
+      password &&
+      confirmPassword &&
+      password.value !== confirmPassword.value
+    ) {
       confirmPassword.setErrors({ mismatch: true });
     } else {
       // thisconfirmPassword.setErrors(null);
@@ -60,19 +72,19 @@ export class ResetPasswordComponent{
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {
       console.log('Form Submitted:', this.resetPasswordForm.value);
-      
+
       // Get the token from the URL query parameters
       const token = this.route.snapshot.queryParamMap.get('token');
-  
+
       if (token) {
         const password = this.resetPasswordForm.get('newPassword')?.value; // Get the new password
         console.log('Password:', password);
         this.authUserServices.requestResetPassword(token, password).subscribe(
-          response => {
+          (response) => {
             console.log('Password reset successful:', response);
-            this.router.navigate(['auth/login'])
+            this.router.navigate(['auth/login']);
           },
-          error => {
+          (error) => {
             console.error('Error resetting password:', error);
           }
         );
@@ -81,5 +93,4 @@ export class ResetPasswordComponent{
       }
     }
   }
-  
 }

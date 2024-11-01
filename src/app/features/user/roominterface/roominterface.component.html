@@ -1,0 +1,145 @@
+<!-- Room Header -->
+<div class="bg-purple-700 p-4 flex justify-between items-center">
+  <!-- Left: Meeting Info -->
+  <div class="flex items-center space-x-4">
+    <h1 class="text-white text-lg">[Internal] Weekly Report Marketing + Sales</h1>
+    <p class="text-gray-200 text-sm">June 12th, 2022 | 11:00 AM</p>
+
+    <!-- Participant Avatars -->
+    <div class="flex -space-x-2">
+      <div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden">
+        <img src="/api/placeholder/32/32" alt="participant" class="w-full h-full object-cover" />
+      </div>
+      <!-- More avatars can be added here -->
+      <div class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white flex items-center justify-center text-xs">
+        +9
+      </div>
+    </div>
+
+    <!-- Room ID -->
+    <div class="bg-white rounded-full px-4 py-1 flex items-center space-x-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span>cam-jmnt-hsu</span>
+    </div>
+  </div>
+
+  <!-- Right: User Info -->
+  <div class="flex items-center space-x-2">
+    <img src="/api/placeholder/40/40" alt="user" class="w-10 h-10 rounded-full" />
+    <div>
+      <p class="text-white">Adam Joseph</p>
+      <p class="text-gray-200 text-sm">Moderator</p>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="flex h-[calc(100vh-4rem)]">
+  <!-- Video Grid -->
+  <div class="flex-1 p-4 bg-gray-100">
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Video Tiles -->
+
+      <!-- Local Video Tile -->
+      <div class="relative bg-gray-800 rounded-lg aspect-video">
+        <video #localVideo autoplay muted class="w-full h-full object-cover rounded-lg"></video>
+        <div class="absolute bottom-4 left-4 text-white flex items-center space-x-2">
+          <span>You</span>
+          <button class="p-1 rounded-full bg-gray-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Remote Video Tile -->
+      <div class="relative bg-gray-800 rounded-lg aspect-video">
+        <video #remoteVideo autoplay class="w-full h-full object-cover rounded-lg"></video>
+        <div class="absolute bottom-4 left-4 text-white flex items-center space-x-2">
+          <span>Cassie Jung</span>
+          <button class="p-1 rounded-full bg-gray-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- More video tiles can be added here if needed -->
+    </div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="w-80 bg-purple-100 flex flex-col">
+    <!-- Participants Section -->
+    <div class="p-4 border-b">
+      <div class="flex justify-between items-center">
+        <h2 class="font-semibold">Participants</h2>
+        <button class="bg-purple-200 px-4 py-2 rounded-full text-sm flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add Participant</span>
+        </button>
+      </div>
+
+      <!-- Participant List -->
+      <div class="mt-4 space-y-2">
+        <div class="flex items-center justify-between p-2 bg-white rounded-lg">
+          <div class="flex items-center space-x-2">
+            <img src="/api/placeholder/32/32" alt="participant" class="w-8 h-8 rounded-full" />
+            <span>Dianne Russell</span>
+          </div>
+          <div class="flex space-x-2">
+            <button class="p-1 rounded-full hover:bg-gray-100">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </button>
+            <button class="p-1 rounded-full hover:bg-gray-100">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <!-- More participants can be added here -->
+      </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="flex-1 flex flex-col">
+      <!-- Chat Tabs -->
+      <div class="flex p-2 space-x-2">
+        <button class="flex-1 py-2 rounded-full bg-purple-700 text-white">Group</button>
+        <button class="flex-1 py-2 rounded-full text-purple-700">Personal</button>
+      </div>
+
+      <!-- Chat Messages -->
+      <div class="flex-1 p-4 space-y-4 overflow-y-auto">
+        <div class="flex items-start space-x-2">
+          <img src="/api/placeholder/32/32" alt="user" class="w-8 h-8 rounded-full" />
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-semibold">Kathryn Murphy</span>
+              <span class="text-sm text-gray-500">11:01 AM</span>
+            </div>
+            <p class="bg-white p-2 rounded-lg mt-1">Good afternoon, everyone.</p>
+          </div>
+        </div>
+        <!-- More messages can be added here -->
+      </div>
+
+      <!-- Chat Input -->
+      <div class="p-2 border-t">
+        <div class="flex items-center space-x-2">
+          <input type="text" placeholder="Type a message..." class="flex-1 border p-2 rounded-lg" />
+          <button class="bg-purple-700 text-white px-4 py-2 rounded-full">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

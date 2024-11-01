@@ -13,44 +13,70 @@ import { ProfileComponent } from '../app/features/profile/profile.component';
 import { MentorProfileComponent } from '../app/features/mentor/mentor-profile/mentor-profile.component';
 import { Component } from '@angular/core';
 import { AdminLoginComponent } from '../app/features/auth/admin/admin-login/admin-login.component';
-import { FormModalComponent } from '../app/shared/reusable/modals/form-modal/form-modal.component';
+import { FormModalComponent } from '../app/shared/components/form-modal/form-modal.component';
+import { authAdminGuard } from '../app/core/guards/auth-admin.guard';
+import { FormAdminGuard } from '../app/core/guards/form-admin.guard';
+import { MentorapplicationComponent } from '../app/features/mentor/mentorapplication/mentorapplication.component';
+import { RoomListComponent } from '../app/features/user/room-list/room-list.component';
+import { RoominterfaceComponent } from '../app/features/user/roominterface/roominterface.component';
+import { CreateRoomModalComponent } from '../app/shared/components/create-room-modal/create-room-modal.component';
+
 
 export const routes: Routes = [
-  {path:'',redirectTo:'user/home',pathMatch:'full'},
+
+  { path: '', redirectTo: 'user/home', pathMatch: 'full' },
   {
     path: 'auth',
     children: [
-      { path: 'login', component: LoginComponent, canActivate: [formGuard] },
+      { path: 'login', component: LoginComponent },
       {
-        path: 'register',component: RegisterComponent, canActivate: [formGuard], },
-      { path: 'otp', component: OTPComponent ,canActivate: [formGuard]},
-      { path: 'resetpassword', component: ResetPasswordComponent ,canActivate: [formGuard]},
-      { path: 'resetlink', component: ResetPasswordMailComponent ,canActivate: [formGuard]},
+        path: 'register',
+        component: RegisterComponent,
+        
+      },
+      { path: 'otp', component: OTPComponent },
+      {
+        path: 'set-new-password',
+        component: ResetPasswordComponent,
+        
+      },
+      {
+        path: 'forgot-password',
+        component: ResetPasswordMailComponent,
+      },
     ],
   },
 
-
   {
-    path:'user',
-    children:[
-      {path:'home',component:HomepageComponent,canActivate: [authGuard],},
-      {path:'profile',component:ProfileComponent,canActivate: [authGuard]},
-    ]
-
+    path: 'user',
+    children: [
+      { path: 'home', component: HomepageComponent, canActivate: [authGuard] },
+      {path: 'profile',component: ProfileComponent,canActivate: [authGuard],},
+      {path: 'roomList',component:RoomListComponent,canActivate: [authGuard]},
+      {path:'room',component:RoominterfaceComponent}
+    ],
   },
   {
-    path:'mentor',
-    children:[
-      {path:'profile',component:MentorProfileComponent}
-    ]
-
+    path: 'mentor',
+    children: [
+      { path: 'profile', component: MentorProfileComponent,canActivate: [authGuard] },
+      { path: 'applicationform', component: MentorapplicationComponent,canActivate: [authGuard] },
+    ],
   },
 
   {
-    path:'admin',
-    children:[
-      {path:"login",component:AdminLoginComponent},
-      {path:'member',component:AdminDashboardComponent}
-    ]
-  }
+    path: 'admin',
+    children: [
+      {
+        path: 'login',
+        component: AdminLoginComponent,
+        canActivate: [FormAdminGuard],
+      },
+      {
+        path: 'member',
+        component: AdminDashboardComponent,
+        canActivate: [authAdminGuard],
+      },
+    ],
+  },
 ];

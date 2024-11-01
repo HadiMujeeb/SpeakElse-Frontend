@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-header',
@@ -11,6 +11,9 @@ import { RouterLink } from '@angular/router';
 })
 export class AdminHeaderComponent {
   adminName = 'zayim';
-
-
+router = inject(Router)
+logout(){
+localStorage.removeItem('adminData');
+this.router.navigate(['/admin/login'])
+}
 }

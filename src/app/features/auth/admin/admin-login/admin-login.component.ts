@@ -39,7 +39,8 @@ export class AdminLoginComponent {
       next: (response) => {
         // Handle successful login
         console.log('Login successful:', response);
-        this.router.navigate(['/']);
+        localStorage.setItem('adminData',JSON.stringify(response.admin))
+        this.router.navigate(['/admin/member']);
       },
       error: (err) => {
         // Handle login error

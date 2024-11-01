@@ -5,11 +5,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { resetEmail } from '../../../../shared/reusable/formFieldConfig/resetpasswordconfig';
+import { resetEmail } from '../../../../shared/FieldConfigs/resetpasswordconfig';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavLogoComponent } from '../../../../shared/reusable/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
 
 @Component({
   selector: 'app-reset-password-mail',
@@ -20,7 +20,6 @@ import { NavLogoComponent } from '../../../../shared/reusable/nav-logo/nav-logo.
 })
 export class ResetPasswordMailComponent {
   resetPasswordForm!: FormGroup;
-  resetPasswordFields = resetEmail;
   resetError: string | null = null;
 
   constructor(
@@ -46,7 +45,7 @@ export class ResetPasswordMailComponent {
         },
         (error) => {
           console.error('Error sending reset password email:', error);
-          this.resetError = error.message; // Capture error message to display to the user
+          this.resetError = error.message;
         }
       );
     } else {
@@ -54,18 +53,5 @@ export class ResetPasswordMailComponent {
     }
   }
 
-  getErrorMessage(fieldName: string): string {
-    const field = this.resetPasswordFields.find((f) => f.name === fieldName);
-    if (field) {
-      const control = this.resetPasswordForm.get(fieldName);
-      if (control && control.errors) {
-        const firstErrorType = Object.keys(control.errors)[0];
-        const errorMessage = field.errors.find(
-          (err) => err.type === firstErrorType
-        )?.message;
-        return errorMessage || '';
-      }
-    }
-    return '';
-  }
+ 
 }

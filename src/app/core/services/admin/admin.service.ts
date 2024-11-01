@@ -1,27 +1,22 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../../environment/environment.development';
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
-import { ReturnStatement } from '@angular/compiler';
-@Injectable({
-  providedIn: 'root'
-})
-export class AdminService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/admin`;
-  constructor(private httpClient:HttpClient) { }
+import { Injectable } from '@angular/core'; 
+import { environment } from '../../../../environment/environment.development'; 
+import { HttpClient } from '@angular/common/http'; 
+import { catchError, Observable, of, throwError } from 'rxjs';
 
-  adminLogin(email: string, password: string): Observable<any> {
-    const url = `${this.api}/adminLogin`;
-    const body = { email, password };
+@Injectable({ providedIn: 'root' }) 
+export class AdminService { 
+  private api: string = `${environment.BACKEND_DOMAIN}/api/admin`; 
+  constructor(private httpClient: HttpClient) {}
 
-    const adminLoginAPIResponse$ =this.httpClient.post(url,body)
-    .pipe(
-      catchError((err:any)=>{
-        return throwError(()=> new Error(err.error?.message)||"UNKOWN ERROR")
-      })
-    )
-
-    return adminLoginAPIResponse$
+  isAdminExisted$(): Observable<boolean> { 
+    const admin = localStorage.getItem('adminData'); 
+    return of(admin !== null); 
   }
 
+  adminLogin(email: string, password: string): Observable<any> {
+    const body = { email, password }; 
+    return this.httpClient.post(`${this.api}/adminLogin`, body).pipe(
+      catchError(err => throwError(() => new Error(err.error?.message || "UNKNOWN ERROR")))
+    );
+  }
 }

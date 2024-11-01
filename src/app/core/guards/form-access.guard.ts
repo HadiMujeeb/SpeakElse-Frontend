@@ -10,14 +10,13 @@ export const formGuard: CanActivateFn = (route, state): Observable<boolean> => {
   const authService = inject(AuthUserService);
   const router = inject(Router);
 
-  // Check if the user is logged in
+
   return authService.isUserExisted$().pipe(
     tap(isLoggedIn => {
       if (isLoggedIn) {
-        // If logged in, redirect to the desired route (e.g., user home)
-        router.navigate(['/user/home']); // Adjust the route as necessary
+        router.navigate(['/user/home']);
       }
     }),
-    map(isLoggedIn => !isLoggedIn) // Allow access if not logged in; otherwise, prevent access
+    map(isLoggedIn => !isLoggedIn)
   );
 };

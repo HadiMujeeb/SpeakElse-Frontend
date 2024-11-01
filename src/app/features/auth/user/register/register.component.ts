@@ -6,31 +6,24 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NavLogoComponent } from '../../../../shared/reusable/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
 import { CommonModule } from '@angular/common';
-import { registerField } from '../../../../shared/reusable/formFieldConfig/registerFormConfig';
-import { FormImageComponent } from '../../../../shared/reusable/form-image/form-image.component';
-import { IUserRegisterationCredentials } from '../../../../models/auth/RegistrationForm.interface';
+import { registerField } from '../../../../shared/FieldConfigs/registerFormConfig';
+import { IUserRegisterationCredentials } from '../../../../shared/models/registerForm.model';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NavLogoComponent,
-    CommonModule,
-    FormImageComponent,
-    RouterLink,
-  ],
+  imports: [ReactiveFormsModule, NavLogoComponent, CommonModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
   registrationForm!: FormGroup;
   fields = this.filterFields(registerField);
-  loginError:string|null =null
+  loginError: string | null = null;
   AuthUserServices = inject(AuthUserService);
   router = inject(Router);
 
@@ -62,27 +55,32 @@ export class RegisterComponent implements OnInit {
   private passwordMatchValidator(form: FormGroup) {
     return form.get('password')?.value === form.get('confirmPassword')?.value
       ? null
-      : { mismatch: true }; 
+      : { mismatch: true };
   }
 
   private filterFields(fields: any[]): any[] {
-    const excludedFields = ['country', 'role', 'description', 'language', 'profession','avatar'];
-    return fields.filter(field => !excludedFields.includes(field.name));
+    const excludedFields = [
+      'country',
+      'role',
+      'description',
+      'language',
+      'profession',
+      'avatar',
+    ];
+    return fields.filter((field) => !excludedFields.includes(field.name));
   }
-
 
   getErrorMessage(fieldName: string): string {
     const field = this.fields.find((f) => f.name === fieldName);
     if (field) {
       const control = this.registrationForm.get(fieldName);
       if (control && control.errors) {
-
         const firstErrorType = Object.keys(control.errors)[0];
 
         const errorMessage = field.errors.find(
-          (err:any) => err.type === firstErrorType
+          (err: any) => err.type === firstErrorType
         )?.message;
-        
+
         return errorMessage || '';
       }
     }
@@ -91,20 +89,22 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registrationForm.valid) {
-      const email =this.registrationForm.get('email')?.value
-      localStorage.setItem('userGmail',email);
+      const email = this.registrationForm.get('email')?.value;
+      localStorage.setItem('email', email);
+      localStorage.removeItem('remainingTime');
       console.log('Form Submitted:', this.registrationForm.value);
-
-      const credentials: IUserRegisterationCredentials =this.registrationForm.value;
+      
+      const credentials: IUserRegisterationCredentials =
+        this.registrationForm.value;
 
       this.AuthUserServices.RegisterationRequest(credentials).subscribe(
         (response) => {
-          console.log('Registration successful:', response);
+          console.log('Registration successful:',response);
           this.router.navigate(['/auth/otp']);
         },
         (error) => {
           console.error('Registration failed:', error.message);
-          this.loginError = error.message
+          this.loginError = error.message;
         }
       );
     } else {

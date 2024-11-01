@@ -1,0 +1,13 @@
+<button 
+  [ngClass]="{
+    color: true, 
+    textColor: true, 
+    'py-2': true, 
+    'rounded-md': true, 
+    'transition-colors': true, 
+    'opacity-50 cursor-not-allowed': disabled
+  }" 
+  [disabled]="disabled" 
+  (click)="onClick()">
+  {{ label }}
+</button>

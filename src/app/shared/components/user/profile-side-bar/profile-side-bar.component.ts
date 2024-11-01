@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 export class ProfileSideBarComponent {
   menuItems = [
     { icon: 'user', label: 'My Profile', active: true },
-    { icon: 'calendar', label: 'My Session' },
-    { icon: 'cog', label: 'Setting' },
+    // { icon: 'calendar', label: 'My Session' },
+    // { icon: 'cog', label: 'Setting' },
   ];
 
   authUserSerivices = inject(AuthUserService);

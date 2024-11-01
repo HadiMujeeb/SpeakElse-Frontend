@@ -1,0 +1,49 @@
+<div class="mb-8 mx-16">
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
+      <!-- Dynamic Filters -->
+      <ng-container *ngFor="let field of filterFields">
+        <div class="relative">
+          <select 
+            [(ngModel)]="filters[field.name]"
+            (ngModelChange)="applyFilters()"
+            class="w-full p-2 border rounded-md appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            <option [value]="''">{{ field.placeholder }}</option>
+            <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+          </select>
+          <!-- Clear Filter Button -->
+          <button *ngIf="filters[field.name]" (click)="clearFilter(field.name)" class="absolute right-8 top-2.5 text-gray-500 hover:text-gray-700">
+            ×
+          </button>
+          <!-- Dropdown Arrow Icon -->
+          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+      </ng-container>
+  
+      <!-- Create Room Button -->
+      <button (click)="createRoom()" class="w-full p-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+        Create a Room
+      </button>
+    </div>
+     <!-- Search Input -->
+  <div class="relative">
+    <input
+      type="text"
+      [(ngModel)]="filters.searchText"
+      (ngModelChange)="applyFilters()"
+      placeholder="Search"
+      class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+    />
+    <button class="absolute right-3 top-2.5">
+      <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      </svg>
+    </button>
+  </div>
+  </div>
+  
+ 
+  
