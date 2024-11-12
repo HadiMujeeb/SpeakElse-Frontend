@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -13,7 +12,7 @@ import { ModalAction } from '../../models/modalAction.enum';
   selector: 'app-form-modal',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  providers: [NgbActiveModal],
+  providers: [],
   templateUrl: './form-modal.component.html',
   styleUrls: ['./form-modal.component.css'],
 })
@@ -28,7 +27,7 @@ export class FormModalComponent {
   @Output() EditUserProfile = new EventEmitter<any>();
   @Output() EditMentorProfile = new EventEmitter<any>();
   selectedFile: File | null = null;
-  constructor(public activeModal: NgbActiveModal, private fb: FormBuilder) {
+  constructor(  private fb: FormBuilder) {
     this.memberForm = this.fb.group({});
   }
 

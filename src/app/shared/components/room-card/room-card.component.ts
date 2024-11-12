@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
+import { IRoom } from '../../models/room.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-room-card',
@@ -10,11 +12,11 @@ import { ButtonComponent } from '../button/button.component';
   styleUrl: './room-card.component.css'
 })
 export class RoomCardComponent {
-  @Input() room: any;
-  @Output() joinRoom = new EventEmitter<number>();
-
-  // Emit the room ID when the "Join" button is clicked
-  joinRoomHandler() {
-    this.joinRoom.emit(this.room.id);
+  @Input() room!: IRoom;
+  @Output() joinRoom = new EventEmitter<any>();
+router = inject(Router)
+ 
+  onJoinRoom(id:string) {
+    this.router.navigate([`/user/room/${id}`])
   }
 }

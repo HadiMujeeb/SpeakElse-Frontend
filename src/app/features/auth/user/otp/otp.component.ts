@@ -192,6 +192,7 @@ export class OTPComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response.message) {
             console.log('OTP verification successful:', response.message);
+            localStorage.setItem('accessToken', response.accessToken);
             this.router.navigate(['/user/home']);
           }
         },

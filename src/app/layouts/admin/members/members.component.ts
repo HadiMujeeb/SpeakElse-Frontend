@@ -7,7 +7,6 @@ import {
 import { MemberMgmtService } from '../../../core/services/admin/member-mgmt.service';
 import { IMember } from '../../../shared/models/member.interface';
 import { FormModalComponent } from '../../../shared/components/form-modal/form-modal.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { registerField } from '../../../shared/FieldConfigs/registerFormConfig';
 import { ModalAction } from '../../../shared/models/modalAction.enum';
 

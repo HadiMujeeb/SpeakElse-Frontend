@@ -1,28 +1,51 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormField } from '../../models/form-field.interface';
 import { CreateRoomField } from '../../FieldConfigs/CreateRoomField';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-create-room-modal',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,FormsModule],
   templateUrl: './create-room-modal.component.html',
-  styleUrl: './create-room-modal.component.css'
+  styleUrl: './create-room-modal.component.css',
 })
 export class CreateRoomModalComponent {
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() submit = new EventEmitter<any>();
+  groupForm!: FormGroup;
+  maxPeopleOptions = [5, 10, 20, 50];
+  levelOptions = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
 
-RoomForm!:FormGroup
-fields:FormField[] = CreateRoomField
+  constructor(private fb: FormBuilder) {}
 
+  ngOnInit(): void {
+    this.groupForm = this.fb.group({
+      topic: ['', Validators.required],
+      maxPeople: ['unlimited'],
+      language: ['',Validators.required   ],
+      level: ['BEGINNER'],
+    });
+  }
+// In your component.ts file
+isSubmitting = false;
 
-onSubmit(){
-
+onSubmit() {
+  console.log("Form Submitted");
+  if (this.groupForm.valid && !this.isSubmitting) {
+    this.isSubmitting = true;
+   this.submit.emit(this.groupForm.value);
+  }
 }
 
-onClose(){
-
-}
-
+  onCancel() {
+    this.closeModal.emit();
+  }
 }

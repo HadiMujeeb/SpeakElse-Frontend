@@ -1,20 +1,20 @@
 <div class="bg-pink-100 p-3 shadow hover:shadow-lg transition-shadow rounded-lg">
     <div class="flex items-start gap-4">
         <!-- Host Profile Image -->
-        <img [src]="room.profileImage" [alt]="room.hostName" class="w-16 h-20 object-cover border border-gray-950 rounded" />
+        <img [src]="room.creator.avatar" [alt]="room.creator.name" class="w-16 h-20 object-cover border border-gray-950 rounded" />
         
         <div class="flex-1">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <h3 class="font-semibold text-lg">{{ room.hostName }}</h3>
-                    <span class="font-bold text-lg">{{ room.language }}</span> <!-- Displaying the language -->
-                    <img [src]="'https://flagcdn.com/w20/' + room.hostCountry.toLowerCase() + '.png'" [alt]="room.hostCountry" class="w-5 h-3" />
+                    <h3 class="font-semibold text-lg">{{ room.creator.name }}</h3>
+                    <span class="font-bold text-lg">{{ room.language }}</span>
+                    <img [src]="'https://flagcdn.com/w20/' + room.creator.country.toLowerCase() + '.png'" [alt]="room.creator.country" class="w-5 h-3" />
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-sm">Limit: {{ room.limit }}</span>
+                    <span class="text-sm">Limit: {{ room.maxPeople }}</span>
                     <div class="flex items-center">
                         <span class="text-yellow-500">★</span>
-                        <span class="ml-1">{{ room.rating }}</span>
+                        <span class="ml-1">{{ room.creator.rating }}</span>
                     </div>
                 </div>
             </div>
@@ -24,21 +24,17 @@
                 <span class="text-sm text-gray-600">Topic: <strong>{{ room.topic }}</strong></span>
             </div>
             <div class="mt-1">
-                <span class="text-sm text-gray-600">Profession: <strong>{{ room.userProfession }}</strong></span>
+                <span class="text-sm text-gray-600">Profession: <strong>{{ room.creator.profession }}</strong></span>
             </div>
 
-            <!-- Optional Description -->
-            <div class="mt-1">
-                <span class="text-sm text-gray-600" *ngIf="room.description">Description: <strong>{{ room.description }}</strong></span>
-            </div>
 
             <!-- Display the number of participants -->
             <div class="mt-2">
-                <span class="text-sm text-gray-600">Participants: <strong>{{ room.participants }} / {{ room.limit }}</strong></span>
+                <span class="text-sm text-gray-600">Participants: <strong>{{ room.participants.length }} / {{ room.maxPeople }}</strong></span>
             </div>
 
             <div class="flex justify-end mt-4">
-                <button (click)="joinRoomHandler()" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors">
+                <button (click)="onJoinRoom(room.id)" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors">
                     Join
                 </button>
             </div>

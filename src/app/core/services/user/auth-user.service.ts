@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
 import { IUserRegisterationCredentials, IRegisterSuccessfullResponse } from '../../../shared/models/registerForm.model';
 import { ILoginSuccessResponse, IUserLoginCredentials } from '../../../shared/models/LoginForm.interface';
@@ -41,13 +41,14 @@ export class AuthUserService {
 
   // Login
   loginRequest(loginCredentials: IUserLoginCredentials): Observable<ILoginSuccessResponse> {
-    return this.httpClient.post<ILoginSuccessResponse>(`${this.api}/loginUser`, loginCredentials, { withCredentials: true })
+    return this.httpClient.post<ILoginSuccessResponse>(`${this.api}/loginUser`, loginCredentials)
       .pipe(catchError(err => throwError(() => new Error(err.error?.message || 'Login Failed'))));
   }
 
   // Protected Data
-  getProtectedData(): Observable<IProtectedDataResponse> {
-    return this.httpClient.get<IProtectedDataResponse>(`${this.api}/verify-Token`)
+  getProtectedData(accessToken:string|null): Observable<IProtectedDataResponse> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${accessToken}`);
+    return this.httpClient.get<IProtectedDataResponse>(`${this.api}/verify-Token`,{ headers })
       .pipe(catchError(err => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
   }
 

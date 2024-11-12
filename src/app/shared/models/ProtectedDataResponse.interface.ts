@@ -4,4 +4,5 @@ export interface IProtectedDataResponse {
   message: string;
   status: number;
   user: IMember;
+  accessToken: string;
 }

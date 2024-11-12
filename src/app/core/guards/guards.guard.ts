@@ -8,14 +8,15 @@ import { AuthUserService } from '../services/user/auth-user.service';
 export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
   const authService = inject(AuthUserService);
   const router = inject(Router);
-
-  return authService.getProtectedData().pipe(
+ const accessToken:string|null = localStorage.getItem('accessToken');
+  return authService.getProtectedData(accessToken).pipe(
     map((response) => {
 
       
 
       if (response.status == 200 || response.status == 304) {
         localStorage.setItem("userData",JSON.stringify(response.user));
+        localStorage.setItem("accessToken",response.accessToken);
         authService.isLoggedInSubject.next(true);
         return true;
       }
@@ -24,7 +25,7 @@ export const authGuard: CanActivateFn = (route, state): Observable<boolean> => {
       return true;
     }),
     catchError(() => {
-      localStorage
+      localStorage.removeItem("userData");
       authService.isLoggedInSubject.next(false);
       return of(true);
     })

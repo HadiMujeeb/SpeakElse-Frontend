@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { filterField } from '../../FieldConfigs/filterField';
 import { FormField } from '../../models/form-field.interface';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './filter.component.css'
 })
 export class FilterComponent {
-
+@Output() room = new EventEmitter<void>();
 filterFields:FormField[]=filterField;
 
 filters:any = {
@@ -41,6 +41,6 @@ clearFilter(fieldName: string) {
 
 createRoom() {
 
-  console.log('Creating a room with filters:', this.filters);
+  this.room.emit();
 }
 }

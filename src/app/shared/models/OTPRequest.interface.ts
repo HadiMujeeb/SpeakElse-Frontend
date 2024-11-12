@@ -6,4 +6,5 @@ export interface VerifyOtpRequest {
 export interface VerifyOtpReponse {
   success: string;
   message: string;
+  accessToken: string;
 }

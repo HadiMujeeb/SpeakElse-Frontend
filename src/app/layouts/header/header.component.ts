@@ -57,7 +57,9 @@ export class HeaderComponent implements OnInit {
   onLogout(): void {
     this.AuthUserServices.logoutRequest().subscribe((reponse) => {
       console.log('logout ', reponse);
-      this.router.navigate(['/']).then(() => {
+      this.router.navigate(['/user/home']).then(() => {
+        localStorage.removeItem('userData');
+        localStorage.removeItem('accessToken');
         window.location.reload();
       });
     });

@@ -1,0 +1,21 @@
+<div class="video-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+  
+  <!-- Local Video (Your own camera feed) -->
+  <div class="video-box relative flex justify-center items-center bg-gray-800 rounded-lg overflow-hidden">
+    <video #localVideo autoplay playsinline muted class="w-full h-full object-cover"></video>
+    <div class="video-label absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-md text-sm">You</div>
+  </div>
+
+  <!-- Remote Videos (Other participant's feeds) -->
+  <div *ngFor="let participant of remoteParticipants" class="video-box relative flex justify-center items-center bg-gray-800 rounded-lg overflow-hidden">
+    <video [srcObject]="participant.stream" autoplay playsinline class="w-full h-full object-cover"></video>
+    <div class="video-label absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-md text-sm">
+      {{ participant.name }}
+    </div>
+
+    <!-- Mute Indicator for Remote Participant -->
+    <div *ngIf="participant.isMuted" class="mute-indicator absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded-md text-xs">
+      Muted
+    </div>
+  </div>
+</div>

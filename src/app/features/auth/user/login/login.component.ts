@@ -56,8 +56,9 @@ export class LoginComponent {
       this.AuthUserServices.loginRequest(credentials).subscribe(
         (response) => {
           console.log('Login successful:', response);
-
+          localStorage.setItem('accessToken',response.accessToken)
           this.router.navigate(['/user/home']);
+        
         },
         (error) => {
           console.error('Login failed:', error.message);
@@ -65,7 +66,6 @@ export class LoginComponent {
 
           if(error.message ==='User not found.') {
             this.loginForm.get('email')?.setErrors({ 'notExist': true });
-            console.log('fwwnonwofnwon')
           }else if(error.message ==='Invalid password. Please try again.'){
             this.loginForm.get('password')?.setErrors({ 'incorrect': true });
           } else {

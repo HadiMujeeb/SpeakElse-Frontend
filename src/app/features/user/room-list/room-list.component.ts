@@ -1,97 +1,78 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgModule, OnInit } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { HeaderComponent } from '../../../layouts/header/header.component';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
 import { RoomCardComponent } from '../../../shared/components/room-card/room-card.component';
 import { SearchbarComponent } from '../../../shared/components/searchbar/searchbar.component';
-export interface Room {
-  id: string;
-  hostName: string;
-  hostCountry: string;
-  language: string;
-  level: string;
-  profession: string;
-  topic: string;
-  rating: number;
-  limit: number;
-  profileImage: string;
-}
-
+import { CreateRoomModalComponent } from '../../../shared/components/create-room-modal/create-room-modal.component';
+import { IrequestCreateRoom, IRoom } from '../../../shared/models/room.interface';
+import { RoomService } from '../../../core/services/user/room.service';
 // models/filter.model.ts
-export interface RoomFilter {
-  language?: string;
-  profession?: string;
-  country?: string;
-  level?: string;
-  topic?: string;
-  searchText?: string;
-}
 @Component({
   selector: 'app-room-list',
   standalone: true,
-  imports: [CommonModule,FormsModule,HeaderComponent,FilterComponent,RoomCardComponent,SearchbarComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HeaderComponent,
+    FilterComponent,
+    RoomCardComponent,
+    SearchbarComponent,
+    CreateRoomModalComponent,
+  ],
   templateUrl: './room-list.component.html',
-  styleUrl: './room-list.component.css'
+  styleUrl: './room-list.component.css',
 })
-export class RoomListComponent implements OnInit{
-  rooms = [
-    {
-      id: 1,
-      hostName: 'John Doe',
-      hostCountry: 'US',
-      profileImage: 'path/to/image1.jpg',
-      limit: 10,
-      rating: 4.5,
-      participants: 5,  // Number of participants
-      topic: 'Web Development',  // Topic of the room
-      userProfession: 'Software Engineer',  // User profession
-      description: 'Join us to discuss the latest trends and technologies in web development.'  // Optional description
-    },
-    {
-      id: 2,
-      hostName: 'Jane Smith',
-      hostCountry: 'CA',
-      profileImage: 'path/to/image2.jpg',
-      limit: 8,
-      rating: 4.7,
-      participants: 3,
-      topic: 'Digital Marketing',
-      userProfession: 'Marketing Specialist',
-      description: 'Explore effective strategies for digital marketing and how to engage audiences online.'  // Optional description
-    },
-    {
-      id: 1,
-      hostName: 'John Doe',
-      hostCountry: 'US',
-      profileImage: 'path/to/image1.jpg',
-      limit: 10,
-      rating: 4.5,
-      participants: 5,
-      topic: 'Web Development',
-      userProfession: 'Software Engineer',
-      language: 'English'  // Specify the language
-    }
+export class RoomListComponent implements OnInit {
+
+  userRoomServices =  inject(RoomService);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  rooms:IRoom[] = []
+  filteredRooms: IRoom[] = [];
+  isModelOpen = false;
+  openModal() {
+    this.isModelOpen = true;
+  }
+  closeModal() {
+    this.isModelOpen = false;
+  }
+  submitRoom(credentials: any) {
+    console.log("working man")
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const data:IrequestCreateRoom = credentials;
+    data.creatorId = userData.id;
+    this.userRoomServices.requestAddRoom(data).subscribe(
+      (response) => {
+        this.rooms = [...this.rooms, response.room];
+        this.filteredRooms = [...this.rooms];
+        this.cdr.detectChanges();
+        this.closeModal();
+      },
+      (error) => {
+        console.log(error, 'errorefwewibwidwbecdi');
+      }
+    )
     
-    // Add more rooms as needed
-  ];
-  
-
-  // Initialize filtered rooms
-  filteredRooms = [...this.rooms];
-
-  // Apply filters (or reset to all rooms)
+  }
+ 
   applyFilters() {
-    // Logic to filter rooms
-    this.filteredRooms = this.rooms;  // Replace with actual filtering logic
+    this.filteredRooms = this.rooms; 
   }
 
-  // Handle room join event
-  joinRoom(roomId: number) {
+  joinRoom(roomId: string) {
     console.log('Joining room with ID:', roomId);
-    // Add your logic for handling the join action here
   }
+
   ngOnInit(): void {
-    
+    this.userRoomServices.requestGetAllRooms().subscribe(
+      (response) =>{
+        this.rooms = response;
+        this.filteredRooms = [...this.rooms];
+      },
+    (error) =>{
+      console.error(error);
+    }
+    )
   }
 }

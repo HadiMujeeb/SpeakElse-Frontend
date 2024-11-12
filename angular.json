@@ -18,7 +18,8 @@
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js",
-               "@angular/localize/init"
+               "@angular/localize/init",
+              "src/polyfills.ts"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -29,15 +30,15 @@
 
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [ "./node_modules/crypto-browserify/index.js"]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1000kB",
+                  "maximumError": "1500kB"
                 },
                 {
                   "type": "anyComponentStyle",

@@ -4,12 +4,7 @@ export interface IUserLoginCredentials {
 }
 
 export interface ILoginSuccessResponse {
-    // token:string;
-    message:string
-    // status:string
-    // user: {
-    //     id:string;
-    //     name:string;
-    //     email:string;
-    // };
+    message:string,
+    accessToken: string,
+
 }

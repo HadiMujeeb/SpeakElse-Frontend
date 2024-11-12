@@ -20,40 +20,45 @@ import { MentorapplicationComponent } from '../app/features/mentor/mentorapplica
 import { RoomListComponent } from '../app/features/user/room-list/room-list.component';
 import { RoominterfaceComponent } from '../app/features/user/roominterface/roominterface.component';
 import { CreateRoomModalComponent } from '../app/shared/components/create-room-modal/create-room-modal.component';
+import { authUserGuard } from '../app/core/guards/auth-user.guard';
+import { userProfileGuard } from '../app/core/guards/user-profile.guard';
+import { RoomComponent } from '../app/features/user/room/room.component';
+import { RoomPreviewComponent } from '../app/features/user/room-preview/room-preview.component';
 
 
 export const routes: Routes = [
-
   { path: '', redirectTo: 'user/home', pathMatch: 'full' },
   {
     path: 'auth',
     children: [
-      { path: 'login', component: LoginComponent },
+      { path: 'login', component: LoginComponent ,canActivate: [authUserGuard] },
       {
         path: 'register',
-        component: RegisterComponent,
+        component: RegisterComponent ,canActivate: [authUserGuard],
         
       },
       { path: 'otp', component: OTPComponent },
       {
         path: 'set-new-password',
-        component: ResetPasswordComponent,
+        component: ResetPasswordComponent,canActivate: [authUserGuard],
         
       },
       {
         path: 'forgot-password',
-        component: ResetPasswordMailComponent,
+        component: ResetPasswordMailComponent,canActivate: [authUserGuard],
       },
     ],
   },
 
   {
     path: 'user',
+    canActivate: [authGuard],
     children: [
-      { path: 'home', component: HomepageComponent, canActivate: [authGuard] },
-      {path: 'profile',component: ProfileComponent,canActivate: [authGuard],},
-      {path: 'roomList',component:RoomListComponent,canActivate: [authGuard]},
-      {path:'room',component:RoominterfaceComponent}
+      { path: 'home', component: HomepageComponent},
+      {path: 'profile',component: ProfileComponent ,canActivate:[userProfileGuard ]},
+      {path: 'roomList',component:RoomListComponent},
+      {path:'room/:roomId',component:RoomComponent},
+      {path:'landing/:roomId',component:RoomPreviewComponent}
     ],
   },
   {
@@ -70,7 +75,7 @@ export const routes: Routes = [
       {
         path: 'login',
         component: AdminLoginComponent,
-        canActivate: [FormAdminGuard],
+        canActivate: [authUserGuard],
       },
       {
         path: 'member',
