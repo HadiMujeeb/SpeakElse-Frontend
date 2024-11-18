@@ -8,9 +8,9 @@ import {
   Output,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthUserService } from '../../core/services/user/auth-user.service';
+import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { Subscription } from 'rxjs';
-import { IMember } from '../../shared/models/member.interface';
+import { IMember } from '../../models/member.model';
 
 @Component({
   selector: 'app-header',

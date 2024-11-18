@@ -6,10 +6,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../shared/layouts/nav-logo/nav-logo.component';
 import { CommonModule } from '@angular/common';
-import { registerField } from '../../../../shared/FieldConfigs/registerFormConfig';
-import { IUserRegisterationCredentials } from '../../../../shared/models/registerForm.model';
+import { registerField } from '../../../../shared/FieldConfigs/register-form.config';
+import { IUserRegisterationCredentials } from '../../../../shared/models/register-form.model';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 
@@ -93,13 +93,13 @@ export class RegisterComponent implements OnInit {
       localStorage.setItem('email', email);
       localStorage.removeItem('remainingTime');
       console.log('Form Submitted:', this.registrationForm.value);
-      
+
       const credentials: IUserRegisterationCredentials =
         this.registrationForm.value;
 
       this.AuthUserServices.RegisterationRequest(credentials).subscribe(
         (response) => {
-          console.log('Registration successful:',response);
+          console.log('Registration successful:', response);
           this.router.navigate(['/auth/otp']);
         },
         (error) => {

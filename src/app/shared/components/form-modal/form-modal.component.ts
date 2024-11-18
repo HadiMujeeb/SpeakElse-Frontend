@@ -6,8 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormField } from '../../models/form-field.interface';
-import { ModalAction } from '../../models/modalAction.enum';
+import { FormField } from '../../models/form-field.model';
+import { ModalAction } from '../../models/modal-action.enum';
 @Component({
   selector: 'app-form-modal',
   standalone: true,
@@ -27,7 +27,7 @@ export class FormModalComponent {
   @Output() EditUserProfile = new EventEmitter<any>();
   @Output() EditMentorProfile = new EventEmitter<any>();
   selectedFile: File | null = null;
-  constructor(  private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {
     this.memberForm = this.fb.group({});
   }
 

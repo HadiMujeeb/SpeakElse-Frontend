@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormModalComponent } from '../../form-modal/form-modal.component';
-import { IMember } from '../../../models/member.interface';
-import { ModalAction } from '../../../models/modalAction.enum';
-import { registerField } from '../../../FieldConfigs/registerFormConfig';
+import { IMember } from '../../../models/member.model';
+import { ModalAction } from '../../../models/modal-action.enum';
+import { registerField } from '../../../FieldConfigs/register-form.config';
 import { Router } from '@angular/router';
 import { UserProfileService } from '../../../../core/services/user/user-profile.service';
 import { MentorProfileService } from '../../../../core/services/mentor/mentor-profile.service';

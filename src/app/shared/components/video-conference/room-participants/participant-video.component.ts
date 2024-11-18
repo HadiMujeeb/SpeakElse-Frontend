@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Participant } from '../../../models/participant.interface'; // Adjust the path as needed
+import { Participant } from '../../../models/participant.model'; // Adjust the path as needed
 
 @Component({
   selector: 'app-participant-video',

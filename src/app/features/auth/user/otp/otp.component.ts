@@ -6,11 +6,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
-import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../shared/layouts/nav-logo/nav-logo.component';
 import { Router } from '@angular/router';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { VerifyOtpRequest } from '../../../../shared/models/OTPRequest.interface';
+import { VerifyOtpRequest } from '../../../../shared/models/otp-request.model';
 import { lastValueFrom } from 'rxjs'; // Import lastValueFrom for RxJS 7+
 
 @Component({
@@ -35,7 +35,7 @@ export class OTPComponent implements OnInit, OnDestroy {
   remainingTime: number;
   private timerProgress = 100;
   private destroy$ = new Subject<void>();
-
+  responseMessage: string | null = null;
   resendTimer: number | null = null;
   otpControls = Array.from({ length: 4 });
 
@@ -70,7 +70,7 @@ export class OTPComponent implements OnInit, OnDestroy {
 
   private startTimer() {
     if (this.remainingTime <= 0) {
-      this.remainingTime = this.TIMER_DURATION; 
+      this.remainingTime = this.TIMER_DURATION;
     }
 
     this.resendDisabled = this.remainingTime <= 0;
@@ -82,13 +82,12 @@ export class OTPComponent implements OnInit, OnDestroy {
           this.remainingTime--;
           this.timerProgress = (this.remainingTime / this.TIMER_DURATION) * 100;
           this.resendTimer = this.remainingTime;
-          
         } else {
           this.resendDisabled = false;
           this.resendTimer = null;
         }
 
-        this.saveRemainingTime(); 
+        this.saveRemainingTime();
       });
   }
 
@@ -138,7 +137,7 @@ export class OTPComponent implements OnInit, OnDestroy {
     });
   }
 
-  private  getEmail(){
+  private getEmail() {
     return localStorage.getItem('email');
   }
 
@@ -160,6 +159,7 @@ export class OTPComponent implements OnInit, OnDestroy {
 
       if (response) {
         console.log('OTP resent successfully:', response);
+        this.responseMessage = response.message || 'OTP sent successfully!';
       } else {
         this.showError = true;
         this.errorMessage = 'Failed to resend OTP. Please try again.';
@@ -174,20 +174,20 @@ export class OTPComponent implements OnInit, OnDestroy {
     if (this.otpForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.showError = false;
-  
+
       const email = this.getEmail();
-      console.log("email", email);
-  
+      console.log('email', email);
+
       if (!email) {
         this.showError = true;
         this.errorMessage = 'Email not found in local storage.';
         this.isSubmitting = false;
         return;
       }
-  
+
       const enteredOtp = Object.values(this.otpForm.value).join('');
       const data: VerifyOtpRequest = { email, enteredotp: enteredOtp };
-  
+
       this.AuthServices.VerifyOtp(data).subscribe({
         next: (response) => {
           if (response.message) {
@@ -198,17 +198,16 @@ export class OTPComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.showError = true;
-          console.error("Error:", error?.error?.message || error);
-          this.errorMessage = error.error?.message || 'An error occurred. Please try again.'; // Ensure correct error message display
+          console.error('Error:', error?.error?.message || error);
+          this.errorMessage =
+            error.error?.message || 'An error occurred. Please try again.'; // Ensure correct error message display
         },
         complete: () => {
           this.isSubmitting = false;
-        }
+        },
       });
     }
   }
-  
-
 
   private getRemainingTime(): number {
     const savedTime = localStorage.getItem('remainingTime');
@@ -218,6 +217,4 @@ export class OTPComponent implements OnInit, OnDestroy {
   private saveRemainingTime(): void {
     localStorage.setItem('remainingTime', this.remainingTime.toString());
   }
-
- 
 }

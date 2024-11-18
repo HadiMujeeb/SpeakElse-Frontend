@@ -1,43 +1,51 @@
-<div class="bg-pink-100 p-3 shadow hover:shadow-lg transition-shadow rounded-lg">
-    <div class="flex items-start gap-4">
-        <!-- Host Profile Image -->
-        <img [src]="room.creator.avatar" [alt]="room.creator.name" class="w-16 h-20 object-cover border border-gray-950 rounded" />
-        
-        <div class="flex-1">
+<div class="overflow-x-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mx-8 p-4 min-w-[640px] md:min-w-0">
+      <div *ngFor="let room of filteredRooms" class="bg-pink-100 p-3 shadow hover:shadow-lg transition-shadow rounded-lg min-w-[300px]">
+        <div class="flex items-start gap-4">
+          <!-- Host Profile Image -->
+          <img [src]="room.creator.avatar" [alt]="room.creator.name" class="w-16 h-20 object-cover border border-gray-950 rounded" />
+  
+          <div class="flex-1">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <h3 class="font-semibold text-lg">{{ room.creator.name }}</h3>
-                    <span class="font-bold text-lg">{{ room.language }}</span>
-                    <img [src]="'https://flagcdn.com/w20/' + room.creator.country.toLowerCase() + '.png'" [alt]="room.creator.country" class="w-5 h-3" />
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-lg">{{ room.creator.name }}</h3>
+                <span class="font-bold text-lg">{{ room.language }}</span>
+                <img [src]="'https://flagcdn.com/w20/' + room.creator.country.toLowerCase() + '.png'" [alt]="room.creator.country" class="w-5 h-3" />
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm">Limit: {{ room.maxPeople }}</span>
+                <div class="flex items-center">
+                  <span class="text-yellow-500">★</span>
+                  <span class="ml-1">{{ room.creator.rating }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-sm">Limit: {{ room.maxPeople }}</span>
-                    <div class="flex items-center">
-                        <span class="text-yellow-500">★</span>
-                        <span class="ml-1">{{ room.creator.rating }}</span>
-                    </div>
-                </div>
+              </div>
             </div>
-
+  
             <!-- Display the topic and profession -->
             <div class="mt-2">
-                <span class="text-sm text-gray-600">Topic: <strong>{{ room.topic }}</strong></span>
+              <span class="text-sm text-gray-600">Topic: <strong>{{ room.topic }}</strong></span>
             </div>
             <div class="mt-1">
-                <span class="text-sm text-gray-600">Profession: <strong>{{ room.creator.profession }}</strong></span>
+              <span class="text-sm text-gray-600">Profession: <strong>{{ room.creator.profession }}</strong></span>
             </div>
-
-
+  
             <!-- Display the number of participants -->
             <div class="mt-2">
-                <span class="text-sm text-gray-600">Participants: <strong>{{ room.participants.length }} / {{ room.maxPeople }}</strong></span>
+              <span class="text-sm text-gray-600">Participants: <strong>{{ room.participants.length }} / {{ room.maxPeople }}</strong></span>
             </div>
-
+  
+            <!-- Join Button -->
             <div class="flex justify-end mt-4">
-                <button (click)="onJoinRoom(room.id)" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors">
-                    Join
-                </button>
+              <button 
+                (click)="onJoinRoom(room.id)" 
+                [disabled]="room.participants.length >= room.maxPeople"
+                class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Join
+              </button>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
+  

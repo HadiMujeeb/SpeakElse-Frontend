@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormModalComponent } from '../../form-modal/form-modal.component';
-import { IMember } from '../../../models/member.interface';
-import { registerField } from '../../../FieldConfigs/registerFormConfig';
+import { IMember } from '../../../models/member.model';
+import { registerField } from '../../../FieldConfigs/register-form.config';
 import { Subscription } from 'rxjs';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
-import { ModalAction } from '../../../models/modalAction.enum';
+import { ModalAction } from '../../../models/modal-action.enum';
 import { UserProfileService } from '../../../../core/services/user/user-profile.service';
 import { Router } from '@angular/router';
 
@@ -99,7 +99,13 @@ export class ProfileContentComponent implements OnInit {
     this.ActionType = ModalAction.EditUser;
     this.selectedMember = this.user;
     this.isEditModalOpen = true;
-    const excludedFields = ['password', 'ConfirmPassword', 'confirmPassword','email','role'];
+    const excludedFields = [
+      'password',
+      'ConfirmPassword',
+      'confirmPassword',
+      'email',
+      'role',
+    ];
     this.fields = registerField.filter((f) => !excludedFields.includes(f.name));
   }
 

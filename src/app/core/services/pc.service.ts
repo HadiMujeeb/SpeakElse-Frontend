@@ -1,8 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { WsService } from './ws.service';
 import SimplePeer from 'simple-peer';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { userData } from '../../shared/models/socket-io.model';
 
 interface SignalData {
   signal: string;
@@ -10,13 +11,6 @@ interface SignalData {
   userToSignal: string;
 }
 
-interface UserData {
-  signal: string;
-  callerID: string;
-  id: string;
-}
-
-// Extending SimplePeer.Instance to include custom peerID
 interface ExtendedPeer extends SimplePeer.Instance {
   peerID?: string;
 }
@@ -25,12 +19,16 @@ interface ExtendedPeer extends SimplePeer.Instance {
   providedIn: 'root'
 })
 export class PcService {
-  private peers: ExtendedPeer[] = []; // Array of SimplePeer instances with peerID
-   localStream: MediaStream | null = null; // MediaStream for local video/audio
-   private localStreamSubject = new BehaviorSubject<MediaStream | null>(null);
-   router = inject(Router)
-   // Observable for components to subscribe to
-   localStream$ = this.localStreamSubject.asObservable();
+  private peers: ExtendedPeer[] = [];
+  localStream: MediaStream | null = null;
+  private localStreamSubject = new BehaviorSubject<userData|null>(null);
+  private remoteStreamsSubject = new BehaviorSubject<{ stream: MediaStream; participantId: string,userData: userData ,isAudioEnabled: boolean,isVideoEnabled: boolean}[]>([]);
+  router = inject(Router);
+
+  localStream$ = this.localStreamSubject.asObservable();
+  remoteStreams$ = this.remoteStreamsSubject.asObservable();
+  user = JSON.parse(localStorage.getItem('userData') || '{}');
+
   constructor(private wsService: WsService) {
     this.setupSocketListeners();
   }
@@ -39,9 +37,16 @@ export class PcService {
   initLocalStream(): void {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream: MediaStream) => {
+
+        
         this.localStream = stream;
-        this.localStreamSubject.next(this.localStream); 
-        // Pass the local stream to any component that needs it, or store it to be used in peers
+        const updatedUserData: userData = {
+          userId: this.user.userId,
+          username: this.user.name,
+          avatar: this.user.avatar,
+          mediaStream: stream
+        };
+        this.localStreamSubject.next(updatedUserData);
       })
       .catch((err: Error) => {
         console.error('Failed to get user media', err);
@@ -50,58 +55,49 @@ export class PcService {
 
   // Set up listeners for signaling
   private setupSocketListeners(): void {
-    this.wsService.onAllUsers((users: string[], roomID: string) => {
-      console.log(users.length, 'users length')
-      if(users.length==0) {
-        console.log('no users')
-        // this.router.navigate([`/user/room/${roomID}`])
-      }else{
-      users.forEach((userID: string) => {
-        if (this.localStream && this.wsService.getSocketId()) {
-          this.createPeer(userID, this.wsService.getSocketId(), this.localStream);
-        }
-      });
-    }
+    this.wsService.onAllUsers((users: userData[]) => {
+      console.log("users",users);
+        users.forEach((userData: userData) => {
+          if (this.localStream && this.wsService.getSocketId()) {
+            this.createPeer(userData, this.wsService.getSocketId(), this.localStream);
+          }
+        });
     });
 
-    this.wsService.onUserJoined((data: any) => {
+    this.wsService.onUserJoined((signal:string,userData:userData) => {
       if (this.localStream) {
-        console.log('User joined:', data);
-        this.addPeer(data.signal, data.callerID, this.localStream);
+        this.addPeer(signal, userData.socketId||'', this.localStream,userData);
       }
     });
 
-    this.wsService.onReceivingReturnedSignal((data: { signal: string, id: string}, roomID: string) => {
+    this.wsService.onReceivingReturnedSignal((data: { signal: string; id: string }, roomID: string) => {
       const peer = this.peers.find(p => p.peerID === data.id);
       if (peer) {
         peer.signal(data.signal);
-        // this.router.navigate([`/user/room/${roomID}`])
       }
     });
   }
 
   // Create a new peer connection for a new user
-  private createPeer(userToSignal: string, callerID: string, stream: MediaStream): void {
+  private createPeer(userData:userData, callerID: string, stream: MediaStream): void {
     const peer: ExtendedPeer = new SimplePeer({
       initiator: true,
       trickle: false,
       stream: stream
     });
-
+   const userToSignal = userData.socketId || '';
     peer.on('signal', (signal: string) => {
-      // Send the signal to the other user
       const signalData: SignalData = { userToSignal, callerID, signal };
       this.wsService.sendingSignal(signalData);
     });
 
-    peer.on('stream', this.handleIncomingStream);
-
-    peer.peerID = userToSignal; // Add peerID to the peer instance
+    peer.on('stream', (stream: MediaStream) => this.handleIncomingStream(stream, userToSignal, userData));
+    peer.peerID = userToSignal;
     this.peers.push(peer);
   }
 
   // Add a peer when a new user joins
-    addPeer(signal: string, callerID: string, stream: MediaStream): void {
+  addPeer(signal: string, callerID: string, stream: MediaStream, userData: userData): void {
     const peer: ExtendedPeer = new SimplePeer({
       initiator: false,
       trickle: false,
@@ -109,47 +105,59 @@ export class PcService {
     });
 
     peer.on('signal', (signal: string) => {
-      // Return the signal to the caller
       this.wsService.returningSignal({ signal, callerID });
     });
 
-    peer.on('stream', this.handleIncomingStream);
+    peer.on('stream', (stream: MediaStream) => this.handleIncomingStream(stream, callerID, userData));
 
     if (peer && typeof peer.signal === 'function') {
       peer.signal(signal);
     } else {
       console.error("Peer is not fully initialized or 'signal' method is missing.");
     }
-  
-    peer.peerID = callerID; // Add peerID to the peer instance
+
+    peer.peerID = callerID;
     this.peers.push(peer);
   }
 
-  // Handle incoming stream from the remote peer
-   handleIncomingStream(stream: MediaStream): void {
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.autoplay = true;
-    document.getElementById('videos')?.appendChild(video);
+  // Handle incoming remote stream
+  private handleIncomingStream(stream: MediaStream, participantId: string, userData: userData ): void {
+    console.log("stream",stream,"userid",participantId)
+    const remoteStreams = this.remoteStreamsSubject.value;
+
+    // Check if the participant's stream already exists
+    const existingStreamIndex = remoteStreams.findIndex(r => r.participantId === participantId);
+    if (existingStreamIndex !== -1) {
+      remoteStreams[existingStreamIndex].stream = stream; // Update stream if necessary
+    } else {
+      remoteStreams.push({ stream, participantId ,userData,isAudioEnabled: true,isVideoEnabled: true});
+    }
+
+    this.remoteStreamsSubject.next([...remoteStreams]); // Emit updated remote streams array
+
   }
 
-  // Handle disconnect event from a peer
+  // Remove a remote stream when a participant disconnects
   handlePeerDisconnect(peerID: string): void {
     const peerIndex = this.peers.findIndex(p => p.peerID === peerID);
     if (peerIndex !== -1) {
-      const peer = this.peers[peerIndex];
-      peer.destroy(); // Destroy the peer connection
-      this.peers.splice(peerIndex, 1); // Remove the peer from the list
+      this.peers[peerIndex].destroy();
+      this.peers.splice(peerIndex, 1);
     }
+
+    // Remove the remote stream associated with the disconnected peer
+    const remoteStreams = this.remoteStreamsSubject.value.filter(r => r.participantId !== peerID);
+    this.remoteStreamsSubject.next(remoteStreams);
   }
+ 
+  
+
 
   // End the local stream and close all peer connections
   closeAllConnections(): void {
-    if (this.localStream) {
-      this.localStream.getTracks().forEach((track: MediaStreamTrack) => track.stop()); // Stop all media tracks
-    }
-
-    this.peers.forEach((peer: ExtendedPeer) => peer.destroy()); // Destroy all peer connections
-    this.peers = []; // Reset peers array
+    this.localStream?.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+    this.peers.forEach((peer: ExtendedPeer) => peer.destroy());
+    this.peers = [];
+    this.remoteStreamsSubject.next([]); // Clear remote streams
   }
 }

@@ -64,7 +64,10 @@
       <div *ngIf="showError" class="text-red-500 text-center text-sm">
         {{ errorMessage }}
       </div>
-
+<!-- Success message -->
+      <div *ngIf="responseMessage" class="text-green-500 text-center mt-4">
+        {{ responseMessage }}
+      </div>
       <!-- Resend Link -->
       <div class="text-center">
         <span class="text-gray-600">Didn't receive code? </span>

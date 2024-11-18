@@ -23,7 +23,7 @@ import { CreateRoomModalComponent } from '../app/shared/components/create-room-m
 import { authUserGuard } from '../app/core/guards/auth-user.guard';
 import { userProfileGuard } from '../app/core/guards/user-profile.guard';
 import { RoomComponent } from '../app/features/user/room/room.component';
-import { RoomPreviewComponent } from '../app/features/user/room-preview/room-preview.component';
+
 
 
 export const routes: Routes = [
@@ -58,7 +58,7 @@ export const routes: Routes = [
       {path: 'profile',component: ProfileComponent ,canActivate:[userProfileGuard ]},
       {path: 'roomList',component:RoomListComponent},
       {path:'room/:roomId',component:RoomComponent},
-      {path:'landing/:roomId',component:RoomPreviewComponent}
+      {path:'interface',component:RoominterfaceComponent},
     ],
   },
   {
@@ -75,7 +75,7 @@ export const routes: Routes = [
       {
         path: 'login',
         component: AdminLoginComponent,
-        canActivate: [authUserGuard],
+         
       },
       {
         path: 'member',

@@ -1,46 +1,80 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
-import { filterField } from '../../FieldConfigs/filterField';
-import { FormField } from '../../models/form-field.interface';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { IRoom } from '../../models/room.model';
+import { RoomService } from '../../../core/services/user/room.service';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-filter',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './filter.component.html',
-  styleUrl: './filter.component.css'
+  styleUrls: ['./filter.component.css'],
 })
-export class FilterComponent {
-@Output() room = new EventEmitter<void>();
-filterFields:FormField[]=filterField;
+export class FilterComponent implements OnInit {
+  rooms: IRoom[] = [];
+  @Output() room = new EventEmitter<void>();
 
-filters:any = {
-  language: '',
-  profession: '',
-  country: '',
-  level: '',
-  topic: '',
-};
+  // Emit filters when they change
+  @Output() filtersChanged = new EventEmitter<{
+    language: string;
+    profession: string;
+    country: string;
+    level: string;
+    topic: string;
+  }>();
 
-constructor() {}
+  // Options for each filter field
+  languageOptions: { label: string; value: string }[] = [];
+  professionOptions: { label: string; value: string }[] = [];
+  countryOptions: { label: string; value: string }[] = [];
+  levelOptions: { label: string; value: string }[] = [];
+  topicOptions: { label: string; value: string }[] = [];
 
-ngOnInit(): void {
+  userRoomServices = inject(RoomService);
 
-}
+  // Separate filters for each field
+  filters = {
+    language: '',
+    profession: '',
+    country: '',
+    level: '',
+    topic: '',
+  };
 
+  constructor() {}
 
+  ngOnInit(): void {
+    this.userRoomServices.room$.subscribe((rooms) => {
+      this.rooms = rooms;
+      this.populateFilterOptions();
+    });
+  }
 
-applyFilters() {
+  populateFilterOptions(): void {
+    this.languageOptions = [
+      ...new Set(this.rooms.map((room) => room.language)),
+    ].map((language) => ({ label: language, value: language }));
 
-  console.log('Filters applied:', this.filters);
-}
+    this.levelOptions = [...new Set(this.rooms.map((room) => room.level))].map(
+      (level) => ({ label: level, value: level })
+    );
 
-clearFilter(fieldName: string) {
+    this.topicOptions = [...new Set(this.rooms.map((room) => room.topic))].map(
+      (topic) => ({ label: topic, value: topic })
+    );
+  }
 
-}
+  applyFilters(): void {
+    this.filtersChanged.emit(this.filters);
+  }
 
-createRoom() {
+  clearFilter(fieldName: string): void {
+    // this.filters[fieldName] = '';
+    this.applyFilters();
+  }
 
-  this.room.emit();
-}
+  createRoom(): void {
+    this.room.emit();
+  }
 }

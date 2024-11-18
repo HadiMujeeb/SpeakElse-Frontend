@@ -1,12 +1,28 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
-import { IUserRegisterationCredentials, IRegisterSuccessfullResponse } from '../../../shared/models/registerForm.model';
-import { ILoginSuccessResponse, IUserLoginCredentials } from '../../../shared/models/LoginForm.interface';
-import { VerifyOtpReponse, VerifyOtpRequest } from '../../../shared/models/OTPRequest.interface';
-import { IProtectedDataResponse } from '../../../shared/models/ProtectedDataResponse.interface';
-import { IUserProfile } from '../../../shared/models/UserProfile.interface';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
+import {
+  IUserRegisterationCredentials,
+  IRegisterSuccessfullResponse,
+} from '../../../shared/models/register-form.model';
+import {
+  ILoginSuccessResponse,
+  IUserLoginCredentials,
+} from '../../../shared/models/login-form.model';
+import {
+  VerifyOtpReponse,
+  VerifyOtpRequest,
+} from '../../../shared/models/otp-request.model';
+import { IProtectedDataResponse } from '../../../shared/models/protected-data-response.model';
+import { IUserProfile } from '../../../shared/models/user-profile.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
@@ -17,39 +33,74 @@ export class AuthUserService {
   constructor(public httpClient: HttpClient) {}
 
   // Registration
-  RegisterationRequest(registerCredentails: IUserRegisterationCredentials): Observable<IRegisterSuccessfullResponse> {
-    return this.httpClient.post<IRegisterSuccessfullResponse>(`${this.api}/registerUser`, registerCredentails)
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message))));
+  RegisterationRequest(
+    registerCredentails: IUserRegisterationCredentials
+  ): Observable<IRegisterSuccessfullResponse> {
+    return this.httpClient
+      .post<IRegisterSuccessfullResponse>(
+        `${this.api}/registerUser`,
+        registerCredentails
+      )
+      .pipe(
+        catchError((err) => throwError(() => new Error(err.error?.message)))
+      );
   }
 
   // OTP Verification
   VerifyOtp(credentials: VerifyOtpRequest): Observable<VerifyOtpReponse> {
-    return this.httpClient.post<VerifyOtpReponse>(`${this.api}/verifyOtp`, credentials)
+    return this.httpClient
+      .post<VerifyOtpReponse>(`${this.api}/verifyOtp`, credentials)
       .pipe(
         catchError((err) => {
-          console.error('Error occurred while verifying OTP:', err.error?.message);
-          return throwError(() => err); // Pass the entire error object instead of wrapping in a new Error
+          console.error(
+            'Error occurred while verifying OTP:',
+            err.error?.message
+          );
+          return throwError(() => err);
         })
       );
   }
-  
 
-  resentOtp(email: string|null): Observable<VerifyOtpReponse> {
-    return this.httpClient.post<VerifyOtpReponse>(`${this.api}/resend-OTP`, { email })
-      .pipe(catchError(err => throwError(() => new Error(err.error || 'Server Error'))));
+  resentOtp(email: string | null): Observable<VerifyOtpReponse> {
+    return this.httpClient
+      .post<VerifyOtpReponse>(`${this.api}/resend-OTP`, { email })
+      .pipe(
+        catchError((err) =>
+          throwError(() => new Error(err.error || 'Server Error'))
+        )
+      );
   }
 
   // Login
-  loginRequest(loginCredentials: IUserLoginCredentials): Observable<ILoginSuccessResponse> {
-    return this.httpClient.post<ILoginSuccessResponse>(`${this.api}/loginUser`, loginCredentials)
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message || 'Login Failed'))));
+  loginRequest(
+    loginCredentials: IUserLoginCredentials
+  ): Observable<ILoginSuccessResponse> {
+    return this.httpClient
+      .post<ILoginSuccessResponse>(`${this.api}/loginUser`, loginCredentials)
+      .pipe(
+        catchError((err) =>
+          throwError(() => new Error(err.error?.message || 'Login Failed'))
+        )
+      );
   }
 
   // Protected Data
-  getProtectedData(accessToken:string|null): Observable<IProtectedDataResponse> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${accessToken}`);
-    return this.httpClient.get<IProtectedDataResponse>(`${this.api}/verify-Token`,{ headers })
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
+  getProtectedData(
+    accessToken: string | null
+  ): Observable<IProtectedDataResponse> {
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      `Bearer ${accessToken}`
+    );
+    return this.httpClient
+      .get<IProtectedDataResponse>(`${this.api}/verify-Token`, { headers })
+      .pipe(
+        catchError((err) =>
+          throwError(
+            () => new Error(err.error?.message || 'Unknown error occurred')
+          )
+        )
+      );
   }
 
   // User Status
@@ -58,13 +109,18 @@ export class AuthUserService {
   }
 
   isUserExisted$(): Observable<boolean> {
-    return of(localStorage.getItem('userData') !== null); // Adjust as needed
+    return of(localStorage.getItem('userData') !== null);
   }
 
   // Logout
   logoutRequest(): Observable<any> {
-    return this.httpClient.get(`${this.api}/logout`)
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message || 'Logout Failed'))));
+    return this.httpClient
+      .get(`${this.api}/logout`)
+      .pipe(
+        catchError((err) =>
+          throwError(() => new Error(err.error?.message || 'Logout Failed'))
+        )
+      );
   }
 
   setUserData(user: any) {
@@ -77,21 +133,31 @@ export class AuthUserService {
 
   // Edit Profile
   editUserProfile(profileData: IUserProfile): Observable<any> {
-    return this.httpClient.put(`${this.api}/profile`, profileData)
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message || 'Failed to update profile'))), tap(response => {
-        // Uncomment if needed: this.setUserData(response.user);
-      }));
+    return this.httpClient.put(`${this.api}/profile`, profileData).pipe(
+      catchError((err) =>
+        throwError(
+          () => new Error(err.error?.message || 'Failed to update profile')
+        )
+      ),
+      tap((response) => {})
+    );
   }
 
   // Password Reset
   sendResetPasswordEmail(email: string): Observable<any> {
-    console.log('Sending reset password email to:', email); // Log email sending
-    return this.httpClient.post(`${this.api}/sendEmailReset`, { email })
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message))));
+    console.log('Sending reset password email to:', email);
+    return this.httpClient
+      .post(`${this.api}/sendEmailReset`, { email })
+      .pipe(
+        catchError((err) => throwError(() => new Error(err.error?.message)))
+      );
   }
 
   requestResetPassword(token: string, password: string): Observable<any> {
-    return this.httpClient.post(`${this.api}/resetPassword`, { token, password })
-      .pipe(catchError(err => throwError(() => new Error(err.error?.message))));
+    return this.httpClient
+      .post(`${this.api}/resetPassword`, { token, password })
+      .pipe(
+        catchError((err) => throwError(() => new Error(err.error?.message)))
+      );
   }
 }

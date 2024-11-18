@@ -3,12 +3,12 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   Member,
   memberHeaders,
-} from '../../../shared/FieldConfigs/memberTableField';
+} from '../../../shared/FieldConfigs/member-table.fields';
 import { MemberMgmtService } from '../../../core/services/admin/member-mgmt.service';
-import { IMember } from '../../../shared/models/member.interface';
+import { IMember } from '../../../shared/models/member.model';
 import { FormModalComponent } from '../../../shared/components/form-modal/form-modal.component';
-import { registerField } from '../../../shared/FieldConfigs/registerFormConfig';
-import { ModalAction } from '../../../shared/models/modalAction.enum';
+import { registerField } from '../../../shared/FieldConfigs/register-form.config';
+import { ModalAction } from '../../../shared/models/modal-action.enum';
 
 @Component({
   selector: 'app-members',

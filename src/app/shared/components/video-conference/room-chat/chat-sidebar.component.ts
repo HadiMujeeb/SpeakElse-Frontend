@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ChatMessage } from '../../../models/chat-message.interface';
+import { ChatMessage } from '../../../models/chat-message.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 

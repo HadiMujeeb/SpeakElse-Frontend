@@ -1,12 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, NgModule, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  NgModule,
+  OnInit,
+} from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
-import { HeaderComponent } from '../../../layouts/header/header.component';
+import { HeaderComponent } from '../../../shared/layouts/header/header.component';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
 import { RoomCardComponent } from '../../../shared/components/room-card/room-card.component';
 import { SearchbarComponent } from '../../../shared/components/searchbar/searchbar.component';
 import { CreateRoomModalComponent } from '../../../shared/components/create-room-modal/create-room-modal.component';
-import { IrequestCreateRoom, IRoom } from '../../../shared/models/room.interface';
+import { IrequestCreateRoom, IRoom } from '../../../shared/models/room.model';
 import { RoomService } from '../../../core/services/user/room.service';
 // models/filter.model.ts
 @Component({
@@ -25,54 +31,29 @@ import { RoomService } from '../../../core/services/user/room.service';
   styleUrl: './room-list.component.css',
 })
 export class RoomListComponent implements OnInit {
-
-  userRoomServices =  inject(RoomService);
-  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
-  rooms:IRoom[] = []
+  userRoomServices = inject(RoomService);
+  rooms: IRoom[] = [];
   filteredRooms: IRoom[] = [];
   isModelOpen = false;
+  appliedFilters = {};
   openModal() {
     this.isModelOpen = true;
   }
   closeModal() {
     this.isModelOpen = false;
   }
-  submitRoom(credentials: any) {
-    console.log("working man")
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    const data:IrequestCreateRoom = credentials;
-    data.creatorId = userData.id;
-    this.userRoomServices.requestAddRoom(data).subscribe(
-      (response) => {
-        this.rooms = [...this.rooms, response.room];
-        this.filteredRooms = [...this.rooms];
-        this.cdr.detectChanges();
-        this.closeModal();
-      },
-      (error) => {
-        console.log(error, 'errorefwewibwidwbecdi');
-      }
-    )
-    
-  }
- 
-  applyFilters() {
-    this.filteredRooms = this.rooms; 
+
+  applyFilters(filters: any) {
+    this.appliedFilters = filters;
   }
 
   joinRoom(roomId: string) {
     console.log('Joining room with ID:', roomId);
   }
 
-  ngOnInit(): void {
-    this.userRoomServices.requestGetAllRooms().subscribe(
-      (response) =>{
-        this.rooms = response;
-        this.filteredRooms = [...this.rooms];
-      },
-    (error) =>{
-      console.error(error);
-    }
-    )
+  ngOnInit(): void {}
+
+  submitRoom(data: IRoom) {
+    this.closeModal();
   }
 }

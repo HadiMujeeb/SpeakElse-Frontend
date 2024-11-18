@@ -5,11 +5,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { resetEmail } from '../../../../shared/FieldConfigs/resetpasswordconfig';
+import { resetEmail } from '../../../../shared/FieldConfigs/reset-password.config';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../shared/layouts/nav-logo/nav-logo.component';
 
 @Component({
   selector: 'app-reset-password-mail',
@@ -52,6 +52,4 @@ export class ResetPasswordMailComponent {
       console.log('Form is invalid');
     }
   }
-
- 
 }

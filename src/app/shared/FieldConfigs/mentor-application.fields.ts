@@ -1,4 +1,4 @@
-import { FormField } from '../models/form-field.interface';
+import { FormField } from '../models/form-field.model';
 
 export const mentorApplicationFields: FormField[] = [
   {

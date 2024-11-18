@@ -5,12 +5,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { loginFields } from '../../../../shared/FieldConfigs/loginFormConfig';
+import { loginFields } from '../../../../shared/FieldConfigs/login-form.config';
 import { CommonModule } from '@angular/common';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
-import { IUserLoginCredentials } from '../../../../shared/models/LoginForm.interface';
-import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
+import { IUserLoginCredentials } from '../../../../shared/models/login-form.model';
+import { NavLogoComponent } from '../../../../shared/layouts/nav-logo/nav-logo.component';
 
 @Component({
   selector: 'app-login',
@@ -56,27 +56,24 @@ export class LoginComponent {
       this.AuthUserServices.loginRequest(credentials).subscribe(
         (response) => {
           console.log('Login successful:', response);
-          localStorage.setItem('accessToken',response.accessToken)
+          localStorage.setItem('accessToken', response.accessToken);
           this.router.navigate(['/user/home']);
-        
         },
         (error) => {
           console.error('Login failed:', error.message);
           // this.loginError = error.message;
 
-          if(error.message ==='User not found.') {
-            this.loginForm.get('email')?.setErrors({ 'notExist': true });
-          }else if(error.message ==='Invalid password. Please try again.'){
-            this.loginForm.get('password')?.setErrors({ 'incorrect': true });
+          if (error.message === 'User not found.') {
+            this.loginForm.get('email')?.setErrors({ notExist: true });
+          } else if (error.message === 'Invalid password. Please try again.') {
+            this.loginForm.get('password')?.setErrors({ incorrect: true });
           } else {
             this.loginError = 'Login failed. Please try again later.';
           }
         }
       );
     } else {
-        this.loginForm.markAllAsTouched();
+      this.loginForm.markAllAsTouched();
     }
   }
-
-
 }

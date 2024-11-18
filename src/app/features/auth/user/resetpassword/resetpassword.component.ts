@@ -5,9 +5,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { resetPasswordField } from '../../../../shared/FieldConfigs/resetpasswordconfig';
+import { resetPasswordField } from '../../../../shared/FieldConfigs/reset-password.config';
 import { CommonModule } from '@angular/common';
-import { NavLogoComponent } from '../../../../layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../../shared/layouts/nav-logo/nav-logo.component';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 

@@ -1,37 +1,38 @@
-import {
-  Component,
-  ElementRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { WsService } from '../../../core/services/ws.service';
 import { PcService } from '../../../core/services/pc.service';
-import { FormsModule } from '@angular/forms';
-import { ControlBarComponent } from '../../../shared/components/video-conference/control-bar/control-bar.component';
-import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavLogoComponent } from '../../../layouts/nav-logo/nav-logo.component';
-import { ChatSidebarComponent } from '../../../shared/components/video-conference/chat-sidebar/chat-sidebar.component';
+import { ControlBarComponent } from '../../../shared/components/video-conference/room-controls/control-bar.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
+import { ChatSidebarComponent } from '../../../shared/components/video-conference/room-chat/chat-sidebar.component';
+import { userData } from '../../../shared/models/socket-io.model';
 
 @Component({
   selector: 'app-room',
   standalone: true,
-  imports: [FormsModule, ControlBarComponent, CommonModule, NavLogoComponent,ChatSidebarComponent],
+  imports: [
+    FormsModule,
+    ControlBarComponent,
+    CommonModule,
+    NavLogoComponent,
+    ChatSidebarComponent,
+  ],
   templateUrl: './room.component.html',
-  styleUrl: './room.component.css',
+  styleUrls: ['./room.component.css'],
 })
 export class RoomComponent implements OnInit {
-  @ViewChild('myVideo') myVideoElement!: ElementRef<HTMLVideoElement>;
   isRoomJoined: boolean = false;
   roomID: string = '';
-  localStream: MediaStream | null = null;
-  isAudioEnabled: boolean = true; // To keep track of audio state
-  isVideoEnabled: boolean = true; // To keep track of video state
-  remoteParticipants: any[] = [];
+  localStream: userData | null = null;
+  isAudioEnabled: boolean = true;
+  isVideoEnabled: boolean = true;
+  remoteParticipants: { stream: MediaStream; participantId: string,userData: userData,isAudioEnabled: boolean,isVideoEnabled: boolean }[] = [];
   messages: string[] = [];
   isChatOpen: boolean = false;
   router = inject(Router);
+
   constructor(
     private wsService: WsService,
     private pcService: PcService,
@@ -39,33 +40,56 @@ export class RoomComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Initialize the local stream
+
     this.pcService.initLocalStream();
-    this.pcService.localStream$.subscribe((stream) => {
-      if (stream) {
-        this.localStream = stream;
-        this.myVideoElement.nativeElement.srcObject = stream;
-        this.myVideoElement.nativeElement.muted = true;
+    this.pcService.localStream$.subscribe((streamData) => {
+      if (streamData) {
+        this.localStream = streamData;
       }
     });
-    // Listen for remote video streams and handle them
-    this.pcService.handleIncomingStream = this.addRemoteVideo;
+    this.pcService.remoteStreams$.subscribe((remoteStreams) => {
+
+      this.remoteParticipants = remoteStreams;
+      console.log("remoteParticipants",this.remoteParticipants);
+    });
 
     this.wsService.getMessages().subscribe((message: string) => {
       this.messages.push(message);
     });
+
+    this.wsService.onUserLeft((participantId: string) => {
+      this.onUserLeft(participantId);
+    });
+
+    this.wsService.onUserAudioStatusChange((userId: string) => {
+       this.remoteParticipants.map((participant) => {
+         if(participant.participantId === userId){
+          participant.isAudioEnabled = !participant.isAudioEnabled;
+          console.log("auto",participant.isAudioEnabled);
+         }
+      })
+    })
+
+    this.wsService.onUserVideoStatusChange((userId: string) => {
+      this.remoteParticipants.map((participant) => {
+        if(participant.participantId === userId){
+         participant.isVideoEnabled = !participant.isVideoEnabled;
+         console.log("video",participant.isVideoEnabled);
+        }
+     })
+   })
   }
 
   toggleChat(): void {
     this.isChatOpen = !this.isChatOpen;
-    console.log(this.isChatOpen, 'isChatOpen');
   }
 
   sendMessage(message: any): void {
     this.wsService.sendMessage(message);
     this.messages.push(`You: ${message}`);
   }
-  // Join a room
+
+  // Join the room
   joinRoom(): void {
     this.isRoomJoined = true;
     this.roomID = this.activeRoute.snapshot.paramMap.get('roomId') || '';
@@ -74,50 +98,39 @@ export class RoomComponent implements OnInit {
     }
   }
 
-  // Add a remote video stream to the page
-  addRemoteVideo(stream: MediaStream): void {
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.autoplay = true;
-    document.getElementById('remote-videos')?.appendChild(video);
+  // Handle when a user leaves the room
+  onUserLeft(participantId: string): void {
+    this.pcService.handlePeerDisconnect(participantId);
   }
 
-  onUserJoined(data: any): void {
-    this.pcService.addPeer(data.signal, data.callerID, this.localStream!);
-  }
+
   toggleAudio(): void {
-    if (this.localStream) {
+    if (this.localStream?.mediaStream) {
       this.isAudioEnabled = !this.isAudioEnabled;
-      this.localStream
-        .getAudioTracks()
-        .forEach((track) => (track.enabled = this.isAudioEnabled));
+      this.localStream.mediaStream.getAudioTracks().forEach((track) => (track.enabled = this.isAudioEnabled));
+      this.wsService.updateAudioStatus();
     }
   }
 
   // Toggle video track on/off
   toggleVideo(): void {
-    if (this.localStream) {
+    if (this.localStream?.mediaStream) {
       this.isVideoEnabled = !this.isVideoEnabled;
-      this.localStream
-        .getVideoTracks()
-        .forEach((track) => (track.enabled = this.isVideoEnabled));
+      this.localStream.mediaStream.getVideoTracks().forEach((track) => (track.enabled = this.isVideoEnabled));
+      this.wsService.updateVideoStatus();
     }
   }
 
-  // Handle local video stream updates
-  onLocalStreamReady(stream: MediaStream): void {
-    this.localStream = stream;
-    this.myVideoElement.nativeElement.srcObject = stream;
-  }
+
   leaveRoom(): void {
     // Stop the local stream
-    if (this.localStream) {
-      this.localStream.getTracks().forEach((track) => track.stop());
+    if (this.localStream?.mediaStream) {
+      this.localStream.mediaStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
     this.pcService.closeAllConnections();
 
-    // Emit a 'leave room' event to the server (if needed)
+    // Emit a 'leave room' event to the server
     this.wsService.leaveRoom();
 
     this.router.navigate(['/user/roomList']);

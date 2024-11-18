@@ -1,4 +1,4 @@
-import { FormField } from '../models/form-field.interface';
+import { FormField } from '../models/form-field.model';
 
 export const registerField: FormField[] = [
   {
@@ -67,7 +67,7 @@ export const registerField: FormField[] = [
   {
     name: 'description',
     label: 'Description',
-    type: 'textarea', // Assuming you want a textarea for descriptions
+    type: 'textarea', 
     placeholder: 'Enter a brief description about yourself',
     errors: [{ type: 'required', message: 'Description is required.' }],
   },
@@ -98,7 +98,7 @@ export const registerField: FormField[] = [
     name: 'avatar',
     label: 'Profile Picture',
     type: 'file',
-    placeholder: 'Upload your profile picture', // Optional as browsers handle this automatically for file inputs
+    placeholder: 'Upload your profile picture',
     errors: [
       { type: 'required', message: 'Profile picture is required.' },
       { type: 'fileType', message: 'Only image files (JPG, PNG) are allowed.' },

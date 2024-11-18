@@ -15,6 +15,7 @@ export interface IRoom {
     privacy: string;
     topic: string;
     language: string;
+    createdAt: Date;
     creator: {
         avatar: string;
         name: string;
