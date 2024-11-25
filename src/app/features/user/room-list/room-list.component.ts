@@ -14,6 +14,7 @@ import { SearchbarComponent } from '../../../shared/components/searchbar/searchb
 import { CreateRoomModalComponent } from '../../../shared/components/create-room-modal/create-room-modal.component';
 import { IrequestCreateRoom, IRoom } from '../../../shared/models/room.model';
 import { RoomService } from '../../../core/services/user/room.service';
+import { ChatComponent } from '../../../shared/components/chat/chat.component';
 // models/filter.model.ts
 @Component({
   selector: 'app-room-list',
@@ -26,6 +27,7 @@ import { RoomService } from '../../../core/services/user/room.service';
     RoomCardComponent,
     SearchbarComponent,
     CreateRoomModalComponent,
+    ChatComponent
   ],
   templateUrl: './room-list.component.html',
   styleUrl: './room-list.component.css',
@@ -35,6 +37,7 @@ export class RoomListComponent implements OnInit {
   rooms: IRoom[] = [];
   filteredRooms: IRoom[] = [];
   isModelOpen = false;
+  isChatMOdelOpen = false;
   openModal() {
     this.isModelOpen = true;
   }
@@ -52,5 +55,11 @@ export class RoomListComponent implements OnInit {
 
   submitRoom(data: IRoom) {
     this.closeModal();
+  }
+  closeChatModal(){
+  this.isChatMOdelOpen = false;
+  }
+  openChatModal(){
+    this.isChatMOdelOpen = true;
   }
 }

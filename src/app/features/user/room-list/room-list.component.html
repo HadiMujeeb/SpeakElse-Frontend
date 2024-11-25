@@ -3,7 +3,7 @@
 </header>
 
 <div class="container mx-auto p-4 mt-8">
-  <app-filter (room)="openModal()"   ></app-filter>
+  <app-filter (room)="openModal()"  (openModal)="openChatModal()"></app-filter>
   <!-- <app-searchbar></app-searchbar> -->
 
   <app-room-card  
@@ -13,4 +13,8 @@
 
 <div *ngIf="isModelOpen">
   <app-create-room-modal (closeModal)="closeModal()" (submit)="submitRoom($event)"></app-create-room-modal>
+</div>
+
+<div *ngIf="isChatMOdelOpen">
+  <app-chat (close)="closeChatModal()"></app-chat>
 </div>

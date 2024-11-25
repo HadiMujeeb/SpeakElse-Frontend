@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class FilterComponent implements OnInit {
   rooms: IRoom[] = [];
   @Output() room = new EventEmitter<void>();
-
+  @Output() openModal = new EventEmitter<void>();
   // Emit filters when they change
   @Output() filtersChanged = new EventEmitter<{
     language: string;
@@ -75,5 +75,9 @@ export class FilterComponent implements OnInit {
 
   createRoom(): void {
     this.room.emit();
+  }
+  openChatModal(): void {
+    console.log("wporf")
+  this.openModal.emit();
   }
 }

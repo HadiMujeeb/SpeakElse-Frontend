@@ -22,6 +22,7 @@ import { RoomComponent } from '../app/features/user/room/room.component';
 import { guestOnlyGuard } from '../app/core/guards/guestOnly.guard';
 import { RatingComponent } from '../app/shared/components/rating/rating.component';
 import { ChatSidebarComponent } from '../app/shared/components/video-conference/room-chat/chat-sidebar.component';
+import { ChatComponent } from '../app/shared/components/chat/chat.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'user/home', pathMatch: 'full' },
@@ -41,7 +42,7 @@ export const routes: Routes = [
       { path: 'roomList', component: RoomListComponent },
       { path: 'room/:roomId', component: RoomComponent },
       { path: 'interface', component: RatingComponent },
-      {path:'chat',component:ChatSidebarComponent}
+      {path:'chat',component:ChatComponent}
     ]
   },
   {

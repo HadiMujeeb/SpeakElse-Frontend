@@ -14,3 +14,14 @@ export interface IMembersListResponse {
     language: string;
     isBlocked: boolean;
 }
+
+export interface IUser {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string | null;
+  profession?: string | null;
+  language?: string | null;
+  country?: string | null;
+  description?: string | null;
+}

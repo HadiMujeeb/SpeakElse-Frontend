@@ -9,6 +9,7 @@ import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.comp
 import { ChatSidebarComponent } from '../../../shared/components/video-conference/room-chat/chat-sidebar.component';
 import { userData } from '../../../shared/models/socket-io.model';
 import { RatingComponent } from '../../../shared/components/rating/rating.component';
+import { UserProfileService } from '../../../core/services/user/user-profile.service';
 
 @Component({
   selector: 'app-room',
@@ -41,7 +42,9 @@ export class RoomComponent implements OnInit {
   constructor(
     private wsService: WsService,
     private pcService: PcService,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private userProfileService: UserProfileService
+    
   ) {}
 
   selectParticipant(participant: any) {
@@ -154,5 +157,13 @@ export class RoomComponent implements OnInit {
     
 
     this.router.navigate(['/user/roomList']);
+  }
+
+  followUser(friendId: string){
+    const userId = JSON.parse(localStorage.getItem('userData') || '{}').id
+    console.log("userId",userId,"getRaterId",this.getRaterId);
+    this.userProfileService.requestFollowUnFollow(userId,friendId).subscribe((res)=>{
+      console.log(res);
+    })
   }
 }

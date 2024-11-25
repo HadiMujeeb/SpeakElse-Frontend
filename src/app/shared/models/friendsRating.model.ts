@@ -1,14 +1,15 @@
 
 export  interface IReponseRatings {
-    userId: string;
-    feedback: string;
-    rating: number;
-    date: Date;
-    givenBy:{
-      name:string;
-      avatar:string;
-    }
+  feedback: string;
+  rating: number;
+  givenBy:{
+    id:string
+    name:string,
+    avatar:string
+  }
+  createdAt: Date;
 }
+
   
 export interface IComment {
     userId: string;

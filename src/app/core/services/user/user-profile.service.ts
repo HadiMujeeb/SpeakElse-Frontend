@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
-import { IMember } from '../../../shared/models/member.model';
+import { IMember, IUser } from '../../../shared/models/member.model';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { IErrorResponse } from '../../../shared/models/error.model';
 import { HttpClient } from '@angular/common/http';
@@ -41,6 +41,12 @@ export class UserProfileService {
     return this.httpClient.post<IErrorResponse>(`${this.api}/requestGiveRating`, data);
   }
 
-  
+  requestFollowUnFollow(userId: string,friendId: string): Observable<IErrorResponse> {
+    console.log(userId,friendId);
+    return this.httpClient.post<IErrorResponse>(`${this.api}/requestFollowUnfollow`, { userId , friendId });
+  }
+
+  requestGetAllFriends(userId: string): Observable<IUser[]> {
+    return this.httpClient.get<IUser[]>(`${this.api}/requestRetrieveFriends`, {params: {userId}});
 }
-    
+}
