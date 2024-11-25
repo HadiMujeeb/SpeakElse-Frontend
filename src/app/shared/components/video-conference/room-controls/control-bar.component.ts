@@ -15,8 +15,8 @@ export class ControlBarComponent {
   @Output() onLeaveCall = new EventEmitter<void>();
   @Output() onReaction = new EventEmitter<string>();
 
-  isAudioMuted = false;
-  isVideoOff = false;
+  @Input() isAudioMuted! : boolean;
+  @Input()isVideoEnabled! : boolean;
   isScreenSharing = false;
   isHandRaised = false;
   showEmojiPicker = false;
@@ -32,7 +32,7 @@ export class ControlBarComponent {
   }
 
   toggleVideo() {
-    this.isVideoOff = !this.isVideoOff;
+    this.isVideoEnabled = !this.isVideoEnabled;
     this.onToggleVideo.emit();
   }
 

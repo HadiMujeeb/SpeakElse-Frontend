@@ -6,3 +6,9 @@ export interface IProtectedDataResponse {
   user: IMember;
   accessToken: string;
 }
+export interface IadminauthResponse {
+  message: string;
+  status: number;
+  admin: IMember;
+  accessToken: string;
+}

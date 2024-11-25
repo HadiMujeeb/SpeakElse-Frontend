@@ -22,7 +22,7 @@ export class PcService {
   private peers: ExtendedPeer[] = [];
   localStream: MediaStream | null = null;
   private localStreamSubject = new BehaviorSubject<userData|null>(null);
-  private remoteStreamsSubject = new BehaviorSubject<{ stream: MediaStream; participantId: string,userData: userData ,isAudioEnabled: boolean,isVideoEnabled: boolean}[]>([]);
+   remoteStreamsSubject = new BehaviorSubject<{ stream: MediaStream; participantId: string,userData: userData ,isAudioEnabled: boolean,isVideoEnabled: boolean}[]>([]);
   router = inject(Router);
 
   localStream$ = this.localStreamSubject.asObservable();
@@ -155,7 +155,7 @@ export class PcService {
 
   // End the local stream and close all peer connections
   closeAllConnections(): void {
-    this.localStream?.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+    // this.localStream?.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     this.peers.forEach((peer: ExtendedPeer) => peer.destroy());
     this.peers = [];
     this.remoteStreamsSubject.next([]); // Clear remote streams

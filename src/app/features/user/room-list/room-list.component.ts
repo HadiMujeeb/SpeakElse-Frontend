@@ -35,7 +35,6 @@ export class RoomListComponent implements OnInit {
   rooms: IRoom[] = [];
   filteredRooms: IRoom[] = [];
   isModelOpen = false;
-  appliedFilters = {};
   openModal() {
     this.isModelOpen = true;
   }
@@ -43,9 +42,7 @@ export class RoomListComponent implements OnInit {
     this.isModelOpen = false;
   }
 
-  applyFilters(filters: any) {
-    this.appliedFilters = filters;
-  }
+
 
   joinRoom(roomId: string) {
     console.log('Joining room with ID:', roomId);

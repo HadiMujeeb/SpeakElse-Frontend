@@ -12,6 +12,9 @@
         <div *ngIf="groupForm.controls['topic'].invalid && groupForm.controls['topic'].touched" class="text-red-600 text-sm mt-1">
           Topic is required.
         </div>
+        <div *ngIf="groupForm.controls['topic'].hasError('whitespace') && groupForm.controls['topic'].touched" class="text-red-600 text-sm mt-1">
+          Topic cannot contain only spaces.
+        </div>
       </div>
 
       <!-- Maximum People Field -->

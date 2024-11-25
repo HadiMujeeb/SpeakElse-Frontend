@@ -39,13 +39,11 @@ export class AdminLoginComponent {
       next: (response) => {
         // Handle successful login
         console.log('Login successful:', response);
-        localStorage.setItem('adminData',JSON.stringify(response.admin))
+        localStorage.setItem('adminToken',response.accessToken)
         this.router.navigate(['/admin/member']);
       },
       error: (err) => {
-        // Handle login error
         console.error('Login failed:', err);
-        // You can display an error message to the user here
       },
     });
   }

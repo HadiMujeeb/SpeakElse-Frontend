@@ -66,11 +66,10 @@ export class FilterComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.filtersChanged.emit(this.filters);
+    this.userRoomServices.updateFilters(this.filters);
   }
 
   clearFilter(fieldName: string): void {
-    // this.filters[fieldName] = '';
     this.applyFilters();
   }
 

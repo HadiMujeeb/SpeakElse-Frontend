@@ -1,19 +1,26 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { AdminService } from '../services/admin/admin.service';
 import { inject } from '@angular/core';
-import { map, tap } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
 
 export const authAdminGuard: CanActivateFn = (route, state) => {
   const adminServices = inject(AdminService);
   const router = inject(Router);
 
-
-  return adminServices.isAdminExisted$().pipe(
-    tap(isAdmin => {
-      if (!isAdmin) {
-        router.navigate(['/admin/login']); // Redirect to login if not admin
-      }
-    }),
-    map(isAdmin => isAdmin) // Return true if admin exists, otherwise false
-  );
+  
+  const adminToken:string|null =(localStorage.getItem('adminToken'));
+  return adminServices.adminAuthTokenRequest(adminToken).pipe(
+   map((response) => {
+     localStorage.setItem("adminData",JSON.stringify(response.admin));
+     localStorage.setItem("adminToken",response.accessToken);
+      return true
+  }),
+  catchError(() =>{
+   localStorage.removeItem('adminToken');
+   localStorage.removeItem('adminData');
+   router.navigate(['/admin/login']);
+   return of(false);
+  })
+ 
+ )
 };

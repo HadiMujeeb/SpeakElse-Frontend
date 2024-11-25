@@ -7,23 +7,25 @@ export const authUserGuard: CanActivateFn = (route, state) : Observable<boolean>
   const authService = inject(AuthUserService);
   const router = inject(Router);
   const accessToken:string|null = localStorage.getItem('accessToken');
+  // console.log(accessToken)
    return authService.getProtectedData(accessToken).pipe(
     map((response) => {
-     if(response.status == 200 || response.status == 304) {
       localStorage.setItem("userData",JSON.stringify(response.user));
       localStorage.setItem("accessToken",response.accessToken);
-       router.navigateByUrl('/user/home')
-       return false
-     }else {
-      console.log('user not login')
-      return true
-     }
+      authService.setLoggedInStatus(true)
+       return true
    }),
    catchError(() =>{
+    console.log("working")
+    authService.setLoggedInStatus(false)
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userData');
+    console.log(state.url,"url")
+    if(state.url!=="/user/home"){
+      router.navigateByUrl("auth/login")
+    }
     return of(true);
    })
   
   )
-
-  
 };

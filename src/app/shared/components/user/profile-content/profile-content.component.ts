@@ -8,6 +8,7 @@ import { AuthUserService } from '../../../../core/services/user/auth-user.servic
 import { ModalAction } from '../../../models/modal-action.enum';
 import { UserProfileService } from '../../../../core/services/user/user-profile.service';
 import { Router } from '@angular/router';
+import { IReponseRatings } from '../../../models/friendsRating.model';
 
 @Component({
   selector: 'app-profile-content',
@@ -17,49 +18,20 @@ import { Router } from '@angular/router';
   styleUrl: './profile-content.component.css',
 })
 export class ProfileContentComponent implements OnInit {
-  teacher = {
-    rating: 4.9,
-    reviews: 66,
+
+  userRating = {
+    rating: 0, // Will be calculated dynamically
+    reviews: 0, // Total number of reviews
     ratingBreakdown: [
-      { stars: 5, count: 64 },
-      { stars: 4, count: 2 },
+      { stars: 5, count: 0 },
+      { stars: 4, count: 0 },
       { stars: 3, count: 0 },
       { stars: 2, count: 0 },
       { stars: 1, count: 0 },
     ],
   };
 
-  feedbacks = [
-    {
-      name: 'Daniel',
-      date: 'September 26, 2024',
-      rating: 5,
-      comment:
-        'I am happy with lesson. Teacher help me kindly and clearly. I look forward to more lesson with Farrel.',
-    },
-    {
-      name: 'Daniel',
-      date: 'September 26, 2024',
-      rating: 5,
-      comment:
-        'I am happy with lesson. Teacher help me kindly and clearly. I look forward to more lesson with Farrel.',
-    },
-    {
-      name: 'Daniel',
-      date: 'September 26, 2024',
-      rating: 5,
-      comment:
-        'I am happy with lesson. Teacher help me kindly and clearly. I look forward to more lesson with Farrel.',
-    },
-    {
-      name: 'Daniel',
-      date: 'September 26, 2024',
-      rating: 5,
-      comment:
-        'I am happy with lesson. Teacher help me kindly and clearly. I look forward to more lesson with Farrel.',
-    },
-  ];
-
+  feedbacks: { name: string; date: string; rating: number; comment: string , avatar: string}[] = [];
   user: any;
   selectedMember: IMember | null = null;
   fields: any[] = [];
@@ -73,7 +45,49 @@ export class ProfileContentComponent implements OnInit {
     if (userData) {
       this.user = JSON.parse(userData);
     }
+    
+    if (this.user?.id) {
+      // Fetch ratings from the API
+      this.userProfileServices.requestGetFriendRating(this.user.id).subscribe(
+        (ratings: IReponseRatings[]) => {
+          this.processRatings(ratings);
+        },
+        (error) => {
+          console.error('Error fetching user ratings:', error);
+        }
+      );
+    }
   }
+
+  private processRatings(ratings: IReponseRatings[]): void {
+    const totalReviews = ratings.length;
+    const ratingCounts = [0, 0, 0, 0, 0]; // Index: 0 -> 1-star, 1 -> 2-star, ..., 4 -> 5-star
+    let totalRating = 0;
+
+    // Process ratings and feedbacks
+    this.feedbacks = ratings.map((rating) => {
+      const starsIndex = rating.rating - 1;
+      if (starsIndex >= 0 && starsIndex < 5) {
+        ratingCounts[starsIndex]++;
+      }
+      totalRating += rating.rating;
+     console.log(rating.rating, 'rating');
+      return {
+        name: rating.givenBy.name,
+        date: new Date(rating.date).toLocaleDateString(), // Format the date
+        rating: rating.rating,
+        comment: rating.feedback,
+        avatar: rating.givenBy.avatar
+      };
+    });
+
+    this.userRating.reviews = totalReviews;
+    this.userRating.rating = totalReviews > 0 ? parseFloat((totalRating / totalReviews).toFixed(1)) : 0;
+    this.userRating.ratingBreakdown = ratingCounts
+      .map((count, index) => ({ stars: index + 1, count }))
+      .reverse(); // Reverse for descending order
+  }
+
 
   requestEditMemberData(event: { data: IMember; file: File | null }) {
     const { data, file } = event;

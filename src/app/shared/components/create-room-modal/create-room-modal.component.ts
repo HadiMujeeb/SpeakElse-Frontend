@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { IrequestCreateRoom } from '../../models/room.model';
 import { RoomService } from '../../../core/services/user/room.service';
+import { noWhitespaceValidator } from '../../utilitys/whiteSpaceValidate';
 
 @Component({
   selector: 'app-create-room-modal',
@@ -37,20 +38,22 @@ export class CreateRoomModalComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Form Submitted');
-    if (this.groupForm.valid) {
+    if (this.groupForm.valid) { 
+      console.log(this.groupForm.value);
       const userData = JSON.parse(localStorage.getItem('userData') || '{}');
       const data: IrequestCreateRoom = this.groupForm.value;
       data.creatorId = userData.id;
       this.userRoomServices.requestAddRoom(data).subscribe(
         (response) => {
           console.log("'Room created successfully:", response);
-          this.submit.emit(response);
+          // this.submit.emit(response);
         },
         (error) => {
           console.error('Error creating room:', error);
         }
       );
+    }else{
+      this.groupForm.markAllAsTouched();
     }
   }
 

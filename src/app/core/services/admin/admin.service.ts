@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core'; 
 import { environment } from '../../../../environment/environment.development'; 
-import { HttpClient } from '@angular/common/http'; 
+import { HttpClient, HttpHeaders } from '@angular/common/http'; 
 import { catchError, Observable, of, throwError } from 'rxjs';
+import { IadminauthResponse, IProtectedDataResponse } from '../../../shared/models/protected-data-response.model';
 
 @Injectable({ providedIn: 'root' }) 
 export class AdminService { 
@@ -18,5 +19,16 @@ export class AdminService {
     return this.httpClient.post(`${this.api}/adminLogin`, body).pipe(
       catchError(err => throwError(() => new Error(err.error?.message || "UNKNOWN ERROR")))
     );
+  }
+
+  adminAuthTokenRequest(adminAccessToken: string | null): Observable<IadminauthResponse> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${adminAccessToken}`);
+    return this.httpClient.get<IadminauthResponse>(`${this.api}/adminAuthToken`, { headers })
+      .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
+  }
+
+  requestLogoutAdmin():Observable<any> {
+    return this.httpClient.get(`${this.api}/adminLogout`)
+      .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Logout Failed'))));
   }
 }

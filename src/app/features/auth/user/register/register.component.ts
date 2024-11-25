@@ -12,6 +12,7 @@ import { registerField } from '../../../../shared/FieldConfigs/register-form.con
 import { IUserRegisterationCredentials } from '../../../../shared/models/register-form.model';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
+import { noWhitespaceValidator } from '../../../../shared/utilitys/whiteSpaceValidate';
 
 @Component({
   selector: 'app-register',
@@ -42,15 +43,27 @@ export class RegisterComponent implements OnInit {
             Validators.required,
             Validators.minLength(3),
             Validators.maxLength(20),
+            noWhitespaceValidator
           ],
         ],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirmPassword: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.email, noWhitespaceValidator]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(
+              '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+            ),
+            noWhitespaceValidator
+          ],
+        ],
+        confirmPassword: ['', [Validators.required, noWhitespaceValidator]],
       },
       { validators: this.passwordMatchValidator }
     );
   }
+  
 
   private passwordMatchValidator(form: FormGroup) {
     return form.get('password')?.value === form.get('confirmPassword')?.value

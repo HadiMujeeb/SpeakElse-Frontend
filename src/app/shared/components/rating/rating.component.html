@@ -1,0 +1,50 @@
+<!-- Rating Modal -->
+<div *ngIf="showRatingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="relative max-w-lg p-6 w-full bg-white rounded-lg shadow-lg">
+      <div class="flex items-center gap-4 mb-4">
+        <img [src]="userAvatar" alt="User Avatar" class="w-12 h-12 rounded-full" />
+        <div>
+          <h3 class="font-medium text-gray-900">{{ userName }}</h3>
+          <p class="text-sm text-gray-500">Rate this user</p>
+        </div>
+      </div>
+  
+      <!-- Star Rating -->
+      <div class="flex gap-2 mb-4">
+        <button 
+          *ngFor="let star of [1, 2, 3, 4, 5]"
+          (click)="setRating(star)"
+          class="text-2xl transition-colors"
+          [class.text-yellow-400]="star <= rating"
+          [class.text-gray-300]="star > rating">
+          ★
+        </button>
+      </div>
+  
+      <!-- Feedback Textarea -->
+      <textarea
+        [(ngModel)]="feedback"
+        rows="3"
+        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="Describe your experience (optional)">
+      </textarea>
+  
+      <!-- Actions -->
+      <div class="flex justify-between items-center mt-4">
+        <p class="text-sm text-gray-500">{{ feedback.length }}/500</p>
+        <div class="flex gap-4">
+          <button
+            (click)="closeRatingModal()"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+            Cancel
+          </button>
+          <button
+            (click)="submitRating()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            Submit Rating
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

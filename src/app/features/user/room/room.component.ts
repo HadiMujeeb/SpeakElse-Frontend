@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
 import { ChatSidebarComponent } from '../../../shared/components/video-conference/room-chat/chat-sidebar.component';
 import { userData } from '../../../shared/models/socket-io.model';
+import { RatingComponent } from '../../../shared/components/rating/rating.component';
 
 @Component({
   selector: 'app-room',
@@ -18,12 +19,15 @@ import { userData } from '../../../shared/models/socket-io.model';
     CommonModule,
     NavLogoComponent,
     ChatSidebarComponent,
+    RatingComponent
   ],
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css'],
 })
 export class RoomComponent implements OnInit {
+  getRaterId: string = '';
   isRoomJoined: boolean = false;
+  showRatingModal: boolean = false;
   roomID: string = '';
   localStream: userData | null = null;
   isAudioEnabled: boolean = true;
@@ -31,6 +35,7 @@ export class RoomComponent implements OnInit {
   remoteParticipants: { stream: MediaStream; participantId: string,userData: userData,isAudioEnabled: boolean,isVideoEnabled: boolean }[] = [];
   messages: string[] = [];
   isChatOpen: boolean = false;
+  selectedParticipant: any = null;
   router = inject(Router);
 
   constructor(
@@ -39,6 +44,15 @@ export class RoomComponent implements OnInit {
     private activeRoute: ActivatedRoute
   ) {}
 
+  selectParticipant(participant: any) {
+    this.selectedParticipant = participant;
+  }
+
+  openRatingModal(userId: string){
+    this.getRaterId=userId
+    console.log(this.getRaterId);
+    this.showRatingModal=!this.showRatingModal
+  }
   ngOnInit(): void {
 
     this.pcService.initLocalStream();
@@ -57,8 +71,13 @@ export class RoomComponent implements OnInit {
       this.messages.push(message);
     });
 
-    this.wsService.onUserLeft((participantId: string) => {
-      this.onUserLeft(participantId);
+    this.wsService.onUserLeft((userId: string) => {
+      console.log("user left",userId)
+      this.remoteParticipants = this.remoteParticipants.filter((participant)=>{
+        participant.userData.userId!==userId
+      })
+      this.pcService.remoteStreamsSubject.next(this.remoteParticipants)
+      
     });
 
     this.wsService.onUserAudioStatusChange((userId: string) => {
@@ -99,9 +118,9 @@ export class RoomComponent implements OnInit {
   }
 
   // Handle when a user leaves the room
-  onUserLeft(participantId: string): void {
-    this.pcService.handlePeerDisconnect(participantId);
-  }
+  // onUserLeft(participantId: string): void {
+  //   this.pcService.handlePeerDisconnect(participantId);
+  // }
 
 
   toggleAudio(): void {
@@ -124,6 +143,7 @@ export class RoomComponent implements OnInit {
 
   leaveRoom(): void {
     // Stop the local stream
+    this.wsService.leaveRoom(this.localStream?.userId||'');
     if (this.localStream?.mediaStream) {
       this.localStream.mediaStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
@@ -131,7 +151,7 @@ export class RoomComponent implements OnInit {
     this.pcService.closeAllConnections();
 
     // Emit a 'leave room' event to the server
-    this.wsService.leaveRoom();
+    
 
     this.router.navigate(['/user/roomList']);
   }

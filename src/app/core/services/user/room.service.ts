@@ -16,10 +16,19 @@ import { HttpClient } from '@angular/common/http';
 export class RoomService {
   private api: string = `${environment.BACKEND_DOMAIN}/api/user`;
   private rooms = new BehaviorSubject<IRoom[]>([]);
+  private filters = new BehaviorSubject<any>(null);
+
 
   room$ = this.rooms.asObservable();
+  filters$ = this.filters.asObservable();
+
+
   sendRooms(rooms: IRoom[]): void {
     this.rooms.next(rooms);
+  }
+
+  updateFilters(filters: any): void {
+    this.filters.next(filters); 
   }
   constructor(private httpClient: HttpClient) {}
 

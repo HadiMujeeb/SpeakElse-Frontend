@@ -21,11 +21,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './room-card.component.html',
   styleUrls: ['./room-card.component.css'],
 })
-export class RoomCardComponent implements OnInit, OnChanges {
+export class RoomCardComponent implements OnInit {
   rooms: IRoom[] = [];
   filteredRooms: IRoom[] = [];
 
-  @Input() filters: any;
+  filters: any = {};
   @Output() joinRoom = new EventEmitter<any>();
 
   router = inject(Router);
@@ -33,6 +33,13 @@ export class RoomCardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.fetchRooms();
+
+    this.userRoomServices.filters$.subscribe((filters) => {
+      if (filters) {
+        this.filters = filters;
+        this.applyFilters();
+      }
+    });
   }
 
   fetchRooms(): void {
@@ -56,9 +63,6 @@ export class RoomCardComponent implements OnInit, OnChanges {
     this.router.navigate([`/user/room/${id}`]);
   }
 
-  ngOnChanges(): void {
-    this.applyFilters();
-  }
 
   applyFilters(): void {
     this.filteredRooms = this.rooms.filter((room) => {

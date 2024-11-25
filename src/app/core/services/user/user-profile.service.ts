@@ -4,6 +4,7 @@ import { IMember } from '../../../shared/models/member.model';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { IErrorResponse } from '../../../shared/models/error.model';
 import { HttpClient } from '@angular/common/http';
+import { IComment, IReponseRatings } from '../../../shared/models/friendsRating.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
@@ -31,4 +32,15 @@ export class UserProfileService {
         catchError((err) => throwError(err.message ? err.message : err))
       );
   }
+
+  requestGetFriendRating(userId: string): Observable<IReponseRatings[]> {
+    return this.httpClient.get<IReponseRatings[]>(`${this.api}/requestRetrieveRatings`, {params: {userId}});
+  }
+
+  requestGiveRating(data: IComment): Observable<IErrorResponse> {
+    return this.httpClient.post<IErrorResponse>(`${this.api}/requestGiveRating`, data);
+  }
+
+  
 }
+    

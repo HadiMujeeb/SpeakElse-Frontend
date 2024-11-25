@@ -33,13 +33,13 @@ export class WsService {
     }
     return this.socket.id;
   }
-  leaveRoom(): void {
+  leaveRoom(userId:string): void {
     if (this.roomID) {
-      this.socket.emit('leave room', this.roomID);
+      this.socket.emit('leave room', this.roomID,userId);
       this.roomID = '';
     }
   }
-  onUserLeft(callback: (participantId: string) => void): void {
+  onUserLeft(callback: (userId:string) => void): void {
     this.socket.on('user-left', callback);
   }
 
@@ -62,6 +62,7 @@ export class WsService {
       callback(user, this.roomID);
     });
   }
+
 
 
     onUserJoined(callback: (singal:string,userData:userData) => void): void {
@@ -92,23 +93,19 @@ export class WsService {
 
 
   updateAudioStatus(): void {
-    console.log("working 1 audio status");
     this.socket.emit('update audio status',this.roomID);
   }
   
   updateVideoStatus(): void {
-    console.log("working 1 video status");
     this.socket.emit('update video status',this.roomID);
   }
 
   onUserAudioStatusChange(callback: (userId: string) => void): void {
-    console.log("working 2 audio status");
     this.socket.on('audio status updated', callback);
   }
   
   // Listen for video status changes
   onUserVideoStatusChange(callback: (userId: string) => void): void {
-    console.log("working 2 video status");  
     this.socket.on('video status updated', callback);
   }
   // Listen for user disconnect event
