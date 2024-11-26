@@ -3,14 +3,18 @@ import { Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { IMember } from '../../shared/models/member.model';
 import { userData } from '../../shared/models/socket-io.model';
+import { IMessage } from '../../shared/models/chat-message.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WsService {
   public socket!: Socket;
+  private privateMessageSubject = new Subject<IMessage>();
+  private statusSubject = new Subject<string>();
   private messageSubject = new Subject<string>();
   roomID: string = '';
+  privateChatID: string = '';
   userData: IMember = JSON.parse(localStorage.getItem('userData') || '{}');
   constructor() {
     // Initialize the socket connection to the server
@@ -18,6 +22,38 @@ export class WsService {
     this.socket.on('new chat message', (message: string) => {
       this.messageSubject.next(message);
     });
+  }
+
+
+  joinPrivateChat(chatId: string): void {
+    this.socket.emit('join private chat', chatId);
+  }
+  leavePrivateChat(chat: string,lastTime:string): void {
+
+      this.socket.emit('leave private chat', chat,lastTime);
+  }
+
+  sendPrivateMessage(message: IMessage): void {
+
+      this.socket.emit('private chat message', message);
+    
+  }
+
+  onPrivateMessage(): Observable<IMessage> {
+    this.socket.on('private chat message', (message: IMessage) => {
+      this.privateMessageSubject.next(message);
+    });
+    return this.privateMessageSubject.asObservable();
+  }
+
+  onFriendStatus(): Observable<string> {
+    this.socket.on('friend online', (status: string) => {
+      this.statusSubject.next(status);
+    });
+    this.socket.on('friend offline', (status: string) => {
+      this.statusSubject.next(status);
+    });
+    return this.statusSubject.asObservable();
   }
 
   sendMessage(message: string): void {

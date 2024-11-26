@@ -23,6 +23,8 @@ import { guestOnlyGuard } from '../app/core/guards/guestOnly.guard';
 import { RatingComponent } from '../app/shared/components/rating/rating.component';
 import { ChatSidebarComponent } from '../app/shared/components/video-conference/room-chat/chat-sidebar.component';
 import { ChatComponent } from '../app/shared/components/chat/chat.component';
+import { ChatingPageComponent } from '../app/shared/components/chating-page/chating-page.component';
+import { authAdminLoginGuard } from '../app/core/guards/auth-admin-login.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'user/home', pathMatch: 'full' },
@@ -42,7 +44,7 @@ export const routes: Routes = [
       { path: 'roomList', component: RoomListComponent },
       { path: 'room/:roomId', component: RoomComponent },
       { path: 'interface', component: RatingComponent },
-      {path:'chat',component:ChatComponent}
+      {path:'chat',component:ChatingPageComponent}
     ]
   },
   {
@@ -53,7 +55,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin', children: [
-      { path: 'login', component: AdminLoginComponent },
+      { path: 'login', component: AdminLoginComponent,canActivate: [authAdminLoginGuard] },
       { path: 'member', component: AdminDashboardComponent,canActivate: [authAdminGuard] },
     ]
   },

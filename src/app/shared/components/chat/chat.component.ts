@@ -3,79 +3,86 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { IUser } from '../../models/member.model';
-interface Friend {
-  id: number;
-  name: string;
-  avatar: string;
-  isOnline: boolean;
-  canCall: boolean;
-}
+import { ChatingPageComponent } from '../chating-page/chating-page.component';
+import { FriendChatService } from '../../../core/services/friend-chat.service';
+import { IChat } from '../../models/chat-message.model';
+
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule, ChatingPageComponent],
   templateUrl: './chat.component.html',
-  styleUrl: './chat.component.css'
+  styleUrl: './chat.component.css',
 })
-export class ChatComponent  implements OnInit{
+export class ChatComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
-  activeTab: string = 'friends'; // Current tab ('friends' or 'chats')
-  activeFilter: string = 'all'; // Current filter for friends list
+  activeTab: string = 'friends';
   searchQuery: string = '';
-  chatSearchQuery: string = '';
-   userProfileServices = inject(UserProfileService);
-   userId = JSON.parse(localStorage.getItem('userData') || '{}').id
-  friends:IUser[] = [];
-
-  chats = [
-    { name: 'Alice', avatar: 'path/to/avatar1.jpg', lastMessage: 'Hey there!' },
-    { name: 'Bob', avatar: 'path/to/avatar2.jpg', lastMessage: 'What’s up?' },
-  ];
- following: IUser[] = [];
- followers: IUser[] = [];
+  selectedFriend: IUser | null = null; 
+  userProfileServices = inject(UserProfileService);
+  userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
+  friends: IUser[] = [];
   filteredFriends: IUser[] = [];
-  filteredChats = [...this.chats];
-
-
+  FriendsChats: IChat[] = [];
+  Chat: IChat|null = null;
+  selectedList='followers'
+  followers: IUser[] = [];
+  following: IUser[] = [];
+  friendChatServices = inject(FriendChatService)
   ngOnInit(): void {
-    this.userProfileServices.requestGetAllFriends(this.userId).subscribe((friends:any) => {
+    this.userProfileServices.requestGetAllFriends(this.userId).subscribe((friends: any) => {
       this.followers = friends.followers;
       this.following = friends.following;
-      this.filteredFriends = [...this.followers, ...this.following];
-    })
-    
-  }
+    });
+  
+    this.friendChatServices.requestGetAllChat(this.userId).subscribe((chats: any) => {
+      this.FriendsChats = chats.chats
+      console.log(this.FriendsChats);
+    });
 
-  setActiveTab(tab: string) {
-    this.activeTab = tab;
   }
-
-  setFilter(filter: string) {
-    this.activeFilter = filter;
-    if(filter === 'all'){ 
-   this.filteredFriends = [...this.followers, ...this.following];
-  }else if(filter === 'followers'){
-    this.filteredFriends = [...this.followers];
-    
-  }else if(filter === 'following'){
-    this.filteredFriends = [...this.following];
-  }
-    // this.activeFilter = filter;
-}
 
   onSearch() {
     this.filteredFriends = this.friends.filter((friend) =>
       friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
+  setActiveTab(tab: string) {
+    if ( tab==='chats') {
+    this.activeTab = tab;
+  }else if (tab === 'friends') {
+    this.activeTab = tab;
+  }
+  }
 
-  onChatSearch() {
-    this.filteredChats = this.chats.filter((chat) =>
-      chat.name.toLowerCase().includes(this.chatSearchQuery.toLowerCase())
-    );
+
+  openChat(friendId: string) {
+    const chat=this.FriendsChats.find((chat) => chat.friend?.id === friendId)??null
+    if (chat) {
+     this.Chat = chat
+    } else {
+      this.friendChatServices.requestCreateChat(this.userId, friendId).subscribe((chat: any) => {
+        this.Chat = chat.chat
+      });
+    }
+}
+
+  closeChat() {
+    this.Chat = null
   }
 
   closeModal() {
     this.close.emit();
+  }
+
+  selectList(list: string) {
+    if(list =="followers"){
+      this.selectedList = list;
+      this.filteredFriends =[...this.followers]
+    }else if(list =="following"){
+      this.selectedList = list;
+      this.filteredFriends = [...this.following]
+    }
+   
   }
 }

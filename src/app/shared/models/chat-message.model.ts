@@ -11,3 +11,23 @@ export interface ChatMessage {
     event: string;
     data: any;
 }
+
+
+export interface IChat {
+  id: string;
+  messages?: IMessage[]|null;
+  createdAt: Date;
+  updatedAt: Date;
+  friend?:{
+    id: string;
+    name: string;
+    avatar: string
+  }
+}
+
+export interface IMessage {
+  chatId: string;
+  senderId: string;
+  content: string;
+  createdAt: Date;
+}
