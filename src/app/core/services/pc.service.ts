@@ -13,6 +13,7 @@ interface SignalData {
 
 interface ExtendedPeer extends SimplePeer.Instance {
   peerID?: string;
+  
 }
 
 @Injectable({
@@ -21,6 +22,7 @@ interface ExtendedPeer extends SimplePeer.Instance {
 export class PcService {
   private peers: ExtendedPeer[] = [];
   localStream: MediaStream | null = null;
+  screenStream: MediaStream | null = null;
   private localStreamSubject = new BehaviorSubject<userData|null>(null);
    remoteStreamsSubject = new BehaviorSubject<{ stream: MediaStream; participantId: string,userData: userData ,isAudioEnabled: boolean,isVideoEnabled: boolean}[]>([]);
   router = inject(Router);
@@ -53,6 +55,70 @@ export class PcService {
       });
   }
 
+    /** Start Screen Sharing */
+    startScreenSharing(): void {
+      navigator.mediaDevices
+        .getDisplayMedia({ video: true })
+        .then((screenStream: MediaStream) => {
+          this.screenStream = screenStream;
+  
+          // Replace the video track in all peers
+          const screenTrack = screenStream.getVideoTracks()[0];
+          this.peers.forEach((peer) => {
+            const sender = (peer as any)._pc
+              .getSenders()
+              .find((s: RTCRtpSender) => s.track?.kind === 'video');
+            if (sender) {
+              sender.replaceTrack(screenTrack);
+            }
+          });
+  
+          // Update local stream with screen sharing
+          const updatedUserData: userData = {
+            userId: this.user.userId,
+            username: this.user.name,
+            avatar: this.user.avatar,
+            mediaStream: screenStream,
+          };
+          this.localStreamSubject.next(updatedUserData);
+  
+          // Stop screen sharing and revert to the camera when sharing stops
+          screenTrack.onended = () => {
+            this.stopScreenSharing();
+          };
+        })
+        .catch((err: Error) => {
+          console.error('Failed to start screen sharing', err);
+        });
+    }
+  
+    stopScreenSharing(): void {
+      if (this.screenStream) {
+        this.screenStream.getTracks().forEach((track) => track.stop());
+        this.screenStream = null;
+      }
+  
+      if (this.localStream) {
+        const videoTrack = this.localStream.getVideoTracks()[0];
+        this.peers.forEach((peer) => {
+          const sender = (peer as any)._pc
+            .getSenders()
+            .find((s: RTCRtpSender) => s.track?.kind === 'video');
+          if (sender) {
+            sender.replaceTrack(videoTrack);
+          }
+        });
+  
+        // Update local stream back to the camera
+        const updatedUserData: userData = {
+          userId: this.user.userId,
+          username: this.user.name,
+          avatar: this.user.avatar,
+          mediaStream: this.localStream,
+        };
+        this.localStreamSubject.next(updatedUserData);
+      }
+    }
   // Set up listeners for signaling
   private setupSocketListeners(): void {
     this.wsService.onAllUsers((users: userData[]) => {

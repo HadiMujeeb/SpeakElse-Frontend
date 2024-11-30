@@ -1,13 +1,7 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
-import { FormField } from '../../models/form-field.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IrequestCreateRoom } from '../../models/room.model';
 import { RoomService } from '../../../core/services/user/room.service';
 import { noWhitespaceValidator } from '../../utilitys/whiteSpaceValidate';
@@ -17,7 +11,7 @@ import { noWhitespaceValidator } from '../../utilitys/whiteSpaceValidate';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './create-room-modal.component.html',
-  styleUrl: './create-room-modal.component.css',
+  styleUrls: ['./create-room-modal.component.css'],
 })
 export class CreateRoomModalComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
@@ -25,39 +19,43 @@ export class CreateRoomModalComponent implements OnInit {
   groupForm!: FormGroup;
   maxPeopleOptions = [5, 10, 20, 50];
   levelOptions = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
+
   userRoomServices = inject(RoomService);
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.groupForm = this.fb.group({
-      topic: ['', Validators.required],
+      topic: ['', [Validators.required, noWhitespaceValidator]],
       maxPeople: ['unlimited'],
-      language: ['', Validators.required],
+      language: ['', [Validators.required, noWhitespaceValidator]],
       level: ['BEGINNER'],
     });
   }
 
   onSubmit() {
-    if (this.groupForm.valid) { 
-      console.log(this.groupForm.value);
+    if (this.groupForm.valid) {
       const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-      const data: IrequestCreateRoom = this.groupForm.value;
-      data.creatorId = userData.id;
+      const data: IrequestCreateRoom = {
+        ...this.groupForm.value,
+        creatorId: userData.id,
+      };
+
       this.userRoomServices.requestAddRoom(data).subscribe(
         (response) => {
-          console.log("'Room created successfully:", response);
-          // this.submit.emit(response);
+          console.log('Room created successfully:', response);
+          this.submit.emit(response); // Emit the response to the parent component
         },
         (error) => {
           console.error('Error creating room:', error);
         }
       );
-    }else{
-      this.groupForm.markAllAsTouched();
+    } else {
+      this.groupForm.markAllAsTouched(); // Highlight all invalid fields
     }
   }
 
   onCancel() {
-    this.closeModal.emit();
+    this.closeModal.emit(); // Emit close event
   }
 }

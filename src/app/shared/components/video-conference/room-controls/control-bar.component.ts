@@ -14,6 +14,7 @@ export class ControlBarComponent {
   @Output() onChatToggle = new EventEmitter<void>();
   @Output() onLeaveCall = new EventEmitter<void>();
   @Output() onReaction = new EventEmitter<string>();
+  @Output() shareScreen = new EventEmitter<void>()
 
   @Input() isAudioMuted! : boolean;
   @Input()isVideoEnabled! : boolean;
@@ -38,7 +39,7 @@ export class ControlBarComponent {
 
   toggleScreenShare() {
     this.isScreenSharing = !this.isScreenSharing;
-    // Implement screen share logic
+    this.shareScreen.emit();
   }
 
   toggleHandRaise() {

@@ -75,15 +75,17 @@
       </div>
   
       <!-- Give Rating Button -->
-      <div class="mt-4">
+      <div class="mt-4" *ngIf="selectedParticipant">
         <button 
           class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" 
           (click)="openRatingModal(selectedParticipant?.userData?.userId)">
           Give Rating
         </button>
       </div>
-      <div class="mt-4">
-        <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">follow</button>
+
+      <div class="mt-4" *ngIf="selectedParticipant">
+        <button *ngIf="following.includes(selectedParticipant?.userData?.userId)" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">Unfollow</button>
+        <button *ngIf="!following.includes(selectedParticipant?.userData?.userId)"class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">follow</button>
       </div>
     </div>
   </section>
@@ -159,7 +161,8 @@
                    (onToggleAudio)="toggleAudio()" 
                    (onToggleVideo)="toggleVideo()" 
                    (onLeaveCall)="leaveRoom()" 
-                   (onChatToggle)="toggleChat()">
+                   (onChatToggle)="toggleChat()"
+                   (shareScreen)="shareScreen()">
   </app-control-bar>
   <!-- <div>
   <app-rating></app-rating>
