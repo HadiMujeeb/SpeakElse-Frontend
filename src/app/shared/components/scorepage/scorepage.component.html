@@ -1,0 +1,67 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-50">
+  <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+    <div class="flex flex-col items-center text-center">
+      <!-- Trophy Icon -->
+      <div class="w-16 h-16 flex items-center justify-center rounded-full bg-yellow-400">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-10 w-10 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 14l9-5-9-5-9 5 9 5zm0 7v-7m4 4H8m2 0H5"
+          />
+        </svg>
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-xl font-bold mt-4">LEVEL TEST</h1>
+
+      <!-- Level -->
+      <div class="mt-4 p-2 rounded-lg bg-yellow-100 text-yellow-800">
+        <span class="text-lg font-bold">A1</span>
+      </div>
+
+      <!-- Listening and Reading Scores -->
+      <div class="mt-4">
+        <p class="text-lg font-semibold">Listening Score: <span class="font-bold text-green-600">{{ listeningScore }}%</span></p>
+        <p class="text-lg font-semibold">Reading Score: <span class="font-bold text-green-600">{{ readingScore }}%</span></p>
+      </div>
+
+      <!-- Time Taken -->
+      <!-- <div class="mt-4">
+        <p class="text-lg font-semibold">Time Taken: <span class="font-bold text-blue-600">{{ timeTaken }} minutes</span></p>
+      </div> -->
+
+      <!-- Result -->
+      <div class="mt-6 text-center">
+        <p class="text-xl font-bold">
+          Your Score: <span class="text-green-500">{{ totalScore }}%</span>
+        </p>
+        <p *ngIf="!validateTest()" class="mt-2 text-red-600">you failed the test please try again</p>
+        <p *ngIf="validateTest()" class="mt-2 text-green-600">you passed the test</p>
+      </div>
+
+      <!-- Button -->
+      <button
+        class="mt-6 px-4 py-2 text-white bg-purple-500 rounded-lg hover:bg-purple-700"
+        (click)="applyNow()"
+        *ngIf="validateTest()"
+      >
+        Apply Now
+      </button>
+      <button
+        class="mt-6 px-4 py-2 text-white bg-purple-500 rounded-lg hover:bg-purple-700"
+        (click)="backToHome()"
+        *ngIf="!validateTest()"
+      >
+        Back to Home
+      </button>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { MentorPofileContentComponent } from '../../../shared/components/mentor/mentor-pofile-content/mentor-pofile-content.component';
 import { MentorPofileSidebarComponent } from '../../../shared/components/mentor/mentor-pofile-sidebar/mentor-pofile-sidebar.component';
-import { MentorPofileHeaderComponent } from '../../../shared/components/mentor/mentor-pofile-header/mentor-pofile-header.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-mentor-profile',
@@ -10,7 +10,7 @@ import { MentorPofileHeaderComponent } from '../../../shared/components/mentor/m
   imports: [
     MentorPofileContentComponent,
     MentorPofileSidebarComponent,
-    MentorPofileHeaderComponent,
+    RouterModule
   ],
   templateUrl: './mentor-profile.component.html',
   styleUrl: './mentor-profile.component.css',

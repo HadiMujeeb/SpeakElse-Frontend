@@ -1,13 +1,31 @@
-<!-- sidebar.component.html -->
-<aside class="bg-gray-800 w-64 min-h-screen p-4">
-    <nav>
-      <ul>
-        <li *ngFor="let item of menuItems" class="mb-2">
-          <a href="#" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6">
-            <i class="fas fa-{{ item.icon }} mr-3"></i>
-            {{ item.label }}
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </aside>
+<aside class="bg-gray-900 text-white w-64 min-h-screen p-4 flex flex-col">
+  <div class="flex justify-between items-center mb-8">
+    <div class="text-xl font-bold">Mentor Panel</div>
+    <!-- You can add a logo or a mentor avatar here if needed -->
+  </div>
+
+  <nav class="flex-grow">
+    <ul class="space-y-4">
+      <li *ngFor="let item of menuItems">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-gray-700 text-white"
+          class="flex items-center px-4 py-2 rounded-md hover:bg-gray-700 hover:text-white transition-colors ease-in-out duration-200"
+        >
+          <i class="fas fa-{{ item.icon }} mr-4"></i> <!-- Dynamic icon -->
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Updated Logout button with full width, flex positioning, and responsiveness -->
+  <div class="mt-auto w-full px-4 text-center">
+    <button
+      (click)="logout()"
+      class="w-full py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors ease-in-out duration-200"
+    >
+      Logout
+    </button>
+  </div>
+</aside>

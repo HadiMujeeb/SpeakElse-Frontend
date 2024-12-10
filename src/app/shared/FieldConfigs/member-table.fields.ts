@@ -13,7 +13,7 @@ export interface Member {
 
 export const memberHeaders : memberHeader[] =[
     { key: 'id', label: 'No.' },
-    { key: 'name', label: 'Member Name' },
+    { key: 'name', label: 'Name' },
     { key: 'email', label: 'Email' },
     { key: 'status', label: 'Status' },
     { key: 'profession', label: 'Profession' }, // New header for Profession

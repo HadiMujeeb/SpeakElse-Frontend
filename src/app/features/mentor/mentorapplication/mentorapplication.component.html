@@ -12,76 +12,111 @@
       </p>
     </div>
 
-    <!-- Email Contact Info -->
-    <div class="bg-white rounded-lg p-6 mb-8 text-center">
-      <div class="inline-block p-3 bg-purple-100 rounded-full mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      </div>
-      <h3 class="text-lg font-medium text-gray-900">Email Us</h3>
-      <p class="text-gray-600">infospeakelse.com</p>
-    </div>
-
     <!-- Application Form -->
     <div class="bg-white/90 backdrop-blur-sm rounded-lg p-8">
       <h2 class="text-2xl font-bold text-center text-gray-900 mb-8">
-        How Can We Support You as a Mentor?
+        Mentor Application Form
       </h2>
 
       <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Name Field -->
-          <div class="relative">
-            <input
-              type="text"
-              formControlName="name"
-              placeholder="Your Name"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              [ngClass]="{'border-red-500': submitted && applicationForm.controls['name'].errors}"
-            />
-            <div *ngIf="applicationForm.controls['name'].invalid && applicationForm.controls['name'].touched" class="text-red-500 text-sm mt-1 absolute left-0" style="top: 100%;">
-              Your name is required
-            </div>
-          </div>
-
-          <!-- Email Field -->
-          <div class="relative">
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="Your Email"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              readonly
-            />
-          </div>
-        </div>
-
-        <!-- Subject Field -->
+        <!-- Name Field -->
         <div class="relative">
           <input
             type="text"
-            formControlName="subject"
-            placeholder="Your Subject of Interest"
+            formControlName="name"
+            placeholder="Your Name"
             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-            [ngClass]="{'border-red-500': submitted && applicationForm.controls['subject'].errors}"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['name'].invalid}"
           />
-          <div *ngIf="submitted && applicationForm.controls['subject'].errors" class="text-red-500 text-sm mt-1 absolute left-0" style="top: 100%;">
-            <div *ngIf="applicationForm.controls['subject'].errors['required']">Subject is required</div>
+          <div *ngIf="submitted && applicationForm.controls['name'].invalid" class="error-text">
+            This field is required
           </div>
         </div>
 
-        <!-- Message Field -->
+        <!-- Email Field -->
+        <div class="relative">
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Your Email"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['email'].invalid}"
+          />
+          <div *ngIf="submitted && applicationForm.controls['email'].invalid" class="error-text">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="relative">
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="Enter New Password"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['password'].invalid}"
+          />
+          <div *ngIf="submitted && applicationForm.controls['password'].invalid" class="error-text">
+            This field is required
+          </div>
+        </div>
+
+        <!-- Avatar Field -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700">
+            Upload Your Avatar
+          </label>
+          <input 
+            type="file" 
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-600 hover:file:bg-purple-100" 
+            (change)="onAvatarSelected($event)"
+            accept="image/*"
+            [ngClass]="{'error-border': submitted && avatarInvalid}"
+          />
+          <div *ngIf="submitted && avatarInvalid" class="error-text">
+            Please upload a valid avatar image
+          </div>
+        </div>
+
+        <!-- Country Field -->
+        <div class="relative">
+          <input
+            type="text"
+            formControlName="country"
+            placeholder="Your Country"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['country'].invalid}"
+          />
+          <div *ngIf="submitted && applicationForm.controls['country'].invalid" class="error-text">
+            This field is required
+          </div>
+        </div>
+
+        <!-- Language Field -->
+        <div class="relative">
+          <input
+            type="text"
+            formControlName="language"
+            placeholder="Languages You Speak"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['language'].invalid}"
+          />
+          <div *ngIf="submitted && applicationForm.controls['language'].invalid" class="error-text">
+            This field is required
+          </div>
+        </div>
+
+        <!-- Description Field -->
         <div class="relative">
           <textarea
-            formControlName="message"
-            placeholder="Share your mentorship goals..."
+            formControlName="description"
+            placeholder="Describe Yourself"
             rows="4"
             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-            [ngClass]="{'border-red-500': submitted && applicationForm.controls['message'].errors}"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['description'].invalid}"
           ></textarea>
-          <div *ngIf="submitted && applicationForm.controls['message'].errors" class="text-red-500 text-sm mt-1 absolute left-0" style="top: 100%;">
-            <div *ngIf="applicationForm.controls['message'].errors['required']">Message is required</div>
+          <div *ngIf="submitted && applicationForm.controls['description'].invalid" class="error-text">
+            This field is required
           </div>
         </div>
 
@@ -90,27 +125,29 @@
           <label class="block mb-2 text-sm font-medium text-gray-700">
             Upload Your Resume
           </label>
-          <div class="flex items-center justify-center w-full">
-            <label class="flex flex-col w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-              <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg class="w-8 h-8 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                </svg>
-                <p class="mb-2 text-sm text-gray-500">
-                  <span class="font-semibold">Click to upload</span> or drag and drop
-                </p>
-                <p class="text-xs text-gray-500">PDF, DOC, DOCX (MAX. 5MB)</p>
-              </div>
-              <input 
-                type="file" 
-                class="hidden" 
-                (change)="onFileSelected($event)"
-                accept=".pdf,.doc,.docx"
-              />
-            </label>
+          <input 
+            type="file" 
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-600 hover:file:bg-purple-100" 
+            (change)="onFileSelected($event)"
+            accept=".pdf,.doc,.docx"
+            [ngClass]="{'error-border': submitted && resumeInvalid}"
+          />
+          <div *ngIf="submitted && resumeInvalid" class="error-text">
+            Please upload a valid resume (PDF or DOC file)
           </div>
-          <div *ngIf="selectedFile" class="mt-2 text-sm text-gray-600">
-            Selected file: {{ selectedFile.name }}
+        </div>
+
+        <!-- Profession Field -->
+        <div class="relative">
+          <input
+            type="text"
+            formControlName="mentorRole"
+            placeholder="Desired Mentor Position (e.g., English Mentor)"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+            [ngClass]="{'error-border': submitted && applicationForm.controls['mentorRole'].invalid}"
+          />
+          <div *ngIf="submitted && applicationForm.controls['mentorRole'].invalid" class="error-text">
+            This field is required
           </div>
         </div>
 
@@ -120,10 +157,21 @@
             type="submit"
             class="w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition duration-200"
           >
-            Submit Request
+            Submit Application
           </button>
         </div>
-      </form> <!-- Ensure this form tag is closed correctly -->
+      </form>
     </div>
   </div>
 </div>
+
+<style>
+  .error-text {
+    color: #e53e3e; /* Red for errors */
+    font-size: 0.875rem; /* Small text */
+    margin-top: 0.25rem; /* Slight spacing from input */
+  }
+  .error-border {
+    border-color: #e53e3e !important; /* Red border for invalid inputs */
+  }
+</style>

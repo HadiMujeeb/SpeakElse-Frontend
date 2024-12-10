@@ -13,6 +13,7 @@ import { RatingComponent } from '../../../shared/components/rating/rating.compon
 import { userData } from '../../../shared/models/socket-io.model';
 import { IUser } from '../../../shared/models/member.model';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
+import { CallendComponent } from '../../../shared/components/callend/callend.component';
 // import { FriendChatService } from '../../../core/services/friend-chat.service';
 
 @Component({
@@ -25,6 +26,7 @@ import { UserProfileService } from '../../../core/services/user/user-profile.ser
     NavLogoComponent,
     ChatSidebarComponent,
     RatingComponent,
+    CallendComponent
   ],
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css'],
@@ -98,12 +100,21 @@ export class RoomComponent implements OnInit {
       this.messages.push(message);
     });
 
-    this.wsService.onUserLeft((userId: string) => {
-      console.log('user left', userId);
+    this.wsService.onUserLeft((socketId: string) => {
+      console.log('user left', socketId);
       this.remoteParticipants = this.remoteParticipants.filter(
-        (participant) => participant.userData.userId !== userId
+        (participant) => participant.userData.socketId !== socketId
       );
       this.pcService.remoteStreamsSubject.next(this.remoteParticipants);
+    });
+
+    this.wsService.onyouLeft(() => {
+      if (this.localStream?.mediaStream) {
+        this.localStream.mediaStream.getTracks().forEach((track) => track.stop());
+        this.localStream = null;
+      }
+      this.pcService.closeAllConnections();
+      this.router.navigate(['/user/roomList']);   
     });
 
     this.wsService.onUserAudioStatusChange((userId: string) => {

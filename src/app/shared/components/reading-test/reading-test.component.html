@@ -1,0 +1,96 @@
+<div *ngIf="!testStarted" class="instruction-page">
+    <div class="container mx-auto py-16 text-center">
+      <h1 class="text-4xl font-bold text-blue-700 mb-8">Welcome to the Reading Test</h1>
+      
+      <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 shadow-xl rounded-lg p-8 mb-12 max-w-3xl mx-auto">
+        <h2 class="text-2xl font-semibold text-indigo-600 mb-6">You are about to start the reading section</h2>
+        
+        <ul class="text-lg text-gray-700 space-y-4 leading-relaxed">
+          <li class="flex items-center">
+            <span class="text-indigo-600 mr-3">📊</span> 
+            The questions in this test may get harder or easier to adapt to your level. Use the progress bar to pace yourself and answer all the questions within the time limit.
+          </li>
+          <li class="flex items-center">
+            <span class="text-indigo-600 mr-3">✅</span> 
+            You will not lose points for incorrect answers, so take your time and answer confidently.
+          </li>
+          <li class="flex items-center">
+            <span class="text-indigo-600 mr-3">🔒</span> 
+            Once you submit an exercise, you cannot go back. Be sure to read each question carefully before proceeding.
+          </li>
+        </ul>
+  
+        <button (click)="startTest()" class="bg-blue-600 text-white font-semibold py-4 px-8 rounded-md transition-transform transform hover:scale-105 hover:bg-blue-700 shadow-lg mt-8">
+          Start Test
+        </button>
+      </div>
+      
+      <p class="text-sm text-gray-600 mt-6">Ready? You can always review the instructions by clicking "Start" again.</p>
+    </div>
+  </div>
+  
+  
+  <!-- Test Page -->
+  <div *ngIf="testStarted">
+    <header class="flex items-center justify-center bg-gray-100 p-6 rounded-md shadow-md">
+      <div class="flex items-center space-x-2 mr-4">
+        <span class="text-lg text-blue-600">📖</span>
+        <span class="text-xl font-semibold">Reading</span>
+      </div>
+  
+      <!-- Timer and Progress Bar -->
+      <div class="flex items-center space-x-6">
+        <div class="w-[1000px] h-2 bg-gray-300 rounded-full">
+          <div class="h-full bg-blue-500 rounded-full" [style.width.%]="progress"></div>
+        </div>
+        <span class="text-3xl font-semibold text-blue-600" style="min-width: 100px; text-align: center;">{{ formattedTime }}</span>
+      </div>
+    </header>
+  
+    <div class="container mx-auto py-8">
+      <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">English Level Test</h1>
+  
+      <!-- Story Section -->
+      <div *ngIf="currentQuestion?.title" class="bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg rounded-md p-6 mb-8">
+        <h2 class="text-xl font-semibold text-blue-700 mb-4">{{ currentQuestion?.title }}</h2>
+        <p class="text-gray-700 mb-4">{{ currentQuestion?.story }}</p>
+      </div>
+  
+      <!-- Question Section -->
+      <!-- Question Section -->
+<div *ngIf="currentQuestion?.questions" class="bg-white shadow-md rounded-md p-6">
+  <div class="question mb-6">
+    <h3 class="text-2xl font-semibold text-purple-600 mb-6">
+      Question {{ currentQuestionIndex + 1 }} of {{ currentQuestion?.questions?.length }}
+    </h3>
+    <p class="text-xl text-gray-800 mb-4">{{ currentQuestion?.questions?.[currentQuestionIndex]?.questionText }}</p>
+    <div class="options mt-6">
+      <!-- Looping through options -->
+      <label *ngFor="let option of currentQuestion?.questions?.[currentQuestionIndex]?.options; let i = index" 
+             class="block text-xl text-gray-700 hover:text-purple-500 cursor-pointer mb-3">
+        <input type="radio" name="question{{ currentQuestionIndex }}" 
+               
+               [value]="i" 
+               (change)="answerQuestion(currentQuestion?.questions?.[currentQuestionIndex]?.correctAnswer||0,i)" 
+               class="mr-3">
+        {{ option }}
+      </label>
+    </div>
+  </div>
+
+  <!-- Controls: Next or Submit -->
+  <div class="controls flex justify-end mt-8">
+    <button *ngIf="!finished" (click)="nextQuestion()" 
+            class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium rounded-md py-3 px-6 shadow-md transition">
+      Next
+    </button>
+    <button *ngIf="finished" (click)="submitTest()" 
+            class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium rounded-md py-3 px-6 shadow-md transition">
+      Submit
+    </button>
+  </div>
+</div>
+
+    </div>
+  </div>
+  

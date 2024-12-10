@@ -62,7 +62,7 @@ export class ProfileContentComponent implements OnInit {
 
   private processRatings(ratings: IReponseRatings[]): void {
     const totalReviews = ratings.length;
-    const ratingCounts = [0, 0, 0, 0, 0]; // Index: 0 -> 1-star, 1 -> 2-star, ..., 4 -> 5-star
+    const ratingCounts = [0, 0, 0, 0, 0]; 
     let totalRating = 0;
 
     // Process ratings and feedbacks
@@ -95,7 +95,6 @@ export class ProfileContentComponent implements OnInit {
     if (this.selectedMember) {
       data.id = this.selectedMember.id;
       this.user = data;
-      console.log(data, 'dataaaa');
     }
 
     this.userProfileServices.requestEditMemberData(data, file).subscribe(

@@ -1,0 +1,83 @@
+<header>
+    <app-header></app-header>
+  </header>
+  
+  <div class="max-w-7xl mx-auto p-6 mt-12 mb-12">
+    <!-- Page Title -->
+    <div class="text-center mb-12 animate__animated animate__fadeIn">
+      <h1 class="text-5xl font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500">Welcome to the Mentor Application Process!</h1>
+      <p class="mt-6 text-xl text-gray-700 max-w-2xl mx-auto">Join our community of experts, share your knowledge with others, and grow. Apply today to start your mentorship journey!</p>
+    </div>
+  
+    <!-- Instruction Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
+      <!-- Step 1 -->
+      <div class="bg-white shadow-xl rounded-lg p-8 transform transition duration-300 hover:scale-105 hover:shadow-2xl ease-in-out">
+        <h2 class="text-2xl font-semibold text-indigo-700">1. Rating and Feedback Requirement</h2>
+        <p class="mt-4 text-gray-600">To qualify as a mentor, you must have a rating of 4.7 or higher and at least 1,000 feedback responses.</p>
+      </div>
+  
+      <!-- Step 2 -->
+      <div class="bg-white shadow-xl rounded-lg p-8 transform transition duration-300 hover:scale-105 hover:shadow-2xl ease-in-out">
+        <h2 class="text-2xl font-semibold text-indigo-700">2. Software Test Unlock</h2>
+        <p class="mt-4 text-gray-600">Once you meet the rating and feedback requirements, you can access the software test to proceed.</p>
+      </div>
+  
+      <!-- Step 3 -->
+      <div class="bg-white shadow-xl rounded-lg p-8 transform transition duration-300 hover:scale-105 hover:shadow-2xl ease-in-out">
+        <h2 class="text-2xl font-semibold text-indigo-700">3. Language-Based Test</h2>
+        <p class="mt-4 text-gray-600">The software test consists of two sections: a reading test to evaluate comprehension and a writing test to assess clarity. Passing both tests is essential to proceed.</p>
+      </div>
+  
+      <!-- Step 4 -->
+      <div class="bg-white shadow-xl rounded-lg p-8 transform transition duration-300 hover:scale-105 hover:shadow-2xl ease-in-out">
+        <h2 class="text-2xl font-semibold text-indigo-700">4. Mentor Application Form</h2>
+        <p class="mt-4 text-gray-600">If you pass the tests, you will gain access to the mentor application form. Submit the form with accurate details for review.</p>
+      </div>
+  
+      <!-- Step 5 -->
+      <div class="bg-white shadow-xl rounded-lg p-8 transform transition duration-300 hover:scale-105 hover:shadow-2xl ease-in-out">
+        <h2 class="text-2xl font-semibold text-indigo-700">5. Admin Review Process</h2>
+        <p class="mt-4 text-gray-600">The submitted form will be reviewed by our team. Profiles that meet the standards will receive approval, while others may be rejected. All updates will be communicated via email.</p>
+      </div>
+  
+      <!-- Step 6 -->
+      <div class="bg-white shadow-xl rounded-lg p-8 transform transition duration-300 hover:scale-105 hover:shadow-2xl ease-in-out">
+        <h2 class="text-2xl font-semibold text-indigo-700">6. Interview Link and Decision</h2>
+        <p class="mt-4 text-gray-600">If approved, you will receive an interview link to finalize the selection. After the interview, you'll be notified of the decision via email.</p>
+      </div>
+    </div>
+  
+    <!-- Rating and Feedback Display -->
+    <div class="mt-12 bg-white shadow-xl rounded-lg p-8">
+      <h2 class="text-2xl font-semibold text-indigo-700">Current Rating and Feedback</h2>
+      <p class="mt-6 text-gray-700">Rating: <span class="font-semibold text-indigo-600">{{ rating }}</span></p>
+      <p class="mt-4 text-gray-700">Feedback Count: <span class="font-semibold text-indigo-600">{{ feedbackCount }}</span></p>
+    </div>
+  
+    <!-- Call to Action -->
+    <div class="mt-12 text-center">
+      <button 
+        [disabled]="!isEligible()" (click)="launchTest()"
+        class="bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 text-white px-8 py-4 text-lg rounded-lg shadow-lg hover:from-indigo-700 hover:to-pink-600 transform transition duration-300 hover:scale-105 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed relative">
+        <!-- Show locked icon and message if not eligible -->
+        <ng-container *ngIf="!isEligible(); else buttonContent">
+          <span class="flex items-center justify-center">
+            <i class="fas fa-lock text-gray-300 mr-2"></i>
+            <span class="text-gray-300">Locked</span>
+          </span>
+        </ng-container>
+        <!-- Show normal button content if eligible -->
+        <ng-template #buttonContent >
+          Launch Test
+        </ng-template>
+      </button>
+    </div>
+    
+
+  </div>
+  
+  <footer>
+    <app-footer></app-footer>
+  </footer>
+  

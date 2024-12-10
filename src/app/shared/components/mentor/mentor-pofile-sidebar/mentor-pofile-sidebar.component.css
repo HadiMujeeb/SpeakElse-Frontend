@@ -1,0 +1,9 @@
+/* Optional: Add hover effects or other styles */
+aside {
+    position: relative;
+  }
+  
+  button {
+    transition: background-color 0.3s ease-in-out;
+  }
+  

@@ -28,8 +28,8 @@ export class HeaderComponent implements OnInit {
   @Input() logoUrl: string = '../../../assets/images/letter-s (1).png';
   @Input() brandName: string = 'SpeakElse';
   @Input() navLinks: { label: string; url: string }[] = [
-    { label: 'Rooms', url: '/user/roomList' },
-    // { label: 'm', url: '/rooms' },
+    { label: 'Rooms', url: 'user/roomList' },
+    { label: 'LanguageTest', url: 'user/instruction' },
     // { label: 'Rooms', url: '/rooms' },
   ];
   @Input() isLoggedIn: boolean = false;

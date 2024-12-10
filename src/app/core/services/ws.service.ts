@@ -75,14 +75,15 @@ export class WsService {
       this.roomID = '';
     }
   }
-  onUserLeft(callback: (userId:string) => void): void {
+  onUserLeft(callback: (socketId:string) => void): void {
     this.socket.on('user-left', callback);
+  }
+  onyouLeft(callback: () => void): void {
+    this.socket.on('you-left', callback);
   }
 
   // Join a room on the server
   joinRoom(roomID: string): void {
-    this.roomID = roomID;
-    this.socket.emit('join room', roomID);
     if (this.userData) {
       this.socket.emit('set user data', {
         userId: this.userData.id,
@@ -90,6 +91,9 @@ export class WsService {
         avatar: this.userData.avatar,
       });
     }
+    this.roomID = roomID;
+    this.socket.emit('join room', roomID);
+   
   }
 
   // Listen for the 'all users' event to receive existing users in the room
