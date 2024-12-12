@@ -49,24 +49,24 @@ export class PcService {
           mediaStream: stream
         };
         this.localStreamSubject.next(updatedUserData);
-        this.processAudioForCC(stream);
+        // this.processAudioForCC(stream);
       })  
       .catch((err: Error) => {
         console.error('Failed to get user media', err);
       });
   }
 
-  private processAudioForCC(stream: MediaStream): void {
-    const recorder = new MediaRecorder(stream);
+  // private processAudioForCC(stream: MediaStream): void {
+  //   const recorder = new MediaRecorder(stream);
 
-    recorder.ondataavailable = (event: BlobEvent) => {
-      event.data.arrayBuffer().then((audioBuffer) => {
-       console.log("audio",audioBuffer);  
-      });
-    };
+  //   recorder.ondataavailable = (event: BlobEvent) => {
+  //     event.data.arrayBuffer().then((audioBuffer) => {
+  //      console.log("audio",audioBuffer);  
+  //     });
+  //   };
 
-    recorder.start(1000); // Send chunks every second
-  }
+  //   recorder.start(1000); // Send chunks every second
+  // }
 
     startScreenSharing(): void {
       navigator.mediaDevices

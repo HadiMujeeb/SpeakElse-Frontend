@@ -14,6 +14,7 @@ import { userData } from '../../../shared/models/socket-io.model';
 import { IUser } from '../../../shared/models/member.model';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { CallendComponent } from '../../../shared/components/callend/callend.component';
+import { ReportModalComponent } from '../../../shared/components/report-modal/report-modal.component';
 // import { FriendChatService } from '../../../core/services/friend-chat.service';
 
 @Component({
@@ -26,7 +27,8 @@ import { CallendComponent } from '../../../shared/components/callend/callend.com
     NavLogoComponent,
     ChatSidebarComponent,
     RatingComponent,
-    CallendComponent
+    CallendComponent,
+    ReportModalComponent
   ],
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css'],
@@ -37,7 +39,8 @@ export class RoomComponent implements OnInit {
   isRoomJoined: boolean = false;
   showRatingModal: boolean = false;
   isChatOpen: boolean = false;
-
+  isReportOpen: boolean = false;
+  reportUserId: string = '';
   // Room-related properties
   roomID: string = '';
   messages: string[] = [];
@@ -234,5 +237,13 @@ export class RoomComponent implements OnInit {
 
   selectParticipant(participant: any): void {
     this.selectedParticipant = participant;
+  }
+  closeReportModal(): void {
+    this.isReportOpen = false;
+  }
+  reportUser(userId: string): void {
+    this.isReportOpen = true;
+    this.reportUserId = userId;
+    console.log(this.reportUserId);
   }
 }

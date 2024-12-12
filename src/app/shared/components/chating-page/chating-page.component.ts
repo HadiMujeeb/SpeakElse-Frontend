@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IUser } from '../../models/member.model';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
@@ -14,7 +14,7 @@ import { WsService } from '../../../core/services/ws.service';
   templateUrl: './chating-page.component.html',
   styleUrl: './chating-page.component.css'
 })
-export class ChatingPageComponent implements OnInit {
+export class ChatingPageComponent implements OnInit ,AfterViewChecked  {
   @Output() GoBack = new EventEmitter<void>();
   @Input() Chat: IChat | null = null;
   status: string = '';
@@ -22,6 +22,7 @@ export class ChatingPageComponent implements OnInit {
   newMessage: string = '';
   messages!: IMessage;
   userId = JSON.parse(localStorage.getItem('userData') || '{}').id
+  @ViewChild('chatContainer') private chatContainer!: ElementRef;
   friendChatServices = inject(FriendChatService);
   wsService = inject(WsService);
 
@@ -36,7 +37,17 @@ export class ChatingPageComponent implements OnInit {
 
   }
 
-  
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error while scrolling:', err);
+    }
+  }
   sendMessage() {
     
     this.messages = {

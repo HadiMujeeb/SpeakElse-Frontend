@@ -1,19 +1,26 @@
-<!-- sidebar.component.html -->
 <aside class="w-64 bg-white shadow-md">
   <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Menu</h2>
     <nav>
       <ul>
-        <li *ngFor="let item of menuItems" 
-            class="mb-2 p-2 rounded-md" 
-            [ngClass]="{'bg-purple-100 text-purple-700': item.active, 'hover:bg-gray-100': !item.active}">
-          <a class="flex items-center">
+        <li
+          *ngFor="let item of menuItems"
+          class="mb-2 p-2 rounded-md hover:bg-gray-100 transition"
+        >
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="text-purple-600 font-bold"
+            class="flex items-center"
+          >
             <i class="fas fa-{{ item.icon }} mr-3"></i>
             {{ item.label }}
           </a>
         </li>
         <li class="mt-4">
-          <a (click)="onLogout()" class="flex items-center text-red-600 ">
+          <a
+            (click)="onLogout()"
+            class="flex items-center text-red-600 hover:text-red-800 transition"
+          >
             <i class="fas fa-sign-out-alt mr-3"></i>
             Log out
           </a>

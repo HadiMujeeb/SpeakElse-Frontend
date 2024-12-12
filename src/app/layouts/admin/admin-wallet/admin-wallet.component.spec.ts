@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RoominterfaceComponent } from './roominterface.component';
+import { AdminWalletComponent } from './admin-wallet.component';
 
-describe('RoominterfaceComponent', () => {
-  let component: RoominterfaceComponent;
-  let fixture: ComponentFixture<RoominterfaceComponent>;
+describe('AdminWalletComponent', () => {
+  let component: AdminWalletComponent;
+  let fixture: ComponentFixture<AdminWalletComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoominterfaceComponent]
+      imports: [AdminWalletComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RoominterfaceComponent);
+    fixture = TestBed.createComponent(AdminWalletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,65 +1,97 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { MentorformService } from '../../../core/services/admin/mentorform.service';
+import { IApplication } from '../../../shared/models/mentorform.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-application-form',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './application-form.component.html',
-  styleUrl: './application-form.component.css'
+  styleUrls: ['./application-form.component.css']
 })
 export class ApplicationFormComponent implements OnInit {
+  mentorFormService = inject(MentorformService);
   totalApplications: number = 0;
   pendingApplications: number = 0;
   activeFilter: string = 'PENDING';
-  applications: any[] = [];
+  AllApplications: IApplication[] = [];
+  applications: IApplication[] = [];
   headers = [
     { label: 'No' },
     { label: 'Name' },
     { label: 'Email' },
-    { label: 'Test Type' },
-    { label: 'Status' },
-    { label: 'Actions' },
+    { label: 'Country' },
+    { label: 'Interested In' },
+    { label: 'Resume&userDetails' },
+    { label: 'isVerified' },
+    { label: 'Approval Status' },
   ];
 
-  selectedApplication: any;
+  selectedApplication: IApplication | null = null;
   isModalOpen = false;
 
-  // constructor(private applicationService: ApplicationService) {}
-
   ngOnInit() {
-    this.fetchApplications();
+    this.fetchAllApplications();
+  }
+  toggleVerification(application: any) {
+    application.isVerified = !application.isVerified;
+   this.mentorFormService.requestVerifyApplication(application.email).subscribe((data: any) => {
+    console.log(data.message);
+   })
     
   }
 
-  fetchApplications() {
-    // this.applicationService.getApplications(this.activeFilter).subscribe(data => {
-    //   this.applications = data.applications;
-    //   this.totalApplications = data.total;
-    //   this.pendingApplications = data.pending;
-    // });
-  }
+  fetchAllApplications() {
+    this.mentorFormService.requestGetMentorForm().subscribe((data: any) => {
+      this.AllApplications = data.applications;
+      this.filterApplications("PENDING");
 
+    });
+  }
+  // Filter applications based on status
   filterApplications(status: string) {
     this.activeFilter = status;
-    this.fetchApplications();  // Refetch applications based on the selected filter
+    this.applications = this.AllApplications.filter(app => app.approvalStatus === status);
   }
 
+  // Function to open the modal with application details
   viewApplicationDetails(applicationId: string) {
-    // this.applicationService.getApplicationDetails(applicationId).subscribe(data => {
-    //   this.selectedApplication = data;
-    //   this.isModalOpen = true;
-    // });
+    const application = this.applications.find(app => app.id === applicationId);
+    if (application) {
+      this.selectedApplication = application;
+      this.isModalOpen = true;
+      console.log(this.selectedApplication.user?.comments);
+    }
   }
 
+// Method to calculate average rating
+getAverageRating(): number {
+  const comments = this.selectedApplication?.user?.comments;
+  if (comments && comments.length > 0) {
+    const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
+    return totalRating / comments.length;
+  }
+  return 0;
+}
+
+// Method to get stars based on a rating value
+getStars(rating: number): string[] {
+  return Array(rating).fill('★');
+}
+updateApprovalStatus(application: any) {
+ 
+  this.mentorFormService.requestApproveApplication(application.email,application.approvalStatus).subscribe((data: any) => {
+    console.log(data.message);
+    this.fetchAllApplications();
+  })
+}
+
+  
+  // Close the modal
   closeModal() {
     this.isModalOpen = false;
     this.selectedApplication = null;
-  }
-
-  deleteApplication(applicationId: string) {
-    // this.applicationService.deleteApplication(applicationId).subscribe(() => {
-    //   this.fetchApplications(); // Refetch the list after deletion
-    // });
   }
 }

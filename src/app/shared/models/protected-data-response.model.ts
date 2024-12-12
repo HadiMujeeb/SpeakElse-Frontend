@@ -12,3 +12,10 @@ export interface IadminauthResponse {
   admin: IMember;
   accessToken: string;
 }
+
+export interface ImentorauthResponse {
+  message: string;
+  status: number;
+  mentorData: IMember;
+  accessToken: string;
+}

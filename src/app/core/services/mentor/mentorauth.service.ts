@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { IErrorResponse } from '../../../shared/models/error.model';
+import { ILoginSuccessResponse, IUserLoginCredentials } from '../../../shared/models/login-form.model';
+import { ImentorauthResponse, IProtectedDataResponse } from '../../../shared/models/protected-data-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class MentorauthService {
   private api: string = `${environment.BACKEND_DOMAIN}/api/mentor/auth`;
   constructor(private httpClient: HttpClient) {}
+
+  isMentorExisted$(): Observable<boolean> { 
+    const Mentor = localStorage.getItem('mentorToken'); 
+    return of( Mentor!== null); 
+  }
+
 
   requestRegisterApplicationForm(formData: any): Observable<IErrorResponse> {
     return this.httpClient
@@ -17,5 +25,23 @@ export class MentorauthService {
         map((response) => response as IErrorResponse),
         catchError((err) => throwError(err.message ? err.message : err))
       );
+  }
+
+  requestMentorLogin(credentials:IUserLoginCredentials): Observable<ILoginSuccessResponse> {
+    return this.httpClient.post<ILoginSuccessResponse>(`${this.api}/requestMentorLogin`, credentials).pipe(
+      catchError(err => throwError(() => new Error(err.error?.message || "UNKNOWN ERROR")))
+    );
+  }
+
+  requestMentorLogout(): Observable<any> {
+    return this.httpClient.get(`${this.api}/requestMentorLogout`).pipe(
+      catchError(err => throwError(() => new Error(err.error?.message || "UNKNOWN ERROR")))
+    );
+  }
+
+  verifyMentorAccess(mentorToken: string | null): Observable<ImentorauthResponse> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${mentorToken}`);
+    return this.httpClient.get<ImentorauthResponse>(`${this.api}/requestMentorAuthenticate`, { headers })
+      .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
   }
 }

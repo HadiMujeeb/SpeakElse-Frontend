@@ -1,8 +1,5 @@
 <div class="min-h-screen flex flex-col" style="background: linear-gradient(to right, #c8a1e0, #674188)">
   <!-- Header -->
-
-
-  <!-- Room Preview (shown if not joined) -->
   <div *ngIf="!isRoomJoined" class="min-h-screen pt-28">
     <header class="flex justify-between items-center p-4">
       <app-nav-logo class="absolute top-0 left-0 w-full"></app-nav-logo>
@@ -47,134 +44,138 @@
   </div>
 
   <!-- Room Interface (shown if joined) -->
-<div *ngIf="isRoomJoined" class="flex flex-col h-screen bg-gray-900">
-  <section class="flex-1 p-4 pb-24">
-    <div class="h-full flex flex-col items-center justify-center">
-      <!-- Display Selected Participant or Local User -->
-      <div class="relative w-full max-w-lg h-96 rounded-lg overflow-hidden shadow-lg border-2 border-gray-300">
-        <!-- Video Stream -->
-        <video 
-          *ngIf="(selectedParticipant?.isVideoEnabled || (!selectedParticipant && isVideoEnabled))" 
-          [srcObject]="selectedParticipant?.stream || localStream?.mediaStream"
-          autoplay 
-          muted 
-          class="w-full h-full object-cover">
-        </video>
-        <!-- Avatar if Video Disabled -->
-        <div *ngIf="!(selectedParticipant?.isVideoEnabled || (!selectedParticipant && isVideoEnabled))" 
-             class="flex items-center justify-center bg-gray-200 w-full h-full">
-          <img 
-            [src]="selectedParticipant?.userData?.avatar || localStream?.avatar" 
-            alt="Profile Picture" 
-            class="w-24 h-24 rounded-full shadow-md" />
+  <div *ngIf="isRoomJoined" class="flex flex-col h-screen bg-gray-900">
+    <section class="flex-1 p-4 pb-24">
+      <div class="h-full flex flex-col items-center justify-center">
+        <!-- Display Selected Participant or Local User -->
+        <div class="relative w-full max-w-lg h-96 rounded-lg overflow-hidden shadow-lg border-2 border-gray-300">
+          <!-- Video Stream -->
+          <video 
+            *ngIf="(selectedParticipant?.isVideoEnabled || (!selectedParticipant && isVideoEnabled))" 
+            [srcObject]="selectedParticipant?.stream || localStream?.mediaStream"
+            autoplay 
+            muted 
+            class="w-full h-full object-cover">
+          </video>
+          <!-- Avatar if Video Disabled -->
+          <div *ngIf="!(selectedParticipant?.isVideoEnabled || (!selectedParticipant && isVideoEnabled))" 
+               class="flex items-center justify-center bg-gray-200 w-full h-full">
+            <img 
+              [src]="selectedParticipant?.userData?.avatar || localStream?.avatar" 
+              alt="Profile Picture" 
+              class="w-24 h-24 rounded-full shadow-md" />
+          </div>
+          <!-- Name Overlay -->
+          <div class="absolute bottom-2 right-2 bg-gray-900 bg-opacity-75 text-white text-sm font-medium px-3 py-1 rounded">
+            {{ selectedParticipant?.userData?.username || 'You' }}
+          </div>
         </div>
-        <!-- Name Overlay -->
-        <div class="absolute bottom-2 right-2 bg-gray-900 bg-opacity-75 text-white text-sm font-medium px-3 py-1 rounded">
-          {{ selectedParticipant?.userData?.username || 'You' }}
-        </div>
-      </div>
   
-      <!-- Give Rating Button -->
-      <div class="mt-4" *ngIf="selectedParticipant">
-        <button 
-          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" 
-          (click)="openRatingModal(selectedParticipant?.userData?.userId)">
-          Give Rating
-        </button>
-      </div>
+        <!-- Give Rating Button -->
+        <div class="mt-4" *ngIf="selectedParticipant">
+          <button 
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" 
+            (click)="openRatingModal(selectedParticipant?.userData?.userId)">
+            Give Rating
+          </button>
+        </div>
 
-      <div class="mt-4" *ngIf="selectedParticipant">
-        <button *ngIf="following.includes(selectedParticipant?.userData?.userId)" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">Unfollow</button>
-        <button *ngIf="!following.includes(selectedParticipant?.userData?.userId)"class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">follow</button>
+        <!-- Follow Button -->
+        <div class="mt-4" *ngIf="selectedParticipant">
+          <button *ngIf="following.includes(selectedParticipant?.userData?.userId)" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">Unfollow</button>
+          <button *ngIf="!following.includes(selectedParticipant?.userData?.userId)" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" (click)="followUser(selectedParticipant?.userData?.userId)">Follow</button>
+        </div>
+
+        <!-- Report Button -->
+        <div class="mt-4" *ngIf="selectedParticipant">
+          <button 
+            class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+            (click)="reportUser(selectedParticipant?.userData?.userId)">
+            Report
+          </button>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Bottom Participants List -->
+    <div class="fixed bottom-16 left-0 right-0 h-20">
+      <div class="max-w-full px-4 h-full">
+        <div class="flex justify-center items-center gap-4 h-full py-2">
+          <!-- Local User Thumbnail -->
+          <div class="flex-shrink-0" (click)="selectParticipant(null)">
+            <div class="relative">
+              <div class="w-28 h-20 rounded-lg overflow-hidden border-2 border-blue-500">
+                <video *ngIf="isVideoEnabled" 
+                       [srcObject]="localStream?.mediaStream" 
+                       autoplay 
+                       muted 
+                       class="w-full h-full object-cover">
+                </video>
+                <img *ngIf="!isVideoEnabled" 
+                     [src]="localStream?.avatar" 
+                     class="w-full h-full object-cover" 
+                     alt="You" />
+              </div>
+              <div class="absolute -top-1 -right-1 bg-blue-500 rounded-full w-4 h-4"></div>
+            </div>
+            <p class="text-xs text-white text-center mt-1">You</p>
+          </div>
+
+          <!-- Remote Participants Thumbnails -->
+          <div *ngFor="let participant of remoteParticipants" class="flex-shrink-0" (click)="selectParticipant(participant)">
+            <div class="relative">
+              <div class="w-14 h-14 rounded-lg overflow-hidden border-2 border-gray-600 hover:border-blue-500 transition-colors">
+                <video *ngIf="participant.isVideoEnabled" 
+                       [srcObject]="participant.stream" 
+                       autoplay 
+                       class="w-full h-full object-cover">
+                </video>
+                <img *ngIf="!participant.isVideoEnabled" 
+                     [src]="participant.userData.avatar" 
+                     class="w-full h-full object-cover" 
+                     [alt]="participant.userData.username" />
+              </div>
+              <!-- Mute Indicator -->
+              <div *ngIf="!participant.isAudioEnabled" 
+                   class="absolute -top-1 -right-1 bg-red-500 rounded-full p-1">
+                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
+                </svg>
+              </div>
+            </div>
+            <p class="text-xs text-white text-center mt-1 truncate max-w-[56px]">
+              {{ participant.userData.username }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-  
-  
 
+    <!-- Chat Sidebar -->
+    <app-chat-sidebar *ngIf="isChatOpen" 
+                      [messages]="messages" 
+                      (onSendMessage)="sendMessage($event)" 
+                      (onClose)="toggleChat()">
+    </app-chat-sidebar>
 
-  <!-- Bottom Participants List -->
-  <div class="fixed bottom-16 left-0 right-0 h-20 ">
-    <div class="max-w-full px-4 h-full">
-      <div class="flex  justify-center items-center gap-4 h-full py-2">
-        <!-- Local User Thumbnail -->
-        <div class="flex-shrink-0" (click)="selectParticipant(null)">
-          <div class="relative">
-            <div class="w-28 h-20 rounded-lg overflow-hidden border-2 border-blue-500">
-              <video *ngIf="isVideoEnabled" 
-                     [srcObject]="localStream?.mediaStream" 
-                     autoplay 
-                     muted 
-                     class="w-full h-full object-cover">
-              </video>
-              <img *ngIf="!isVideoEnabled" 
-                   [src]="localStream?.avatar" 
-                   class="w-full h-full object-cover" 
-                   alt="You" />
-            </div>
-            <div class="absolute -top-1 -right-1 bg-blue-500 rounded-full w-4 h-4"></div>
-          </div>
-          <p class="text-xs text-white text-center mt-1">You</p>
-        </div>
-
-        <!-- Remote Participants Thumbnails -->
-        <div *ngFor="let participant of remoteParticipants" class="flex-shrink-0" (click)="selectParticipant(participant)">
-          <div class="relative">
-            <div class="w-14 h-14 rounded-lg overflow-hidden border-2 border-gray-600 hover:border-blue-500 transition-colors">
-              <video *ngIf="participant.isVideoEnabled" 
-                     [srcObject]="participant.stream" 
-                     autoplay 
-                     class="w-full h-full object-cover">
-              </video>
-              <img *ngIf="!participant.isVideoEnabled" 
-                   [src]="participant.userData.avatar" 
-                   class="w-full h-full object-cover" 
-                   [alt]="participant.userData.username" />
-            </div>
-            <!-- Mute Indicator -->
-            <div *ngIf="!participant.isAudioEnabled" 
-                 class="absolute -top-1 -right-1 bg-red-500 rounded-full p-1">
-              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
-              </svg>
-            </div>
-          </div>
-          <p class="text-xs text-white text-center mt-1 truncate max-w-[56px]">
-            {{ participant.userData.username }}
-          </p>
-        </div>
-      </div>
-    </div>
+    <!-- Control Bar -->
+    <app-control-bar 
+                     [isVideoEnabled]="isVideoEnabled"
+                     [isAudioMuted]="isAudioEnabled"
+                     (onToggleAudio)="toggleAudio()" 
+                     (onToggleVideo)="toggleVideo()" 
+                     (onLeaveCall)="leaveRoom()" 
+                     (onChatToggle)="toggleChat()"
+                     (shareScreen)="shareScreen()">
+    </app-control-bar>
   </div>
 
-  <!-- Chat Sidebar -->
-  <app-chat-sidebar *ngIf="isChatOpen" 
-                    [messages]="messages" 
-                    (onSendMessage)="sendMessage($event)" 
-                    (onClose)="toggleChat()">
-  </app-chat-sidebar>
+  <!-- Rating Modal -->
+  <div>
+    <app-rating [showRatingModal]="showRatingModal" [userId]="getRaterId"></app-rating>
+  </div>
 
-  <!-- Control Bar -->
-  <app-control-bar 
-                   [isVideoEnabled]="isVideoEnabled"
-                   [isAudioMuted]="isAudioEnabled"
-                   (onToggleAudio)="toggleAudio()" 
-                   (onToggleVideo)="toggleVideo()" 
-                   (onLeaveCall)="leaveRoom()" 
-                   (onChatToggle)="toggleChat()"
-                   (shareScreen)="shareScreen()">
-  </app-control-bar>
-  <!-- <div>
-  <app-rating></app-rating>
-</div> -->
+  <div *ngIf="isReportOpen">
+    <app-report-modal [reportId]="reportUserId" (close)="closeReportModal()"></app-report-modal>
+  </div>
 </div>
-</div>
-
-<div>
-  <app-rating [showRatingModal]="showRatingModal" [userId]="getRaterId"></app-rating>
-</div>
-
-<!-- 
-<div>
-  <app-callend></app-callend>
-</div> -->

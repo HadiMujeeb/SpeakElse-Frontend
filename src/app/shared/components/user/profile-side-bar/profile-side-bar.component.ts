@@ -1,23 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AuthUserService } from '../../../../core/services/user/auth-user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profile-side-bar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './profile-side-bar.component.html',
   styleUrl: './profile-side-bar.component.css'
 })
 export class ProfileSideBarComponent {
-  menuItems = [
-    { icon: 'user', label: 'My Profile', active: true },
-    // { icon: 'calendar', label: 'My Session' },
-    // { icon: 'cog', label: 'Setting' },
-  ];
+  // menuItems = [
+  //   { icon: 'user', label: 'Profile', active: true },
+  //   { icon: 'calendar', label: "Booked Sessions" },
+  //   { icon: 'cog', label: 'Setting' },
+  // ];
 
-  authUserSerivices = inject(AuthUserService);
+  menuItems = [
+    { icon: 'user', label: 'Profile', route: 'profile' },
+    { icon: 'calendar-alt', label: 'My Sessions', route: 'sessions' },
+    { icon: 'wallet', label: 'Wallet', route: 'wallet' },
+  ];
+  authUserSerivices = inject(AuthUserService);  
   router = inject(Router);
 
   onLogout():void{

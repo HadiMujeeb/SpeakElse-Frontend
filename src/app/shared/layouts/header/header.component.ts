@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
   @Input() navLinks: { label: string; url: string }[] = [
     { label: 'Rooms', url: 'user/roomList' },
     { label: 'LanguageTest', url: 'user/instruction' },
-    // { label: 'Rooms', url: '/rooms' },
+    { label: 'MentorRoom', url: 'user/mentorSessions' },
   ];
   @Input() isLoggedIn: boolean = false;
 

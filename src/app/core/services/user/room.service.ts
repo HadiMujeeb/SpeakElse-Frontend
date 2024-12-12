@@ -9,6 +9,7 @@ import {
   throwError,
 } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { ITransaction } from '../../../shared/models/friendsRating.model';
 
 @Injectable({
   providedIn: 'root',
@@ -48,4 +49,10 @@ export class RoomService {
         catchError((err) => throwError(() => new Error(err.error?.message)))
       );
   }
+
+  requestVerifyPayment(transactionData:ITransaction): Observable<any> {
+    return this.httpClient.post<any>(`${this.api}/requestPaymentTransation`, transactionData)
+    .pipe(catchError((err) => throwError(() => new Error(err.error?.message))))
+  }
+ 
 }

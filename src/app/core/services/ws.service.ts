@@ -21,6 +21,7 @@ export class WsService {
     this.socket = io('ws://localhost:3000');
     this.socket.on('new chat message', (message: string) => {
       this.messageSubject.next(message);
+      console.log("new message",message);
     });
   }
 
@@ -36,6 +37,7 @@ export class WsService {
   sendPrivateMessage(message: IMessage): void {
 
       this.socket.emit('private chat message', message);
+      console.log("sent message",message);
     
   }
 

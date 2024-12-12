@@ -1,3 +1,5 @@
+import { IComment } from "./friendsRating.model";
+
 export interface IMembersListResponse {
     members: IMember[];
     message: string;
@@ -15,13 +17,18 @@ export interface IMembersListResponse {
     isBlocked: boolean;
 }
 
-export interface IUser {
-  id: string;
-  email: string;
-  name: string;
-  avatar?: string | null;
-  profession?: string | null;
-  language?: string | null;
-  country?: string | null;
-  description?: string | null;
-}
+  export interface IUser {
+    id: string;
+    email: string;
+    password: string | null;
+    name: string;
+    avatar?: string | null;
+    profession?: string | null;
+    language?: string | null;
+    country?: string | null;
+    description?: string | null;
+    isVerified?: boolean;
+    isBlocked?: boolean;
+    comments?: IComment[];
+
+  }

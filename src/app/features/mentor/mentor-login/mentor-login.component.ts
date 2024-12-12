@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { IUserLoginCredentials } from '../../../shared/models/login-form.model';
 import { CommonModule } from '@angular/common';
+import { MentorauthService } from '../../../core/services/mentor/mentorauth.service';
 
 @Component({
   selector: 'app-mentor-login',
@@ -15,6 +16,7 @@ import { CommonModule } from '@angular/common';
 })
 export class MentorLoginComponent {
   AuthUserServices = inject(AuthUserService);
+  authMentorServices = inject(MentorauthService);
   router = inject(Router);
 
   loginForm: FormGroup;
@@ -47,17 +49,15 @@ export class MentorLoginComponent {
     if (this.loginForm.valid) {
       const credentials: IUserLoginCredentials = this.loginForm.value;
 
-      this.AuthUserServices.loginRequest(credentials).subscribe(
+      this.authMentorServices.requestMentorLogin(credentials).subscribe(
         (response) => {
           console.log('Login successful:', response);
-          localStorage.setItem('accessToken', response.accessToken);
-          this.router.navigate(['/user/home']);
+          localStorage.setItem('mentorToken', response.accessToken);
+          this.router.navigate(['/mentor/main']);
         },
         (error) => {
           console.error('Login failed:', error.message);
-          // this.loginError = error.message;
-
-          if (error.message === 'User not found.') {
+          if (error.message === 'Mentor not found.') {
             this.loginForm.get('email')?.setErrors({ notExist: true });
           } else if (error.message === 'Invalid password. Please try again.') {
             this.loginForm.get('password')?.setErrors({ incorrect: true });
@@ -70,4 +70,6 @@ export class MentorLoginComponent {
       this.loginForm.markAllAsTouched();
     }
   }
+
+
 }

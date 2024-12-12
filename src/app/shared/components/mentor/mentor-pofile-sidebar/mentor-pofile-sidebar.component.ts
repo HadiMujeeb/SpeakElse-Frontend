@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { MentorauthService } from '../../../../core/services/mentor/mentorauth.service';
 
 @Component({
   selector: 'app-mentor-pofile-sidebar',
@@ -10,15 +11,22 @@ import { RouterLink } from '@angular/router';
   styleUrl: './mentor-pofile-sidebar.component.css'
 })
 export class MentorPofileSidebarComponent {
+  authMentorServices = inject(MentorauthService);
+  router = inject(Router) 
+
   menuItems = [
     { icon: 'user', label: 'Profile', route: 'profile' },
     { icon: 'calendar-alt', label: 'My Sessions', route: 'sessions' },
     { icon: 'wallet', label: 'Wallet', route: 'wallet' },
   ];
 
-  // Add logic for logging out if required
+
   logout() {
-    console.log('Mentor logged out');
-    // Handle logout logic here (e.g., clear session, navigate to login page)
+    localStorage.removeItem('mentorToken');
+    localStorage.removeItem('MentorData');
+    this.authMentorServices.requestMentorLogout().subscribe(() => {
+      this.router.navigate(['/mentor/login']);
+    })
+  
   }
 }
