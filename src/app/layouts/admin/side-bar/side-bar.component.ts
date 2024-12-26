@@ -16,7 +16,7 @@ export class SideBarComponent {
     { icon: 'tests', label: 'Tests', route: 'tests' },
     { icon: 'shield', label: 'ApplicationForm', route: 'applicationForm' },
     { icon: 'bar-chart', label: 'Reports', route: 'reports' }, 
-    { icon: 'credit-card', label: 'Wallet', route: 'wallet' },
+    { icon: 'credit-card', label: 'finacial Reports', route: 'wallet' },
   ];
 }
 

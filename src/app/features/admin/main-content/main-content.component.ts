@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AdminHeaderComponent } from '../../../layouts/admin/admin-header/admin-header.component';
 import { SideBarComponent } from '../../../layouts/admin/side-bar/side-bar.component';
-import { MembersComponent } from '../../../layouts/admin/members/members.component';
+import { MembersComponent } from '../members/members.component';
 import { RouterEvent, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({

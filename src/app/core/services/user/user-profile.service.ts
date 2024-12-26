@@ -4,7 +4,7 @@ import { IMember, IUser } from '../../../shared/models/member.model';
 import { BehaviorSubject, catchError, map, Observable, Subject, throwError } from 'rxjs';
 import { IErrorResponse } from '../../../shared/models/error.model';
 import { HttpClient } from '@angular/common/http';
-import { IComment, IReponseRatings, IReport } from '../../../shared/models/friendsRating.model';
+import { IComment, IReponseRatings, IReport, ITransaction } from '../../../shared/models/friendsRating.model';
 import { IQuestions } from '../../../shared/models/languageTests.model';
 
 @Injectable({ providedIn: 'root' })
@@ -82,4 +82,5 @@ requestReportUser(formData:any): Observable<IErrorResponse> {
   return this.httpClient.post<IErrorResponse>(`${this.api}/requestreportUser`, formData)
   .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Report Failed'))));
 }
+
 }

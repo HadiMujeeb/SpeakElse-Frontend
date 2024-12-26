@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { MentorPofileContentComponent } from '../../../shared/components/mentor/mentor-pofile-content/mentor-pofile-content.component';
+import { MentorPofileContentComponent } from '../mentor-pofile-content/mentor-pofile-content.component';
 import { MentorPofileSidebarComponent } from '../../../shared/components/mentor/mentor-pofile-sidebar/mentor-pofile-sidebar.component';
 import { Router, RouterModule } from '@angular/router';
 import { MentorauthService } from '../../../core/services/mentor/mentorauth.service';

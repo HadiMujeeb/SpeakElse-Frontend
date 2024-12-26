@@ -15,6 +15,7 @@ export class MentorPofileSidebarComponent {
   router = inject(Router) 
 
   menuItems = [
+    { icon: 'user', label: 'Dashboard', route: 'dashboard' },
     { icon: 'user', label: 'Profile', route: 'profile' },
     { icon: 'calendar-alt', label: 'My Sessions', route: 'sessions' },
     { icon: 'wallet', label: 'Wallet', route: 'wallet' },

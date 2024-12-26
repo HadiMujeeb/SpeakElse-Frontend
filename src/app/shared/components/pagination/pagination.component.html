@@ -1,0 +1,18 @@
+<div class="pagination flex justify-center items-center my-4">
+    <button 
+      (click)="changePage(page - 1)" 
+      [disabled]="page === 1"
+      class="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300">
+      Previous
+    </button>
+    
+    <span class="mx-2 text-lg">{{ page }} / {{ totalPages }}</span>
+    
+    <button 
+      (click)="changePage(page + 1)" 
+      [disabled]="page === totalPages"
+      class="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300">
+      Next
+    </button>
+  </div>
+  

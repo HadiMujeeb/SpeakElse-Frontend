@@ -49,3 +49,8 @@
     </div>
   </div>
   
+  <div class="mt-4 flex justify-center">
+    <button (click)="previousPage()" class="px-3 py-1 border rounded mr-1">&lt;</button>
+    <button *ngFor="let p of totalPagesArray" class="px-3 py-1 border rounded mr-1 text-black" [ngClass]="{'bg-blue-500': page == p}">{{ p }}</button>
+    <button (click)="nextPage()" class="px-3 py-1 border rounded">&gt;</button>
+  </div>

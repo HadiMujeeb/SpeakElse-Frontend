@@ -16,16 +16,22 @@ import { ITransaction } from '../../../shared/models/friendsRating.model';
 })
 export class RoomService {
   private api: string = `${environment.BACKEND_DOMAIN}/api/user`;
-  private rooms = new BehaviorSubject<IRoom[]>([]);
+  private rooms = new Subject<IRoom[]>();
   private filters = new BehaviorSubject<any>(null);
+  private createRoom = new Subject<IRoom>();
 
 
   room$ = this.rooms.asObservable();
   filters$ = this.filters.asObservable();
+  createRoom$ = this.createRoom.asObservable();
 
 
   sendRooms(rooms: IRoom[]): void {
     this.rooms.next(rooms);
+  }
+
+  sendCreateRoom(room: IRoom): void {
+    this.createRoom.next(room);
   }
 
   updateFilters(filters: any): void {
@@ -41,12 +47,13 @@ export class RoomService {
         catchError((err) => throwError(() => new Error(err.error?.message)))
       );
   }
-
-  requestGetAllRooms(): Observable<IRoom[]> {
+  requestGetAllRooms(page: number = 1, pageSize: number = 6): Observable<{ message: string, rooms: IRoom[], totalPages: number,total: number }> {
     return this.httpClient
-      .get<IRoom[]>(`${this.api}/retrieveAllRooms`)
+      .get<{ message: string, rooms: IRoom[], totalPages: number,total: number }>(`${this.api}/retrieveAllRooms?page=${page}&pageSize=${pageSize}`)
       .pipe(
-        catchError((err) => throwError(() => new Error(err.error?.message)))
+        catchError((err) => {
+          return throwError(() => new Error(err.error?.message || 'An error occurred while fetching rooms'));
+        })
       );
   }
 

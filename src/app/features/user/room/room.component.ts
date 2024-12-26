@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { ControlBarComponent } from '../../../shared/components/video-conference/room-controls/control-bar.component';
-import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 import { ChatSidebarComponent } from '../../../shared/components/video-conference/room-chat/chat-sidebar.component';
 import { RatingComponent } from '../../../shared/components/rating/rating.component';
 
@@ -14,7 +14,7 @@ import { userData } from '../../../shared/models/socket-io.model';
 import { IUser } from '../../../shared/models/member.model';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { CallendComponent } from '../../../shared/components/callend/callend.component';
-import { ReportModalComponent } from '../../../shared/components/report-modal/report-modal.component';
+import { ReportModalComponent } from '../../../shared/components/modals/report-modal/report-modal.component';
 // import { FriendChatService } from '../../../core/services/friend-chat.service';
 
 @Component({
@@ -34,6 +34,7 @@ import { ReportModalComponent } from '../../../shared/components/report-modal/re
   styleUrls: ['./room.component.css'],
 })
 export class RoomComponent implements OnInit {
+  modalOpen: boolean = false;
   screenSharing : boolean = false;
   getRaterId: string = '';
   isRoomJoined: boolean = false;
@@ -62,6 +63,13 @@ export class RoomComponent implements OnInit {
   followers: any[] = [];
   following: any[] = [];
 
+  openModal() {
+    this.modalOpen = true;
+  }
+
+  closeModal() {
+    this.modalOpen = false;
+  }
   // Injected services
   router = inject(Router);
   userId = JSON.parse(localStorage.getItem('userData') || '{}').id;

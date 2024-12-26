@@ -8,12 +8,12 @@ import { ResetPasswordMailComponent } from '../app/features/user/reset-password-
 import { AdminHeaderComponent } from '../app/layouts/admin/admin-header/admin-header.component';
 import { MentorProfileComponent } from '../app/features/mentor/mentor-profile/mentor-profile.component';
 import { AdminLoginComponent } from '../app/features/admin/admin-login/admin-login.component';
-import { FormModalComponent } from '../app/shared/components/form-modal/form-modal.component';
+import { FormModalComponent } from '../app/shared/components/modals/form-modal/form-modal.component';
 import { authAdminGuard } from '../app/core/guards/auth-admin.guard';
 import { FormAdminGuard } from '../app/core/guards/form-admin.guard';
-import { MentorapplicationComponent } from '../app/features/mentor/mentorapplication/mentorapplication.component';
+import { MentorapplicationComponent } from '../app/features/user/mentorapplication/mentorapplication.component';
 import { RoomListComponent } from '../app/features/user/room-list/room-list.component';
-import { CreateRoomModalComponent } from '../app/shared/components/create-room-modal/create-room-modal.component';
+import { CreateRoomModalComponent } from '../app/shared/components/modals/create-room-modal/create-room-modal.component';
 import { authUserGuard } from '../app/core/guards/auth-user.guard';
 import { RoomComponent } from '../app/features/user/room/room.component';
 import { guestOnlyGuard } from '../app/core/guards/guestOnly.guard';
@@ -24,13 +24,13 @@ import { ChatingPageComponent } from '../app/shared/components/chating-page/chat
 import { authAdminLoginGuard } from '../app/core/guards/auth-admin-login.guard';
 import { CallendComponent } from '../app/shared/components/callend/callend.component';
 import { MainContentComponent } from '../app/features/admin/main-content/main-content.component';
-import { MembersComponent } from '../app/layouts/admin/members/members.component';
-import { LanguageTestComponent } from '../app/layouts/admin/language-test/language-test.component';
+import { MembersComponent } from '../app/features/admin/members/members.component';
+import { LanguageTestComponent } from '../app/features/admin/language-test/language-test.component';
 import { MentorLoginComponent } from '../app/features/mentor/mentor-login/mentor-login.component';
 import { MentorPofileSidebarComponent } from '../app/shared/components/mentor/mentor-pofile-sidebar/mentor-pofile-sidebar.component';
 import { MainpageComponent } from '../app/features/mentor/mainpage/mainpage.component';
-import { MentorPofileContentComponent } from '../app/shared/components/mentor/mentor-pofile-content/mentor-pofile-content.component';
-import { ApplicationFormComponent } from '../app/layouts/admin/application-form/application-form.component';
+import { MentorPofileContentComponent } from '../app/features/mentor/mentor-pofile-content/mentor-pofile-content.component';
+import { ApplicationFormComponent } from '../app/features/admin/application-form/application-form.component';
 import { MentorProcessInfoComponent } from '../app/features/user/mentor-process-info/mentor-process-info.component';
 import { ReadingTestComponent } from '../app/shared/components/reading-test/reading-test.component';
 import { ListeningTaskComponent } from '../app/shared/components/listening-task/listening-task.component';
@@ -38,14 +38,16 @@ import { ScorepageComponent } from '../app/shared/components/scorepage/scorepage
 import { MentorSessionsComponent } from '../app/features/mentor/mentor-sessions/mentor-sessions.component';
 import { authMentorGuard } from '../app/core/guards/auth-mentor.guard';
 import { authMentorLoginGuard } from '../app/core/guards/auth-mentor-login.guard';
-import { ReportsListComponent } from '../app/layouts/admin/reports-list/reports-list.component';
+import { ReportsListComponent } from '../app/features/admin/reports-list/reports-list.component';
 import { MentorWalletComponent } from '../app/features/mentor/mentor-wallet/mentor-wallet.component';
 import { UserMainpageComponent } from '../app/features/user/user-mainpage/user-mainpage.component';
 import { ProfileContentComponent } from '../app/shared/components/user/profile-content/profile-content.component';
 import { ProfileComponent } from '../app/features/user/profile/profile.component';
 import { UserWalletComponent } from '../app/features/user/user-wallet/user-wallet.component';
 import { MentorsSesstionsComponent } from '../app/features/user/mentors-sesstions/mentors-sesstions.component';
-import { AdminWalletComponent } from '../app/layouts/admin/admin-wallet/admin-wallet.component';
+import { AdminWalletComponent } from '../app/features/admin/admin-wallet/admin-wallet.component';
+import { AdminDashboardComponent } from '../app/features/admin/admin-dashboard/admin-dashboard.component';
+import { DashboardComponent } from '../app/features/mentor/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'user/home', pathMatch: 'full' },
@@ -84,6 +86,7 @@ export const routes: Routes = [
       {path:'login',component:MentorLoginComponent,canActivate:[authMentorLoginGuard]},
       {path:'main',component:MainpageComponent,canActivate:[authMentorGuard],
         children:[
+         { path: 'dashboard', component: DashboardComponent },
          { path: 'profile', component: MentorPofileContentComponent },
          { path: 'sessions', component: MentorSessionsComponent },
          { path: 'wallet', component: MentorWalletComponent },
@@ -101,6 +104,7 @@ export const routes: Routes = [
          component: MainContentComponent,
          canActivate: [authAdminGuard],
          children: [
+          {path:'dashboard',component:AdminDashboardComponent},
           {path:'members',component:MembersComponent},
           {path:'tests',component:LanguageTestComponent},
           {path:"applicationForm",component:ApplicationFormComponent},

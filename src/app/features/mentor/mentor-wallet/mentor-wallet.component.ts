@@ -1,12 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { MentorSessionService } from '../../../core/services/mentor/mentor-session.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-mentor-wallet',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './mentor-wallet.component.html',
-  styleUrl: './mentor-wallet.component.css'
+  styleUrls: ['./mentor-wallet.component.css']
 })
-export class MentorWalletComponent {
-
+export class MentorWalletComponent implements OnInit {
+  mentor = JSON.parse(localStorage.getItem('mentorData') || '{}'); // Retrieve mentor data
+  totalWalletAmount: number = 0; // Total wallet balance
+  transactions: any[] = []; // Transactions array
+sessionService = inject(MentorSessionService);
+  ngOnInit(): void {
+    this.sessionService.requestGetSessionByMentorId(this.mentor?.id || '').subscribe(
+      (response: any) => {
+        this.transactions = response.transactions || []; 
+      }
+    )
+    this.totalWalletAmount = this.mentor.mentorWallet?.balance || 0;
+  }
 }

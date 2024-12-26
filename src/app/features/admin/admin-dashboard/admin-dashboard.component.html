@@ -1,0 +1,45 @@
+<div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-gray-500">Total Users</h2>
+    <p class="text-2xl font-bold">{{ totalUsers }}</p>
+  </div>
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-gray-500">Total Mentors</h2>
+    <p class="text-2xl font-bold">{{ totalMentors }}</p>
+  </div>
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-gray-500">Total Revenue</h2>
+    <p class="text-2xl font-bold">${{ totalRevenue }}</p>
+  </div>
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-gray-500">Total Applications</h2>
+    <p class="text-2xl font-bold">{{ totalApplications }}</p>
+  </div>
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-gray-500">Total Reports</h2>
+    <p class="text-2xl font-bold">{{ totalReports }}</p>
+  </div>
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-gray-500">Total Admins</h2>
+    <p class="text-2xl font-bold">{{ totalAdmins }}</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="bg-white p-4 rounded-lg shadow-md w-full">
+    <h2 class="text-xl font-bold mb-4">User Growth</h2>
+    <div class="flex justify-between mb-4">
+      <button (click)="toggleUserGrowthView('month')" class="bg-blue-500 text-white py-2 px-4 rounded">
+        Monthly
+      </button>
+      <button (click)="toggleUserGrowthView('year')" class="bg-blue-500 text-white py-2 px-4 rounded">
+        Yearly
+      </button>
+    </div>
+    <canvas #userChartCanvas></canvas>
+  </div>
+  <div class="bg-white p-4 rounded-lg shadow-md w-full">
+    <h2 class="text-xl font-bold mb-4">Revenue Analytics</h2>
+    <canvas #revenueChartCanvas></canvas>
+  </div>
+</div>

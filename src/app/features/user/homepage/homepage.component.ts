@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FooterComponent } from '../../../shared/layouts/footer/footer.component';
+import { FooterComponent } from '../../../layouts/user/footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { Observable, Subscription } from 'rxjs';
-import { HeaderComponent } from '../../../shared/layouts/header/header.component';
+import { HeaderComponent } from '../../../layouts/user/header/header.component';
 
 @Component({
   selector: 'app-homepage',

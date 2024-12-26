@@ -1,14 +1,21 @@
-<header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-    <div class="flex items-center space-x-8">
-        <div class="text-2xl font-bold">SKYZON</div>
-    </div>
-    <div class="flex items-center">
-        <!-- <span class="mr-2">{{ adminName }}</span> -->
-        <div class="w-10 h-10 bg-gray-300 rounded-full">
-            <img src="path/to/avatar.jpg" alt="Admin Avatar" class="w-full h-full rounded-full">
+<header class="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-4 flex justify-between items-center shadow-md">
+    <div class="flex items-center space-x-4">
+        <div class="text-3xl font-bold tracking-wide">
+            Speak<span class="text-yellow-300">Else</span>
         </div>
-        <button class="ml-4 bg-red-500 px-4 py-1 rounded text-white" (click)="logout()">LogOut</button>
+    </div>
+    <div class="flex items-center space-x-6">
+        <div class="text-lg font-medium hidden md:block">Welcome,{{admin?.name}} </div>
+        <div class="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
+            <img [src]="admin?.avatar" alt="Admin Avatar" class="w-full h-full object-cover">
+        </div>
+        <button 
+            class="ml-4 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition duration-300" 
+            (click)="logout()">
+            Log Out
+        </button>
     </div>
 </header>
+
 
 

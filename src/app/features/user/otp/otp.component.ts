@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
-import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 import { Router } from '@angular/router';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';

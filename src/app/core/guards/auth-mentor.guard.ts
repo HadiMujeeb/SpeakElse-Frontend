@@ -10,14 +10,14 @@ export const authMentorGuard: CanActivateFn = (route, state): Observable<boolean
   // console.log(accessToken)
    return authMentorService.verifyMentorAccess(mentorToken).pipe(
     map((response) => {
-      localStorage.setItem('MentorData', JSON.stringify(response.mentorData));
+      localStorage.setItem('mentorData', JSON.stringify(response.mentorData));
       localStorage.setItem("mentorToken",response.accessToken);
        return true
    }),
    catchError(() =>{
     console.log("working")
     localStorage.removeItem('mentorToken');
-    localStorage.removeItem('MentorData');
+    localStorage.removeItem('mentorData');
     router.navigate(['/mentor/login']);
     return of(false);
    })

@@ -1,50 +1,61 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from '../../../core/services/admin/admin.service';
+import { loginFields } from '../../../shared/FieldConfigs/login-form.config';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './admin-login.component.html',
-  styleUrl: './admin-login.component.css',
+  styleUrls: ['./admin-login.component.css'],
 })
 export class AdminLoginComponent {
-  adminSerivices = inject(AdminService);
-
+  private adminServices = inject(AdminService);
   loginForm!: FormGroup;
-
-  constructor(db: FormBuilder, private router: Router) {
-    this.loginForm = db.group({
+  fields = loginFields;
+  loginError : string|null = null
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
-  onSubmit() {
-    if (this.loginForm.invalid) {
-      return;
+  getErrorMessage(fieldName: string): string {
+    const field = this.fields.find((f) => f.name === fieldName);
+    if (field) {
+      const control = this.loginForm.get(fieldName);
+      if (control && control.errors) {
+        const firstErrorType = Object.keys(control.errors)[0];
+        const errorMessage = field.errors?.find(
+          (err) => err.type === firstErrorType
+        )?.message;
+        return errorMessage || '';
+      }
     }
+    return '';
+  }
+
+  onSubmit() {
+   if (this.loginForm.valid){
     const { email, password } = this.loginForm.value;
     console.log('Admin Side', this.loginForm.value);
-
-    this.adminSerivices.adminLogin(email, password).subscribe({
-      next: (response) => {
-        // Handle successful login
-        console.log('Login successful:', response);
-        localStorage.setItem('adminToken',response.accessToken)
+    this.adminServices.adminLogin(email, password).subscribe(
+      (response) => { 
+        console.log('Login successful:', response.admin);
+        localStorage.setItem('adminToken', response.accessToken);
         this.router.navigate(['/admin/main']);
       },
-      error: (err) => {
+      (err) => { 
         console.error('Login failed:', err);
-      },
-    });
-  }
-}
+      }
+    );
+   }else{
+    this.loginForm.markAllAsTouched();
+   }
+ 
+  }    
+}    

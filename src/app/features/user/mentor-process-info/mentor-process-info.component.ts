@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { HeaderComponent } from '../../../shared/layouts/header/header.component';
-import { FooterComponent } from '../../../shared/layouts/footer/footer.component';
+import { HeaderComponent } from '../../../layouts/user/header/header.component';
+import { FooterComponent } from '../../../layouts/user/footer/footer.component';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { IReponseRatings } from '../../../shared/models/friendsRating.model';
 import { CommonModule } from '@angular/common';

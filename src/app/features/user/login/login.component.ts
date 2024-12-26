@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 import { IUserLoginCredentials } from '../../../shared/models/login-form.model';
-import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +26,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   fields = loginFields;
   loginError: string | null = null;
+  
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../../../shared/layouts/header/header.component';
+import { HeaderComponent } from '../../../layouts/user/header/header.component';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
 import { MentorProfileService } from '../../../core/services/mentor/mentor-profile.service';
 import { IMentorRoom } from '../../../shared/models/mentorform.model';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { RoomService } from '../../../core/services/user/room.service';
 import { IStatus, ITransaction } from '../../../shared/models/friendsRating.model';
 import { platFormId } from '../../../../environment/environment.development';
+import { MentorSessionService } from '../../../core/services/mentor/mentor-session.service';
 @Component({
   selector: 'app-mentors-sesstions',
   standalone: true,
@@ -17,7 +18,8 @@ import { platFormId } from '../../../../environment/environment.development';
   styleUrl: './mentors-sesstions.component.css'
 })
 export class MentorsSesstionsComponent implements OnInit {
-  mentorServices = inject(MentorProfileService);
+  currentDateTime: Date = new Date();
+  mentorServices = inject(MentorSessionService);
   userRoomService = inject(RoomService)
   mentor = JSON.parse(localStorage.getItem('MentorData') || '{}');
   user = JSON.parse(localStorage.getItem('userData') || '{}');
@@ -30,12 +32,19 @@ export class MentorsSesstionsComponent implements OnInit {
   }
 
   getAllSessions() {
-    this.mentorServices.requestGetAllSessions(this.mentor.id).subscribe((res: any) => {
+    this.mentorServices.requestGetAllSessions().subscribe((res: any) => {
       this.sessions = res.rooms
         .filter((room: IMentorRoom) => room.createdAt)
+        .map((room: IMentorRoom) => ({
+          ...room,
+          startTime: new Date(room.startTime), // Convert startTime to Date object
+          endTime: new Date(room.endTime),     // Convert endTime to Date object
+          createdAt: new Date(room.createdAt), // Convert createdAt to Date object
+        }))
         .sort((a: IMentorRoom, b: IMentorRoom) => {
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          return b.createdAt.getTime() - a.createdAt.getTime(); // Sort by createdAt
         });
+      console.log(this.sessions);
     });
   }
 
@@ -51,7 +60,7 @@ export class MentorsSesstionsComponent implements OnInit {
       description: `Booking session with ${session.topic}`,
       image: 'https://example.com/your_logo', 
       handler: (response: any) => {
-        this.verifyPayment(response, session.id);
+        this.verifyPayment(response, session.id,session.mentorId);
       },
       prefill: {
         name: this.user.name,
@@ -60,6 +69,8 @@ export class MentorsSesstionsComponent implements OnInit {
       },
       notes: {
         sessionId: session.id,
+        
+
       },
       theme: {
         color: '#3399cc',
@@ -71,14 +82,15 @@ export class MentorsSesstionsComponent implements OnInit {
   }
 
   // Payment Verification Logic
-  verifyPayment(response: any, sessionId: string) {
+  verifyPayment(response: any, sessionId: string,mentorId:string) {
    
     const transactionData: ITransaction = {
       userId: this.user.id,
+      mentorId:mentorId ,
       fundReceiverId:platFormId,
       amount: this.sessionAmount,
       type: "Session Booking",
-      status:IStatus.SUCCESS,
+      status:IStatus.CREDITED,
       transactionId: response.razorpay_payment_id || null,
       paymentMethod: "Razorpay",
       sessionId: sessionId,

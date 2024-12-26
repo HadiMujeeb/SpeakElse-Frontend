@@ -2,8 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MentorProfileService } from '../../../core/services/mentor/mentor-profile.service';
-import { IMentorRoom } from '../../../shared/models/mentorform.model';
+import { IMentorRoom, IReshedulement } from '../../../shared/models/mentorform.model';
 import { Router } from '@angular/router';
+import { MentorSessionService } from '../../../core/services/mentor/mentor-session.service';
 
 @Component({
   selector: 'app-mentor-sessions',
@@ -13,27 +14,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./mentor-sessions.component.css']
 })
 export class MentorSessionsComponent implements OnInit {
+  currentDateTime: Date = new Date();
   isModalOpen = false;
+  isRescheduleModalOpen = false;
   sessionForm: FormGroup;
-  mentorServices =inject(MentorProfileService);
+  rescheduleForm: FormGroup;
+  currentSessionId: string | null = null;
+  mentor: any;
+  mentorServices = inject(MentorSessionService);
   router = inject(Router);
-  mentor = JSON.parse(localStorage.getItem('MentorData') || '{}');
-  mentors = [
-    {
-      id: '1',
-      name: 'John Doe',
-      title: 'Expert in Web Development',
-      description: 'I have 10 years of experience building modern web apps.',
-      languages: ['English', 'Spanish'],
-      rating: 4.8,
-      reviews: 120,
-      price: 50,
-      image: 'https://via.placeholder.com/150',
-    },
-    // Add more mentor objects here
-  ];
-
-  sessions:IMentorRoom[] = [];
+  
+  sessions: IMentorRoom[] = [];
 
   constructor(private fb: FormBuilder) {
     this.sessionForm = this.fb.group({
@@ -44,24 +35,37 @@ export class MentorSessionsComponent implements OnInit {
       endTime: ['', Validators.required],
       bookingFee: [0, [Validators.required, Validators.min(0)]],
     });
+
+    this.rescheduleForm = this.fb.group({
+      startTime: ['', Validators.required],
+      endTime: ['', Validators.required],  
+      reason: ['', [Validators.required, Validators.minLength(10)]],
+    });
+    
   }
 
   ngOnInit(): void {
+    this.mentor = JSON.parse(localStorage.getItem('mentorData') || '{}');
     this.getAllSessions();
   }
 
   getAllSessions() {
-    this.mentorServices.requestGetAllSessions(this.mentor.id).subscribe((res:any)=>{
-      
+    this.mentorServices.requestGetAllSessions().subscribe((res: any) => {
       this.sessions = res.rooms
-      .filter((room: IMentorRoom) => room.createdAt)
-      .sort((a: IMentorRoom, b: IMentorRoom) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-    
+        .filter((room: IMentorRoom) => room.createdAt)
+        .map((room: IMentorRoom) => ({
+          ...room,
+          startTime: new Date(room.startTime), // Convert startTime to Date object
+          endTime: new Date(room.endTime),     // Convert endTime to Date object
+          createdAt: new Date(room.createdAt), // Convert createdAt to Date object
+        }))
+        .sort((a: IMentorRoom, b: IMentorRoom) => {
+          return b.createdAt.getTime() - a.createdAt.getTime(); // Sort by createdAt
+        });
       console.log(this.sessions);
-      })
+    });
   }
+  
   openModal() {
     this.isModalOpen = true;
   }
@@ -73,27 +77,57 @@ export class MentorSessionsComponent implements OnInit {
 
   createSession() {
     if (this.sessionForm.valid) {
-     const data = this.sessionForm.value;
+      const data = this.sessionForm.value;
       data.startTime = new Date(data.startTime).toISOString();
       data.endTime = new Date(data.endTime).toISOString();
       data.mentorId = this.mentor.id;
-      const roomData:IMentorRoom=data
-      this.mentorServices.requestCreateSession(roomData).subscribe(
-        (response: any) => {
-         this.getAllSessions();
-          this.closeModal();
-        }
-      )
-  }else{
-    this.sessionForm.markAllAsTouched();
-  }
-}
-
-joinSession(id: string) {
-  this.router.navigate([`/mentor/room/${id}`]);
+      const roomData: IMentorRoom = data;
+      this.mentorServices.requestCreateSession(roomData).subscribe(() => {
+        this.getAllSessions();
+        this.closeModal();
+      });
+    } else {
+      this.sessionForm.markAllAsTouched();
+    }
   }
 
-  // sendMessage(mentorId: string) {
-   
-  // }
+  joinSession(id: string) {
+    this.router.navigate([`/mentor/room/${id}`]);
+  }
+
+  rescheduleSession(id: string) {
+    this.currentSessionId = id;
+    this.isRescheduleModalOpen = true;
+  }
+
+  closeRescheduleModal(): void {
+    this.isRescheduleModalOpen = false;
+    this.rescheduleForm.reset();
+    this.currentSessionId = null;
+  }
+
+  submitReschedule() {
+    this.isRescheduleModalOpen = true;
+    if (this.rescheduleForm.valid) {
+      const data = this.rescheduleForm.value;
+      data.startTime = new Date(data.startTime).toISOString();
+      data.endTime = new Date(data.endTime).toISOString();
+      data.roomId = this.currentSessionId || '';
+      this.mentorServices.requestResheduleSession(data).subscribe((res: any) => {
+        this.getAllSessions();
+        this.closeRescheduleModal();
+      }, (err) => console.log(err));
+    } else {
+      this.rescheduleForm.markAllAsTouched();
+    }
+  }
+
+  cancelSession(id: string) {
+    this.mentorServices.requestCancelSession(id, this.mentor.id).subscribe((res: any) => {
+      console.log(res.message);
+      this.getAllSessions();
+    }, (err) => console.log(err));
+  }
+
+  
 }

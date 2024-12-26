@@ -25,4 +25,9 @@ export class MentorformService {
     return this.httpClient.put(`${this.api}/updateMentorStatus`, { email })
     .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
   }
+
+  sendApplicationEmail(email: string,status: string): Observable<any> {
+    return this.httpClient.put(`${this.api}/sendedApplicationMail`, { email,status })
+    .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
+  }
 }

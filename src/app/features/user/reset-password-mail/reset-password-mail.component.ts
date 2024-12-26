@@ -9,7 +9,7 @@ import { resetEmail } from '../../../shared/FieldConfigs/reset-password.config';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 
 @Component({
   selector: 'app-reset-password-mail',

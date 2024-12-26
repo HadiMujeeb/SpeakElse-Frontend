@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormModalComponent } from '../../form-modal/form-modal.component';
+import { FormModalComponent } from '../../modals/form-modal/form-modal.component';
 import { IMember } from '../../../models/member.model';
 import { registerField } from '../../../FieldConfigs/register-form.config';
 import { Subscription } from 'rxjs';

@@ -1,15 +1,15 @@
-import { IMember } from './member.model';
+import { IMember, IUser } from './member.model';
 
 export interface IProtectedDataResponse {
   message: string;
   status: number;
-  user: IMember;
+  user: IUser;
   accessToken: string;
 }
 export interface IadminauthResponse {
   message: string;
   status: number;
-  admin: IMember;
+  adminData: IMember;
   accessToken: string;
 }
 

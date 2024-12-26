@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NavLogoComponent } from '../../../shared/layouts/nav-logo/nav-logo.component';
+import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 import { CommonModule } from '@angular/common';
 import { registerField } from '../../../shared/FieldConfigs/register-form.config';
 import { IUserRegisterationCredentials } from '../../../shared/models/register-form.model';

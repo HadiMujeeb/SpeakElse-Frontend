@@ -28,13 +28,5 @@ export class MentorProfileService {
     
 }
 
- requestCreateSession(data:IMentorRoom): Observable<IMentorRoom> {
-  return this.httpClient.post<IMentorRoom>(`${this.api}/requestcreateRoom`, data)
-  .pipe(catchError((err) => throwError(err.message ? err.message : err)))
-}
 
-requestGetAllSessions(mentorId: string): Observable<IMentorRoom[]> {
-  return this.httpClient.get<IMentorRoom[]>(`${this.api}/requestgetAllRooms`, { params: { mentorId } })
-  .pipe(catchError((err) => throwError(err.message ? err.message : err)))
-}
 }

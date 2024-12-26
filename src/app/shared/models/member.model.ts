@@ -1,4 +1,4 @@
-import { IComment } from "./friendsRating.model";
+import { IComment, ITransaction } from "./friendsRating.model";
 
 export interface IMembersListResponse {
     members: IMember[];
@@ -15,6 +15,8 @@ export interface IMembersListResponse {
     country: string;
     language: string;
     isBlocked: boolean;
+    createdAt: string;
+    
 }
 
   export interface IUser {
@@ -30,5 +32,12 @@ export interface IMembersListResponse {
     isVerified?: boolean;
     isBlocked?: boolean;
     comments?: IComment[];
+    userWallet: IuserWallet;
 
+  }
+  export interface IuserWallet {
+    id: string;
+    userId: string;
+    balance: number;
+    transactions?: ITransaction[];
   }

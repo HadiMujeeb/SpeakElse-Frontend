@@ -1,4 +1,5 @@
 import { IUser } from "./member.model";
+import { IMentorRoom } from "./mentorform.model";
 
 export  interface IReponseRatings {
   feedback: string;
@@ -38,8 +39,11 @@ export interface IResponseReport extends IReport {
 export interface ITransaction {
   id?: string;
   userId: string;     
+  mentorId?: string;
   fundReceiverId: string;    
-  amount: number;         
+  amount: number;
+  mentorAmount?: number
+  adminAmount?: number         
   type: string;           
   status:IStatus; 
   transactionId: string | null;
@@ -47,11 +51,14 @@ export interface ITransaction {
   sessionId: string;    
   description: string;   
   createdAt?: Date
-  updatedAt?: Date   
+  updatedAt?: Date
+  room?: IMentorRoom  
 }
 
 export enum IStatus {
   PENDING = "PENDING",
-  SUCCESS = "SUCCESS"
-
+  CREDITED = "CREDITED",
+  DEBITED = "DEBITED",
+  REFUNDED = "REFUNDED",
+  CANCELLED = "CANCELLED"
 }

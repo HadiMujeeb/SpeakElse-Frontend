@@ -24,6 +24,10 @@ import { FormsModule } from '@angular/forms';
 export class RoomCardComponent implements OnInit {
   rooms: IRoom[] = [];
   filteredRooms: IRoom[] = [];
+  totalPages: number = 1;
+  page: number = 1;
+  pageSize: number = 6;
+  totalRooms: number = 0;
 
   filters: any = {};
   @Output() joinRoom = new EventEmitter<any>();
@@ -40,23 +44,33 @@ export class RoomCardComponent implements OnInit {
         this.applyFilters();
       }
     });
+
+    this.userRoomServices.createRoom$.subscribe((rooms: IRoom) => {
+      this.rooms.push(rooms);
+      this.sortRooms();
+      this.applyFilters();
+    });
   }
 
+
   fetchRooms(): void {
-    this.userRoomServices.requestGetAllRooms().subscribe(
-      (response) => {
-        this.rooms = response.sort(
-          (a: IRoom, b: IRoom) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        this.filteredRooms = [...this.rooms];
-        this.applyFilters();
-        this.userRoomServices.sendRooms(this.rooms);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+   this.userRoomServices.requestGetAllRooms(this.page, this.pageSize).subscribe((response) => {
+     this.rooms = response.rooms
+     this.totalPages = response.totalPages
+     this.totalRooms = response.total
+     this.sortRooms();
+     this.filteredRooms = [...this.rooms];
+     this.applyFilters();
+     this.userRoomServices.sendRooms(this.rooms);
+     console.log(this.totalPages,this.totalRooms);
+
+   })
+  }
+
+  sortRooms(): void {
+   this.rooms = this.rooms.sort((a: IRoom, b: IRoom) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    })
   }
 
   onJoinRoom(id: string): void {
@@ -77,4 +91,22 @@ export class RoomCardComponent implements OnInit {
       );
     });
   }
+
+  get totalPagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+}
+previousPage(){
+  if(this.page > 1){
+    this.page--
+    this.fetchRooms()
+  }
+ 
+}
+nextPage(){
+  if(this.page < this.totalPages){
+    this.page++
+    this.fetchRooms()
+  }
+ 
+}
 }

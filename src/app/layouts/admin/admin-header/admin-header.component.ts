@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin/admin.service';
 
@@ -10,13 +10,22 @@ import { AdminService } from '../../../core/services/admin/admin.service';
   templateUrl: './admin-header.component.html',
   styleUrl: './admin-header.component.css'
 })
-export class AdminHeaderComponent {
+export class AdminHeaderComponent implements OnInit{
   adminServices = inject(AdminService)
-  adminName = 'zayim';
+  admin:any
+  
 router = inject(Router)
+ngOnInit(): void {
+  const adminData = localStorage.getItem('adminData');
+  console.log(JSON.parse(adminData||'{}'));
+  if (adminData) {
+    this.admin = JSON.parse(adminData);
+  }
+}
+
+
 logout():void{
-// localStorage.removeItem('adminData');
-// this.router.navigate(['/admin/login'])
+  // console.log('logout',this.admin);
 this.adminServices.requestLogoutAdmin().subscribe(() =>{
   localStorage.removeItem('adminData');
   localStorage.removeItem('adminToken');

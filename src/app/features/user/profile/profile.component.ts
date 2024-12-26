@@ -6,7 +6,7 @@ import { ModalAction } from '../../../shared/models/modal-action.enum';
 import { IReponseRatings } from '../../../shared/models/friendsRating.model';
 import { registerField } from '../../../shared/FieldConfigs/register-form.config';
 import { CommonModule } from '@angular/common';
-import { FormModalComponent } from '../../../shared/components/form-modal/form-modal.component';
+import { FormModalComponent } from '../../../shared/components/modals/form-modal/form-modal.component';
 
 @Component({
   selector: 'app-profile',

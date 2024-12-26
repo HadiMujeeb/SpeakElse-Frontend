@@ -10,8 +10,8 @@ export const authAdminGuard: CanActivateFn = (route, state) => {
   
   const adminToken:string|null =(localStorage.getItem('adminToken'));
   return adminServices.adminAuthTokenRequest(adminToken).pipe(
-   map((response) => {
-     localStorage.setItem("adminData",JSON.stringify(response.admin));
+   map((response: any) => {
+     localStorage.setItem("adminData",JSON.stringify(response.adminData.adminData));
      localStorage.setItem("adminToken",response.accessToken);
       return true
   }),
