@@ -49,13 +49,21 @@ export class AdminLoginComponent {
         localStorage.setItem('adminToken', response.accessToken);
         this.router.navigate(['/admin/main']);
       },
-      (err) => { 
-        console.error('Login failed:', err);
-      }
-    );
-   }else{
-    this.loginForm.markAllAsTouched();
-   }
+      (error) => { 
+        console.log(error); 
+          console.error('Login failed:', error.message);
+          if (error.message === 'Invalid email.') {
+            this.loginForm.get('email')?.setErrors({ notExist: true });
+          } else if (error.message == "Invalid password. Please try again.") {
+            this.loginForm.get('password')?.setErrors({ incorrect: true });
+          } else {
+            this.loginError = 'Login failed. Please try again later.';
+          }
+        }
+      );
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
  
   }    
 }    

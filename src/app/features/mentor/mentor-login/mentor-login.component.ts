@@ -56,10 +56,11 @@ export class MentorLoginComponent {
           this.router.navigate(['/mentor/main']);
         },
         (error) => {
+          console.log(error); 
           console.error('Login failed:', error.message);
           if (error.message === 'Mentor not found.') {
             this.loginForm.get('email')?.setErrors({ notExist: true });
-          } else if (error.message === 'Invalid password. Please try again.') {
+          } else if (error.message == "Invalid password. Please try again.") {
             this.loginForm.get('password')?.setErrors({ incorrect: true });
           } else {
             this.loginError = 'Login failed. Please try again later.';

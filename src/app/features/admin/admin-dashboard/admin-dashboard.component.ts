@@ -7,7 +7,7 @@ import { ReportsService } from '../../../core/services/admin/reports.service';
 import { MentorformService } from '../../../core/services/admin/mentorform.service';
 import { RoomService } from '../../../core/services/user/room.service';
 import { IApplication } from '../../../shared/models/mentorform.model';
-import { ITransaction } from '../../../shared/models/friendsRating.model';
+import { IStatus, ITransaction } from '../../../shared/models/friendsRating.model';
 import { IMember } from '../../../shared/models/member.model';
 
 @Component({
@@ -79,7 +79,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnInit {
     this.memberService.requestRetrieveMembersList().subscribe(
       (response) => {
         this.totalUsers = response.members.length;
-        this.populateMonthlyData(response.members, 'createdAt', this.monthlyUserData[0].data);
+        this.populateMonthlyData(response.members, 'createdAt', this.monthlyUserData[0].data,'user');
       },
       (error) => console.error('Error fetching users:', error)
     );
@@ -110,7 +110,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnInit {
     this.mentorFormService.requestGetMentorForm().subscribe(
       (response: any) => {
         this.totalMentors = response.applications.filter((mentor: IApplication) => mentor.approvalStatus === 'APPROVED').length;
-        this.populateMonthlyData(response.applications, 'approvalDate', this.monthlyUserData[1].data);
+        this.populateMonthlyData(response.applications, 'createdAt', this.monthlyUserData[1].data, 'mentor');
       },
       (error) => console.error('Error fetching mentors:', error)
     );
@@ -126,7 +126,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnInit {
             : sum;
         }, 0);
         
-        this.populateMonthlyData(response.data, 'transactionDate', this.revenueChartData[0].data, 'adminAmount');
+        this.populateMonthlyData(response.data, 'createdAt', this.revenueChartData[0].data, 'transaction');
       },
       (error) => console.error('Error fetching transactions:', error)
     );
@@ -143,14 +143,24 @@ export class AdminDashboardComponent implements AfterViewInit, OnInit {
   }
 
   // Populate Monthly Data
-  populateMonthlyData(data: any[], dateField: string, targetArray: number[], valueField?: string) {
+  // this.populateMonthlyData(response.members, 'createdAt', this.monthlyUserData[0].data);
+  populateMonthlyData(data: any[], dateField: string, targetArray: number[], side?:string, valueField?: string) {
+    let value: number = 0;
     data.forEach((item) => {
       const date = new Date(item[dateField]);
       const month = date.getMonth();
-      const value = valueField ? item[valueField] || 0 : 1;
+      if(side === 'user'){
+        value = item.isVerified ? 1 : 0;
+      }else if(side === 'mentor'){
+        value = item.approvalStatus === 'APPROVED' ? 1 : 0;
+      }else if (side === 'transaction'){
+        value = item.status === 'CREDITED' ? (item.adminAmount || 0) : 0;
+      }
       targetArray[month] += value;
     });
   }
+
+  
 
   // Render User Growth Chart
   renderUserGrowthChart() {
@@ -181,7 +191,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnInit {
     if (view === 'month') {
       this.renderUserGrowthChart();
     } else if (view === 'year') {
-      console.log('Yearly view not implemented yet.');
+      console.log('Year view');
     }
   }
 }

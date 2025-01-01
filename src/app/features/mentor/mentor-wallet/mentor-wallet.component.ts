@@ -17,7 +17,7 @@ sessionService = inject(MentorSessionService);
   ngOnInit(): void {
     this.sessionService.requestGetSessionByMentorId(this.mentor?.id || '').subscribe(
       (response: any) => {
-        this.transactions = response.transactions || []; 
+        this.transactions = response.transactions.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) || []; 
       }
     )
     this.totalWalletAmount = this.mentor.mentorWallet?.balance || 0;

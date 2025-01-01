@@ -47,7 +47,11 @@ export class MentorSessionsComponent implements OnInit {
   ngOnInit(): void {
     this.mentor = JSON.parse(localStorage.getItem('mentorData') || '{}');
     this.getAllSessions();
+  
+    
   }
+
+
 
   getAllSessions() {
     this.mentorServices.requestGetAllSessions().subscribe((res: any) => {
