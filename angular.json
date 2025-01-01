@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "allowedCommonJsDependencies": ["simple-peer"],
             "outputPath": "dist/project",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -37,8 +38,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1000kB",
-                  "maximumError": "1500kB"
+                  "maximumWarning": "2.00 MB",
+                  "maximumError": "2.50 MB"
                 },
                 {
                   "type": "anyComponentStyle",
