@@ -39,7 +39,6 @@
     "process": "process/browser"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^19.0.0",
     "@angular-devkit/build-angular": "^18.0.5",
     "@angular/cli": "^18.0.5",
     "@angular/compiler-cli": "^18.0.0",
