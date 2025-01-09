@@ -27,7 +27,6 @@ export class ApplicationFormComponent implements OnInit {
     { label: 'Resume&userDetails' },
     { label: 'isVerified' },
     { label: 'Approval Status' },
-    { label: 'Actions' }
   ];
 
   selectedApplication: IApplication | null = null;
@@ -87,6 +86,7 @@ updateApprovalStatus(application: any) {
     console.log(data.message);
     this.fetchAllApplications();
   })
+  this.sendEmail(application);
 }
 
   

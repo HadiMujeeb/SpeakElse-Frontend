@@ -19,7 +19,7 @@ export class ProfileSideBarComponent {
 
   menuItems = [
     { icon: 'user', label: 'Profile', route: 'profile' },
-    { icon: 'calendar-alt', label: 'My Sessions', route: 'sessions' },
+    { icon: 'calendar-alt', label: 'My Sessions', route: 'mysession' },
     { icon: 'wallet', label: 'Wallet', route: 'wallet' },
   ];
   authUserSerivices = inject(AuthUserService);  

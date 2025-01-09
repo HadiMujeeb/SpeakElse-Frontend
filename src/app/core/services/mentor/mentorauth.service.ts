@@ -6,10 +6,11 @@ import { catchError, map } from 'rxjs/operators';
 import { IErrorResponse } from '../../../shared/models/error.model';
 import { ILoginSuccessResponse, IUserLoginCredentials } from '../../../shared/models/login-form.model';
 import { ImentorauthResponse, IProtectedDataResponse } from '../../../shared/models/protected-data-response.model';
+import { MENTOR_API } from '../../../../routes/routesFile';
 
 @Injectable({ providedIn: 'root' })
 export class MentorauthService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/mentor/auth`;
+  private api: string = MENTOR_API.AUTH;
   constructor(private httpClient: HttpClient) {}
 
   isMentorExisted$(): Observable<boolean> { 

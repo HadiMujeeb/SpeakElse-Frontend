@@ -3,12 +3,13 @@ import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { ITransaction } from '../../../shared/models/friendsRating.model';
 import { catchError, Observable, throwError } from 'rxjs';
+import { USER_API } from '../../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/user`;
+  private api: string = USER_API.WALLET;
   constructor(private httpClient: HttpClient) { }
 
   requestGellAllTransactions(userId: string): Observable<ITransaction[]> {

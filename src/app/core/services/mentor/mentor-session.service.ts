@@ -3,13 +3,14 @@ import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { IMentorRoom, IReshedulement } from '../../../shared/models/mentorform.model';
+import { MENTOR_API } from '../../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MentorSessionService {
 
-  private api: string = `${environment.BACKEND_DOMAIN}/api/mentor`;
+  private api: string = MENTOR_API.ROOM;
    constructor(private httpClient: HttpClient) {}
 
   requestCreateSession(data:IMentorRoom): Observable<IMentorRoom> {

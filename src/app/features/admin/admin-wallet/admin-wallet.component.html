@@ -7,56 +7,106 @@
     </div>
   </div>
 
+  <!-- Filters Section -->
+  <div class="flex gap-4 mb-4">
+    <input type="date" [(ngModel)]="filters.startDate" class="border px-2 py-1 rounded" />
+    <input type="date" [(ngModel)]="filters.endDate" class="border px-2 py-1 rounded" />
+    <select [(ngModel)]="filters.month" class="border px-2 py-1 rounded">
+      <option value="">Select Month</option>
+      <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+    </select>
+    <input type="number" [(ngModel)]="filters.year" placeholder="Year" class="border px-2 py-1 rounded" />
+
+    <button (click)="applyFilters()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Apply Filters</button>
+    <button (click)="resetFilters()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Reset</button>
+  </div>
+
+  <!-- Transactions Table -->
   <div class="bg-white rounded-lg shadow">
     <div class="p-4">
       <table class="w-full">
         <thead>
           <tr class="bg-gray-100">
             <th *ngFor="let header of headers" class="px-4 py-2 text-left">{{ header.label }}</th>
+            <th class="px-4 py-2 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of SelectedData; let i = index">
-            <td class="border px-4 py-2">{{ i + 1 }}</td>
+          <tr *ngFor="let item of paginatedData; let i = index">
+            <td class="border px-4 py-2">{{ currentPage * pageSize + i + 1 }}</td>
             <td class="border px-4 py-2">{{ item.type }}</td>
             <td class="border px-4 py-2">{{ item.createdAt | date: 'fullDate' }}</td>
             <td class="border px-4 py-2">{{ item.description || '-' }}</td>
-            <td class="border px-4 py-2">{{ item.mentorAmount }}₹</td> <!-- Display mentorAmount -->
-            <td class="border px-4 py-2">{{ item.adminAmount }}₹</td>  <!-- Display adminAmount -->
-            <td class="border px-4 py-2">{{ item.amount }}₹</td> <!-- Display sessionAmount -->
-            <td class="border px-4 py-2">{{ item.status }}</td> <!-- Display status -->
+            <td class="border px-4 py-2">{{ item.amount }}₹</td>
+            <td class="border px-4 py-2">{{ item.status }}</td>
+            <td class="border px-4 py-2">
+              <button 
+                (click)="viewSessionDetails(item)" 
+                class="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
+                Session Details
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
 
+      <!-- Pagination Controls -->
       <div class="mt-4 flex justify-center">
-        <button class="px-3 py-1 border rounded mr-1">&lt;</button>
-        <button class="px-3 py-1 border rounded mr-1 bg-blue-500 text-white">1</button>
-        <button class="px-3 py-1 border rounded mr-1">2</button>
-        <button class="px-3 py-1 border rounded">&gt;</button>
+        <button 
+          (click)="previousPage()" 
+          [disabled]="currentPage === 0" 
+          class="px-3 py-1 border rounded mr-1"
+        >
+          &lt;
+        </button>
+        <button 
+          *ngFor="let page of pages; let index = index" 
+          (click)="goToPage(index)" 
+          [class.bg-blue-500]="currentPage === index" 
+          [class.text-white]="currentPage === index" 
+          class="px-3 py-1 border rounded mr-1"
+        >
+          {{ index + 1 }}
+        </button>
+        <button 
+          (click)="nextPage()" 
+          [disabled]="currentPage === pages.length - 1" 
+          class="px-3 py-1 border rounded"
+        >
+          &gt;
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Modal for viewing details -->
-  <div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 transition-all">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 max-w-lg transform transition-transform scale-100">
-      <h2 class="text-2xl font-bold mb-4">Details for {{ selectedItem?.id }}</h2>
-
-      <div>
-        <p class="mb-6">Amount: {{ selectedItem?.amount }}₹</p>
-        <p class="mb-6">Type: {{ selectedItem?.type }}</p>
-        <p class="mb-6">Date: {{ selectedItem?.createdAt | date: 'fullDate' }}</p>
-        <p class="mb-6">Description: {{ selectedItem?.description }}</p>
-        <p class="mb-6">Mentor Amount: {{ selectedItem?.mentorAmount }}₹</p>
-        <p class="mb-6">Admin Amount: {{ selectedItem?.adminAmount }}₹</p>
-        <p class="mb-6">Session Amount: {{ selectedItem?.sessionAmount }}₹</p>
-        <p class="mb-6">Status: {{ selectedItem?.status }}</p> <!-- Display status in modal -->
+  <!-- Modal -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white w-1/2 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-bold mb-4">Session Details</h2>
+      <div class="mb-4">
+        <p><strong>Session Link:</strong> 
+          <a 
+            [href]="'http://localhost:4200/user/room/' + selectedSession?.id" 
+            target="_blank" 
+            class="text-blue-500 underline">
+            {{ selectedSession?.id }}
+          </a>
+        </p>
+        <p><strong>Topic:</strong> {{ selectedSession?.topic }}</p>
+        <p><strong>Start Time:</strong> {{ selectedSession?.startTime | date: 'short' }}</p>
+        <p><strong>End Time:</strong> {{ selectedSession?.endTime | date: 'short' }}</p>
+        <p><strong>Total Participants:</strong> {{ selectedSession?.participants.length }}</p>
+        <p><strong>Language:</strong> {{ selectedSession?.language }}</p>
+        <p><strong>Status:</strong> {{ selectedSession?.status }}</p>
       </div>
-
-      <div class="flex justify-end mt-4">
-        <button (click)="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200">Close</button>
+      <div class="flex justify-end">
+        <button 
+          (click)="closeModal()" 
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+          Close
+        </button>
       </div>
     </div>
   </div>
+  
 </div>

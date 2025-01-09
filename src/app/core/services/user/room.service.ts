@@ -10,12 +10,13 @@ import {
 } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ITransaction } from '../../../shared/models/friendsRating.model';
+import { USER_API } from '../../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoomService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/user`;
+  private api: string = USER_API.ROOM;
   private rooms = new Subject<IRoom[]>();
   private filters = new BehaviorSubject<any>(null);
   private createRoom = new Subject<IRoom>();
@@ -40,7 +41,6 @@ export class RoomService {
   constructor(private httpClient: HttpClient) {}
 
   requestAddRoom(data: IrequestCreateRoom): Observable<IRoom> {
-    console.log('working requestAddRoom');
     return this.httpClient
       .post<IRoom>(`${this.api}/createRoom`, data)
       .pipe(
@@ -61,5 +61,9 @@ export class RoomService {
     return this.httpClient.post<any>(`${this.api}/requestPaymentTransation`, transactionData)
     .pipe(catchError((err) => throwError(() => new Error(err.error?.message))))
   }
- 
+
+  requestRoomById(roomId: string): Observable<IRoom[]> {
+    return this.httpClient.get<IRoom[]>(`${this.api}/retrieveRoomById/${roomId}`)
+    .pipe(catchError((err) => throwError(() => new Error(err.error?.message))));
+  }
 }

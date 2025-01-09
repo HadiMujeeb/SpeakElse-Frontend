@@ -96,7 +96,7 @@ export class ProfileContentComponent implements OnInit {
       data.id = this.selectedMember.id;
       this.user = data;
     }
-
+    console.log(file);
     this.userProfileServices.requestEditMemberData(data, file).subscribe(
       (response) => {
         console.log('userprofile data edit succussfully', response.message);

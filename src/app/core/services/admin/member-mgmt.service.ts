@@ -7,10 +7,11 @@ import {
 } from '../../../shared/models/member.model';
 import { HttpClient } from '@angular/common/http';
 import { IErrorResponse } from '../../../shared/models/error.model';
+import { ADMIN_API } from '../../../../routes/routesFile';
 
 @Injectable({ providedIn: 'root' })
 export class MemberMgmtService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/admin`;
+  private api: string = ADMIN_API.BASE;
 
   constructor(private httpClient: HttpClient) {}
 

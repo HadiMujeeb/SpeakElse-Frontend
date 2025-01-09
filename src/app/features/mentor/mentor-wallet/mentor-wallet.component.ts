@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './mentor-wallet.component.html',
-  styleUrls: ['./mentor-wallet.component.css']
+  styleUrls: ['./mentor-wallet.component.css'],
+
 })
 export class MentorWalletComponent implements OnInit {
   mentor = JSON.parse(localStorage.getItem('mentorData') || '{}'); // Retrieve mentor data

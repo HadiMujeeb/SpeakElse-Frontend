@@ -7,10 +7,11 @@ import { IErrorResponse } from '../../../shared/models/error.model';
 import { IMentorApplication } from '../../../shared/models/mentor-application.model';
 import { IApplication, IMentorRoom } from '../../../shared/models/mentorform.model';
 import { IComment } from '../../../shared/models/friendsRating.model';
+import { MENTOR_API } from '../../../../routes/routesFile';
 
 @Injectable({ providedIn: 'root' })
 export class MentorProfileService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/mentor`;
+  private api: string = MENTOR_API.PROFILE;
   constructor(private httpClient: HttpClient) {}
 
   requestEditMentorData(formData: any): Observable<IErrorResponse> {

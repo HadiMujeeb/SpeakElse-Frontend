@@ -3,12 +3,13 @@ import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IQuestions } from '../../../shared/models/languageTests.model';
+import { ADMIN_API } from '../../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LanguageTestService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/admin/languageTest`;
+  private api: string = ADMIN_API.LANGUAGETEST;
 
   constructor(private httpClient: HttpClient) { }
 

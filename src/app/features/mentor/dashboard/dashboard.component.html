@@ -11,11 +11,11 @@
     </div>
     <div class="bg-white p-4 rounded-lg shadow-md">
       <h2 class="text-gray-500">Total Revenue</h2>
-      <p class="text-2xl font-bold">${{ totalRevenue }}</p>
+      <p class="text-2xl font-bold">{{ totalRevenue | currency:'INR' }}</p>
     </div>
     <div class="bg-white p-4 rounded-lg shadow-md">
       <h2 class="text-gray-500">Today's Revenue</h2>
-      <p class="text-2xl font-bold">${{ todayRevenue }}</p>
+      <p class="text-2xl font-bold">{{ todayRevenue | currency:'INR' }}</p>
     </div>
   </div>
 

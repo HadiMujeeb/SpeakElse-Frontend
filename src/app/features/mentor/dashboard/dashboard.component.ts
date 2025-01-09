@@ -4,12 +4,15 @@ import { MentorSessionService } from '../../../core/services/mentor/mentor-sessi
 import { IMentorRoom } from '../../../shared/models/mentorform.model';
 import { ReportsService } from '../../../core/services/admin/reports.service';
 import { ITransaction } from '../../../shared/models/friendsRating.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  imports: [CommonModule]
+
 })
 export class DashboardComponent implements OnInit {
   @ViewChild('monthlyRevenueChartCanvas') monthlyRevenueChartCanvas!: ElementRef;
@@ -103,7 +106,7 @@ export class DashboardComponent implements OnInit {
         ],
         datasets: [
           {
-            label: 'Revenue ($)',
+            label: 'Revenue (₹)',
             data: this.monthlyRevenueData,
             borderColor: '#4F46E5',
             backgroundColor: 'rgba(79, 70, 229, 0.2)',
@@ -132,7 +135,7 @@ export class DashboardComponent implements OnInit {
         labels: years,
         datasets: [
           {
-            label: 'Revenue ($)',
+            label: 'Revenue (₹)',
             data: this.yearlyRevenueData,
             backgroundColor: '#4F46E5',
             borderColor: '#3B82F6',

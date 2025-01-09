@@ -47,7 +47,7 @@ export class AdminLoginComponent {
       (response) => { 
         console.log('Login successful:', response.admin);
         localStorage.setItem('adminToken', response.accessToken);
-        this.router.navigate(['/admin/main']);
+        this.router.navigate(['/admin/main/dashboard']);
       },
       (error) => { 
         console.log(error); 

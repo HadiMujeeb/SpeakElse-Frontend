@@ -48,6 +48,7 @@ import { MentorsSesstionsComponent } from '../app/features/user/mentors-sesstion
 import { AdminWalletComponent } from '../app/features/admin/admin-wallet/admin-wallet.component';
 import { AdminDashboardComponent } from '../app/features/admin/admin-dashboard/admin-dashboard.component';
 import { DashboardComponent } from '../app/features/mentor/dashboard/dashboard.component';
+import { MysessionComponent } from '../app/features/user/mysession/mysession.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'user/home', pathMatch: 'full' },
@@ -70,6 +71,7 @@ export const routes: Routes = [
       { path: 'main', component: UserMainpageComponent, children: [
         { path: 'profile', component: ProfileContentComponent },
         { path: 'wallet', component: UserWalletComponent },
+        {path:"mysession",component:MysessionComponent},
       ]},
       {path:'test',children:[
         {path:'readingTest',component:ReadingTestComponent},
@@ -90,9 +92,6 @@ export const routes: Routes = [
          { path: 'profile', component: MentorPofileContentComponent },
          { path: 'sessions', component: MentorSessionsComponent },
          { path: 'wallet', component: MentorWalletComponent },
-         
-   
-
       ]},
       { path: 'room/:roomId', component: RoomComponent },
     ]

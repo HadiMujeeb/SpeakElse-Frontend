@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
         date: new Date(rating.createdAt).toLocaleDateString(), // Format the date
         rating: rating.rating,
         comment: rating.feedback,
-        avatar: rating.givenBy  .avatar
+        avatar: rating.givenBy.avatar
       };
     });
 

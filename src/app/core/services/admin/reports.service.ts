@@ -3,12 +3,13 @@ import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { IResponseReport } from '../../../shared/models/friendsRating.model';
+import { ADMIN_API } from '../../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportsService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/admin/reports`
+  private api: string = ADMIN_API.REPORTS
   constructor(private httpClient: HttpClient) { }
 
   requestGetAllReports(): Observable<IResponseReport[]> {

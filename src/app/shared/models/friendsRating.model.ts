@@ -48,7 +48,8 @@ export interface ITransaction {
   status:IStatus; 
   transactionId: string | null;
   paymentMethod: string;   
-  sessionId: string;    
+  sessionId: string;   
+  sessionDetails?: IMentorRoom|null
   description: string;   
   createdAt?: Date
   updatedAt?: Date

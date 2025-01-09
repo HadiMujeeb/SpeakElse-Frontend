@@ -7,12 +7,13 @@ import { ILoginSuccessResponse, IUserLoginCredentials } from '../../../shared/mo
 import { VerifyOtpReponse, VerifyOtpRequest } from '../../../shared/models/otp-request.model';
 import { IProtectedDataResponse } from '../../../shared/models/protected-data-response.model';
 import { IUserProfile } from '../../../shared/models/user-profile.model';
+import { USER_API } from '../../../../routes/routesFile';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
   public userDataSubject = new BehaviorSubject<any>(null);
   public isLoggedInSubject = new BehaviorSubject<boolean>(false);
-  private api: string = `${environment.BACKEND_DOMAIN}/api/user/auth`;
+  private api: string = USER_API.AUTH;
 
   constructor(public httpClient: HttpClient) {}
 

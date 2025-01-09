@@ -5,12 +5,13 @@ import { IErrorResponse } from '../../shared/models/error.model';
 import { Observable } from 'rxjs';
 import { IChat, IMessage } from '../../shared/models/chat-message.model';
 import { IMember } from '../../shared/models/member.model';
+import { USER_API } from '../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FriendChatService {
-  private api: string = `${environment.BACKEND_DOMAIN}/api/user`;
+  private api: string = USER_API.CHAT;
   constructor(private httpClient: HttpClient) {}
 
 requestCreateChat(userId: string, friendId: string): Observable<IChat> {

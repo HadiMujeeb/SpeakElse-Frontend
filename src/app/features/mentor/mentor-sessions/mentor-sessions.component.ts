@@ -21,10 +21,14 @@ export class MentorSessionsComponent implements OnInit {
   rescheduleForm: FormGroup;
   currentSessionId: string | null = null;
   mentor: any;
+  sessions: IMentorRoom[] = [];
+  paginatedSessions: IMentorRoom[] = [];
   mentorServices = inject(MentorSessionService);
   router = inject(Router);
-  
-  sessions: IMentorRoom[] = [];
+
+  // Pagination variables
+  currentPage = 1;
+  sessionsPerPage = 5;
 
   constructor(private fb: FormBuilder) {
     this.sessionForm = this.fb.group({
@@ -38,20 +42,15 @@ export class MentorSessionsComponent implements OnInit {
 
     this.rescheduleForm = this.fb.group({
       startTime: ['', Validators.required],
-      endTime: ['', Validators.required],  
+      endTime: ['', Validators.required],
       reason: ['', [Validators.required, Validators.minLength(10)]],
     });
-    
   }
 
   ngOnInit(): void {
     this.mentor = JSON.parse(localStorage.getItem('mentorData') || '{}');
     this.getAllSessions();
-  
-    
   }
-
-
 
   getAllSessions() {
     this.mentorServices.requestGetAllSessions().subscribe((res: any) => {
@@ -59,17 +58,34 @@ export class MentorSessionsComponent implements OnInit {
         .filter((room: IMentorRoom) => room.createdAt)
         .map((room: IMentorRoom) => ({
           ...room,
-          startTime: new Date(room.startTime), // Convert startTime to Date object
-          endTime: new Date(room.endTime),     // Convert endTime to Date object
-          createdAt: new Date(room.createdAt), // Convert createdAt to Date object
+          startTime: new Date(room.startTime),
+          endTime: new Date(room.endTime),
+          createdAt: new Date(room.createdAt),
         }))
         .sort((a: IMentorRoom, b: IMentorRoom) => {
-          return b.createdAt.getTime() - a.createdAt.getTime(); // Sort by createdAt
+          return b.createdAt.getTime() - a.createdAt.getTime();
         });
-      console.log(this.sessions);
+      this.updatePaginatedSessions();
     });
   }
-  
+
+  updatePaginatedSessions() {
+    const startIndex = (this.currentPage - 1) * this.sessionsPerPage;
+    const endIndex = startIndex + this.sessionsPerPage;
+    this.paginatedSessions = this.sessions.slice(startIndex, endIndex);
+  }
+
+  changePage(page: number) {
+    if (page >= 1 && page <= this.getTotalPages()) {
+      this.currentPage = page;
+      this.updatePaginatedSessions();
+    }
+  }
+
+  getTotalPages() {
+    return Math.ceil(this.sessions.length / this.sessionsPerPage);
+  }
+
   openModal() {
     this.isModalOpen = true;
   }
@@ -132,6 +148,4 @@ export class MentorSessionsComponent implements OnInit {
       this.getAllSessions();
     }, (err) => console.log(err));
   }
-
-  
 }

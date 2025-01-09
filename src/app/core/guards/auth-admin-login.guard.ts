@@ -10,7 +10,7 @@ export const authAdminLoginGuard: CanActivateFn = (route, state):Observable<bool
   return adminServices.isAdminExisted$().pipe(
     map(isAdmin => {
       if (isAdmin) {
-        router.navigate(['/admin/member']);
+        router.navigate(['/admin/main/dashboard']);
         return false;
       } else {
         return true;

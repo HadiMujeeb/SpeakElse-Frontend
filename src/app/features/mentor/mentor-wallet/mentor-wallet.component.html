@@ -3,8 +3,8 @@
   <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
     <h1 class="text-xl font-semibold text-gray-800">Wallet Amount</h1>
     <div class="flex items-center justify-between mt-2">
-      <span class="text-4xl font-bold text-purple-600">{{ totalWalletAmount }}</span>
-      <span class="text-gray-500 text-lg">USD</span>
+      <span class="text-4xl font-bold text-purple-600">{{ totalWalletAmount| currency :'INR' }}</span>
+      <span class="text-gray-500 text-lg">Total Wallet Amount</span>
     </div>
   </div>
 
@@ -42,10 +42,10 @@
         </div>
         <div class="text-right">
           <p class="font-bold text-gray-800">
-            {{ transaction.mentorAmount | currency }}
+            {{ transaction.mentorAmount | currency : 'INR' }}
           </p>
           <p class="text-sm text-gray-500">
-            Admin Fee: {{ transaction.adminAmount | currency }}
+            Admin Fee: {{ transaction.adminAmount | currency : 'INR' }}
           </p>
         </div>
       </div>

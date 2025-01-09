@@ -3,12 +3,13 @@ import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { IApplication } from '../../../shared/models/mentorform.model';
+import { ADMIN_API } from '../../../../routes/routesFile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MentorformService {
- private api: string = `${environment.BACKEND_DOMAIN}/api/admin/mentorForm`
+ private api: string = ADMIN_API.APPLICATION
   constructor( private httpClient: HttpClient) { }
 
   requestGetMentorForm(): Observable<IApplication[]> {
