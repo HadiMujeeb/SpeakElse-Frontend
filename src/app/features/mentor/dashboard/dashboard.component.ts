@@ -35,7 +35,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.sessionService.requestGetSessionByMentorId(this.mentor?.id || '').subscribe(
       (response: any) => {
-        console.log('Transactions:', response.transactions);
 
         // Calculate session stats
         this.totalAttendedSessions = response.rooms.filter((room: IMentorRoom) => room.status === 'ACTIVE').length;
@@ -75,9 +74,6 @@ export class DashboardComponent implements OnInit {
             return transactionDate.getFullYear() === this.currentYear;
           })
           .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
-
-        console.log('Monthly Revenue Data:', this.monthlyRevenueData);
-        console.log('Yearly Revenue Data:', this.yearlyRevenueData);
 
         // Initialize charts after data processing
         this.initializeMonthlyRevenueChart();

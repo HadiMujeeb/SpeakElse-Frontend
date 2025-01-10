@@ -70,7 +70,6 @@ export class MentorPofileContentComponent {
       // Set avatar preview if avatar is available
       if (this.mentor.avatar) {
         this.avatarPreview = this.mentor.avatar;
-        console.log(this.mentor.avatar);
       }
     }
 

@@ -44,7 +44,6 @@ export class MentorsSesstionsComponent implements OnInit {
         .sort((a: IMentorRoom, b: IMentorRoom) => {
           return b.createdAt.getTime() - a.createdAt.getTime(); // Sort by createdAt
         });
-      console.log(this.sessions);
     });
   }
 

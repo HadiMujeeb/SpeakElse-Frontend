@@ -29,7 +29,6 @@ export class ReportsListComponent implements OnInit {
     
       this.reportServices.requestGetAllReports().subscribe(
         (res: any) => {
-          console.log(res.data);
           this.reports = res.data;
           this.totalReports = this.reports.length;
           this.pendingReports = this.reports.filter((r) => r.status === 'PENDING').length;
@@ -40,10 +39,6 @@ export class ReportsListComponent implements OnInit {
         }
       )
   
-
-    // this.totalReports = this.reports.length;
-    // this.pendingReports = this.reports.filter((r) => r.status === 'PENDING').length;
-    // this.filterReports(this.activeStatus); // Initial filter by pending reports
   }
 
   filterReports(status: string): void {

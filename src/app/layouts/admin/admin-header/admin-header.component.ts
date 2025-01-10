@@ -17,7 +17,6 @@ export class AdminHeaderComponent implements OnInit{
 router = inject(Router)
 ngOnInit(): void {
   const adminData = localStorage.getItem('adminData');
-  console.log(JSON.parse(adminData||'{}'));
   if (adminData) {
     this.admin = JSON.parse(adminData);
   }
@@ -25,7 +24,6 @@ ngOnInit(): void {
 
 
 logout():void{
-  // console.log('logout',this.admin);
 this.adminServices.requestLogoutAdmin().subscribe(() =>{
   localStorage.removeItem('adminData');
   localStorage.removeItem('adminToken');

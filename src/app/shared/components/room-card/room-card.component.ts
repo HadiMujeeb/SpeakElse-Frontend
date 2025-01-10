@@ -62,7 +62,6 @@ export class RoomCardComponent implements OnInit {
      this.filteredRooms = [...this.rooms];
      this.applyFilters();
      this.userRoomServices.sendRooms(this.rooms);
-     console.log(this.totalPages,this.totalRooms);
 
    })
   }

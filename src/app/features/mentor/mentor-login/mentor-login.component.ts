@@ -53,7 +53,7 @@ export class MentorLoginComponent {
         (response) => {
           console.log('Login successful:', response);
           localStorage.setItem('mentorToken', response.accessToken);
-          this.router.navigate(['/mentor/main']);
+          this.router.navigate(['/mentor/main/dashboard']);
         },
         (error) => {
           console.log(error); 

@@ -176,7 +176,6 @@ export class OTPComponent implements OnInit, OnDestroy {
       this.showError = false;
 
       const email = this.getEmail();
-      console.log('email', email);
 
       if (!email) {
         this.showError = true;
@@ -191,7 +190,6 @@ export class OTPComponent implements OnInit, OnDestroy {
       this.AuthServices.VerifyOtp(data).subscribe({
         next: (response) => {
           if (response.message) {
-            console.log('OTP verification successful:', response.message);
             localStorage.setItem('accessToken', response.accessToken);
             this.router.navigate(['/user/home']);
           }

@@ -18,7 +18,7 @@ export class WsService {
   userData: IMember = JSON.parse(localStorage.getItem('userData') || '{}');
   constructor() {
     // Initialize the socket connection to the server
-    this.socket = io('ws://localhost:3000');
+    this.socket = io('wss://speakelse-api.sofazen.online');
     this.socket.on('new chat message', (message: string) => {
       this.messageSubject.next(message);
       console.log("new message",message);

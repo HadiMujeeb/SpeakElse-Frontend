@@ -105,7 +105,6 @@ export class RegisterComponent implements OnInit {
       const email = this.registrationForm.get('email')?.value;
       localStorage.setItem('email', email);
       localStorage.removeItem('remainingTime');
-      console.log('Form Submitted:', this.registrationForm.value);
 
       const credentials: IUserRegisterationCredentials =
         this.registrationForm.value;

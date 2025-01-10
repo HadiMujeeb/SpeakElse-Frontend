@@ -15,7 +15,6 @@ export const authMentorGuard: CanActivateFn = (route, state): Observable<boolean
        return true
    }),
    catchError(() =>{
-    console.log("working")
     localStorage.removeItem('mentorToken');
     localStorage.removeItem('mentorData');
     router.navigate(['/mentor/login']);

@@ -37,7 +37,6 @@ export class ChatComponent implements OnInit {
   
     this.friendChatServices.requestGetAllChat(this.userId).subscribe((chats: any) => {
       this.FriendsChats = chats.chats
-      console.log(this.FriendsChats);
     });
 
   }

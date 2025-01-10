@@ -130,7 +130,6 @@ export class AdminWalletComponent implements OnInit {
 
   ngOnInit(): void {
     this.reportService.requestGellAllTransactions().subscribe((res: any) => {
-      console.log(res.data);
       this.AllTransactions = res.data;
       this.SelectedData = res.data;
       this.updatePagination();

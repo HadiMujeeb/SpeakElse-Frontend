@@ -54,64 +54,6 @@ export class MysessionComponent implements OnInit {
     // });
   }
 
-  // Payment Integration Logic
-  // initiatePayment(session: IMentorRoom) {
-  //   this.sessionAmount = session.bookingFee;
-  //   const bookingFee = session.bookingFee * 100; // Convert to paise (for Razorpay)
-  //   const options = {
-  //     key: 'rzp_test_htApscPSpx9Vqx',
-  //     amount: bookingFee, 
-  //     currency: 'INR',
-  //     name: 'Mentor Booking',
-  //     description: `Booking session with ${session.topic}`,
-  //     image: 'https://example.com/your_logo', 
-  //     handler: (response: any) => {
-  //       this.verifyPayment(response, session.id, session.mentorId);
-  //     },
-  //     prefill: {
-  //       name: this.user.name,
-  //       email: this.user.email,
-  //       contact: this.user.phone,
-  //     },
-  //     notes: {
-  //       sessionId: session.id,
-  //     },
-  //     theme: {
-  //       color: '#3399cc',
-  //     },
-  //   };
-
-  //   const paymentObject = new Razorpay(options);
-  //   paymentObject.open();
-  // }
-
-  // Payment Verification Logic
-  // verifyPayment(response: any, sessionId: string, mentorId: string) {
-  //   const transactionData: ITransaction = {
-  //     userId: this.user.id,
-  //     mentorId: mentorId,
-  //     fundReceiverId: platFormId,
-  //     amount: this.sessionAmount,
-  //     type: "Session Booking",
-  //     status: "CREDITED",
-  //     transactionId: response.razorpay_payment_id || null,
-  //     paymentMethod: "Razorpay",
-  //     sessionId: sessionId,
-  //     description: `Payment for session: ${sessionId}`,
-  //   };
-
-  //   this.roomService.requestVerifyPayment(transactionData).subscribe(
-  //     (res) => {
-  //       console.log('Payment verification successful:', res.message);
-  //       this.getUserSessions(); // Refresh after payment verification
-  //     },
-  //     (err) => {
-  //       console.error('Payment verification failed:', err);
-  //     }
-  //   );
-  // }
-
-  // Navigate to session room
   joinSession(roomId: string) {
     this.router.navigate([`/user/room/${roomId}`]);
   }

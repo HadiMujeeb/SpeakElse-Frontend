@@ -43,7 +43,6 @@ export class CreateRoomModalComponent implements OnInit {
 
       this.userRoomServices.requestAddRoom(data).subscribe(
         (response: any) => {
-          console.log('Room created successfully:', response.room);
 
           this.userRoomServices.sendCreateRoom(response.room);
 

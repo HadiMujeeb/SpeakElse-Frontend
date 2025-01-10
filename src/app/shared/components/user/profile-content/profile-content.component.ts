@@ -50,7 +50,6 @@ export class ProfileContentComponent implements OnInit {
       // Fetch ratings from the API
       this.userProfileServices.requestGetFriendRating(this.user.id).subscribe(
         (ratings: IReponseRatings[]) => {
-          console.log(ratings, 'ratings');
           this.processRatings(ratings);
         },
         (error) => {
@@ -72,7 +71,6 @@ export class ProfileContentComponent implements OnInit {
         ratingCounts[starsIndex]++;
       }
       totalRating += rating.rating;
-     console.log(rating.rating, 'rating');
       return {
         name: rating.givenBy.name,
         date: new Date(rating.createdAt).toLocaleDateString(), // Format the date

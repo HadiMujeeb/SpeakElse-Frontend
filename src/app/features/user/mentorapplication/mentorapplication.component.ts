@@ -21,8 +21,8 @@ import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.compon
 export class MentorapplicationComponent {
   applicationForm!: FormGroup;
   submitted = false;
-  selectedFile: File | null = null; // For resume
-  selectedAvatar: File | null = null; // For avatar
+  selectedFile: File | null = null;
+  selectedAvatar: File | null = null; 
   avatarInvalid: boolean = false;
   resumeInvalid: boolean = false;
   private authMentorService = inject(MentorauthService);

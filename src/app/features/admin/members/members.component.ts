@@ -81,7 +81,6 @@ export class MembersComponent implements OnInit {
 
 
   filterMembers(role: string): void {
-    console.log('Role:', role);
     this.activeRole = role;
     this.filteredMembers =
       role === 'USER'
@@ -89,7 +88,6 @@ export class MembersComponent implements OnInit {
         : role === 'ADMIN'
         ? this.members.filter((member) => member.role === 'ADMIN')
         : [...this.members];
-        console.log('Filtered Members:', this.filteredMembers);
   }
 
   requestAddMemberData(event: { data: IMember; file: File | null }): void {

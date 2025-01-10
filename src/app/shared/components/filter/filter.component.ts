@@ -77,7 +77,6 @@ export class FilterComponent implements OnInit {
     this.room.emit();
   }
   openChatModal(): void {
-    console.log("wporf")
   this.openModal.emit();
   }
 }

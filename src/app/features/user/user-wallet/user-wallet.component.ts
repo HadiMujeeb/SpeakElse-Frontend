@@ -21,11 +21,9 @@ export class UserWalletComponent implements OnInit {
   AllRooms: IMentorRoom[] = [];
 
   ngOnInit(): void {
-    console.log(this.userData.userWallet?.balance);
     this.totalWalletAmount = this.userData.userWallet.balance;
     this.userWalletService.requestGellAllTransactions(this.userData.id).subscribe((response: any) => {
      this.AllRooms = response.rooms.filter((room: IMentorRoom) => room.participants.includes(this.userData.id));
-     console.log(this.AllRooms)
      this.allTransactions = response.transactions;
      this.allTransactions = this.allTransactions.map((transaction: ITransaction) => {
        transaction.room = this.AllRooms.find((room) => room.id === transaction.sessionId);
@@ -36,13 +34,6 @@ export class UserWalletComponent implements OnInit {
 
   // Calculate wallet summary from the transactions
   calculateSummary(): void {
-    // this.totalWalletAmount = this.allTransactions.reduce((total, transaction) => {
-    //   return transaction.status === '' ? total + transaction.amount : total;
-    // }, 0);
-
-    // this.successfulTransactionsCount = this.allTransactions.filter(
-    //   (transaction) => transaction.status === 'SUCCESS'
-    // ).length;
   }
   requestRefund(transaction: ITransaction): void {
     transaction.mentorId = this.AllRooms.find((room) => room.id === transaction.sessionId)?.mentorId
