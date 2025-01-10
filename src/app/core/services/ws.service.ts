@@ -4,6 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { IMember } from '../../shared/models/member.model';
 import { userData } from '../../shared/models/socket-io.model';
 import { IMessage } from '../../shared/models/chat-message.model';
+import { environment } from '../../../environment/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class WsService {
   userData: IMember = JSON.parse(localStorage.getItem('userData') || '{}');
   constructor() {
     // Initialize the socket connection to the server
-    this.socket = io('wss://speakelse-api.sofazen.online');
+    this.socket = io(environment.BACKEND_DOMAIN);
     this.socket.on('new chat message', (message: string) => {
       this.messageSubject.next(message);
       console.log("new message",message);
