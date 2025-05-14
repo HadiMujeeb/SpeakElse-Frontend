@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IRoom } from '../../models/room.model';
+import { IRoom, IUserCreatedRoom } from '../../models/room.model';
 import { RoomService } from '../../../core/services/user/room.service';
 import { CommonModule } from '@angular/common';
 
@@ -12,39 +12,50 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./filter.component.css'],
 })
 export class FilterComponent implements OnInit {
-  rooms: IRoom[] = [];
+  rooms: IUserCreatedRoom[] = [];
+  
   @Output() room = new EventEmitter<void>();
   @Output() openModal = new EventEmitter<void>();
   // Emit filters when they change
   @Output() filtersChanged = new EventEmitter<{
     language: string;
-    profession: string;
-    country: string;
     level: string;
+    country: string;
     topic: string;
+    availability: string;
+    search: string;
   }>();
 
   // Options for each filter field
   languageOptions: { label: string; value: string }[] = [];
-  professionOptions: { label: string; value: string }[] = [];
+  levelOptions: { label: string; value: string }[] = [
+    // { label: 'Beginner', value: 'beginner' },
+    // { label: 'Intermediate', value: 'intermediate' },
+    // { label: 'Advanced', value: 'advanced' },
+  ];
   countryOptions: { label: string; value: string }[] = [];
-  levelOptions: { label: string; value: string }[] = [];
   topicOptions: { label: string; value: string }[] = [];
+  availabilityOptions: { label: string; value: string }[] = [
+    { label: 'Online Now', value: 'online' },
+    { label: 'All Users', value: 'all' },
+  ];
 
   userRoomServices = inject(RoomService);
 
-  // Separate filters for each field
+  // Filters for each field
   filters = {
     language: '',
-    profession: '',
-    country: '',
     level: '',
+    country: '',
     topic: '',
+    availability: '',
+    search: '',
   };
 
   constructor() {}
 
   ngOnInit(): void {
+    // Subscribe to the room service to get rooms data
     this.userRoomServices.room$.subscribe((rooms) => {
       this.rooms = rooms;
       this.populateFilterOptions();
@@ -53,30 +64,37 @@ export class FilterComponent implements OnInit {
 
   populateFilterOptions(): void {
     this.languageOptions = [
-      ...new Set(this.rooms.map((room) => room.language)),
-    ].map((language) => ({ label: language, value: language }));
+      ...new Set(this.rooms.map((room) => room.language).filter((lang) => lang !== undefined)),
+    ].map((language) => ({ label: language as string, value: language as string }));
 
-    this.levelOptions = [...new Set(this.rooms.map((room) => room.level))].map(
-      (level) => ({ label: level, value: level })
-    );
-
-    this.topicOptions = [...new Set(this.rooms.map((room) => room.topic))].map(
-      (topic) => ({ label: topic, value: topic })
-    );
+    this.countryOptions = [
+      ...new Set(this.rooms.map((room) => room?.creator?.country).filter((country) => country !== undefined)),
+    ].map((country) => ({ label: country as string, value: country as string }));
+    this.topicOptions = [
+      ...new Set(this.rooms.map((room) => room.topic).filter((topic) => topic !== undefined)),
+    ].map((topic) => ({ label: topic as string, value: topic as string }));
+    this.levelOptions = [
+      ...new Set(this.rooms.map((room) => room.level).filter((level) => level !== undefined)),
+    ].map((level) => ({ label: level as string, value: level as string }));
   }
 
   applyFilters(): void {
+    this.filtersChanged.emit(this.filters);
     this.userRoomServices.updateFilters(this.filters);
   }
 
-  clearFilter(fieldName: string): void {
+  clearFilter(fieldName: keyof typeof this.filters): void {
+    this.filters[fieldName] = '';
     this.applyFilters();
   }
 
   createRoom(): void {
+    // Emit an event to create a new room
     this.room.emit();
   }
+
   openChatModal(): void {
-  this.openModal.emit();
+    // Emit an event to open the chat modal
+    this.openModal.emit();
   }
 }

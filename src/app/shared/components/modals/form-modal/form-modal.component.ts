@@ -35,15 +35,22 @@ export class FormModalComponent {
     this.initForm();
   }
 
-  initForm() {
-    this.fields.forEach((field) => {
-      const control = this.fb.control(
-        this.member ? this.member[field.name] : '',
-        field.errors ? Validators.required : null
-      );
-      this.memberForm.addControl(field.name, control);
-    });
-  }
+ initForm() {
+  this.fields.forEach((field) => {
+    let value = '';
+
+    if (this.member &&this.member[field.name] !== 'null') {
+      value = this.member[field.name];
+    }
+
+    const control = this.fb.control(
+      value,
+      field.errors ? Validators.required : null
+    );
+    this.memberForm.addControl(field.name, control);
+  });
+}
+
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -55,8 +62,6 @@ export class FormModalComponent {
   onSubmit() {
     // if (this.memberForm.valid) {
     const formData = this.memberForm.value;
-    console.log('workinreifnrei');
-    // Emit the data based on the ActionType
     if (this.ActionType === ModalAction.AddMember) {
       this.AddMember.emit({ data: formData, file: this.selectedFile });
     } else if (this.ActionType === ModalAction.EditMentor) {

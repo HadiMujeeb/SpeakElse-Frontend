@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { loginFields } from '../../../shared/FieldConfigs/login-form.config';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { MentorauthService } from '../../../core/services/mentor/mentorauth.serv
   templateUrl: './mentor-login.component.html',
   styleUrl: './mentor-login.component.css'
 })
-export class MentorLoginComponent {
+export class MentorLoginComponent implements OnDestroy{
   AuthUserServices = inject(AuthUserService);
   authMentorServices = inject(MentorauthService);
   router = inject(Router);
@@ -25,8 +25,7 @@ export class MentorLoginComponent {
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      remember: [false],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
@@ -71,6 +70,9 @@ export class MentorLoginComponent {
       this.loginForm.markAllAsTouched();
     }
   }
-
+ 
+  ngOnDestroy(): void {
+    console.log("mentor destory....")
+  }
 
 }

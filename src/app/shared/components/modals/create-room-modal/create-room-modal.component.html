@@ -1,31 +1,49 @@
 <div
   id="create-room-modal"
-  class="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50"
+  class="fixed inset-0 z-50 flex items-start justify-center w-full h-full bg-black/20 transition-opacity duration-500 pt-44"
 >
-  <div class="relative p-6 w-full max-w-md bg-gray-800 rounded-lg shadow-lg">
-    <h2 class="text-lg font-semibold text-gray-300 mb-4">Create a New Room</h2>
+  <div
+    class="relative p-5 w-full max-w-3xl bg-[#C8A1E0] rounded-none shadow-2xl transform transition-all duration-500 scale-100 hover:scale-102"
+  >
+    <!-- Close Button -->
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="absolute top-3 right-3 text-gray-800 hover:text-purple-600 transition-colors duration-200"
+      aria-label="Close modal"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
 
-    <form [formGroup]="groupForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Modal Header -->
+    <h2
+      class="text-2xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-[#C8A1E0] to-purple-600 mb-4"
+    >
+      Create Your Room
+    </h2>
+
+    <!-- Form -->
+    <form [formGroup]="groupForm" (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-3">
       <!-- Topic Field -->
       <div>
-        <label for="topic" class="block text-sm font-medium text-gray-300">Topic</label>
+        <label for="topic" class="block text-xs font-medium text-gray-800">Topic</label>
         <input
           type="text"
           id="topic"
           formControlName="topic"
           placeholder="Enter a topic"
-          class="w-full mt-1 p-2.5 text-gray-900 rounded-lg bg-gray-700 border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+          class="w-full mt-1 p-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C8A1E0] focus:border-transparent transition-all duration-300 placeholder-gray-400"
           [ngClass]="{
-            'border-red-600': groupForm.controls['topic'].invalid && groupForm.controls['topic'].touched
+            'border-purple-500': groupForm.controls['topic'].invalid && groupForm.controls['topic'].touched
           }"
         />
         <div
           *ngIf="groupForm.controls['topic'].invalid && groupForm.controls['topic'].touched"
-          class="text-red-600 text-sm mt-1"
+          class="text-red-500 text-xs mt-1 animate-pulse"
         >
-          <div *ngIf="groupForm.controls['topic'].errors?.['required']">
-            Topic is required.
-          </div>
+          <div *ngIf="groupForm.controls['topic'].errors?.['required']">Topic is required.</div>
           <div *ngIf="groupForm.controls['topic'].errors?.['whitespace']">
             Topic cannot contain only spaces.
           </div>
@@ -34,14 +52,14 @@
 
       <!-- Maximum People Field -->
       <div>
-        <label for="maxPeople" class="block text-sm font-medium text-gray-300">Maximum People</label>
+        <label for="maxPeople" class="block text-xs font-medium text-gray-800">Maximum People</label>
         <select
           id="maxPeople"
           formControlName="maxPeople"
-          class="w-full mt-1 p-2.5 text-gray-900 rounded-lg bg-gray-700 border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+          class="w-full mt-1 p-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C8A1E0] focus:border-transparent transition-all duration-300"
         >
-          <option value="unlimited">Unlimited</option>
-          <option *ngFor="let option of maxPeopleOptions" [value]="option">
+          <option value="unlimited" class="bg-[#C8A1E0]">Unlimited</option>
+          <option *ngFor="let option of maxPeopleOptions" [value]="option" class="bg-[#C8A1E0]">
             {{ option }}
           </option>
         </select>
@@ -49,24 +67,22 @@
 
       <!-- Language Field -->
       <div>
-        <label for="language" class="block text-sm font-medium text-gray-300">Language</label>
+        <label for="language" class="block text-xs font-medium text-gray-800">Language</label>
         <input
           type="text"
           id="language"
           formControlName="language"
           placeholder="Enter language"
-          class="w-full mt-1 p-2.5 text-gray-900 rounded-lg bg-gray-700 border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+          class="w-full mt-1 p-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C8A1E0] focus:border-transparent transition-all duration-300 placeholder-gray-400"
           [ngClass]="{
-            'border-red-600': groupForm.controls['language'].invalid && groupForm.controls['language'].touched
+            'border-purple-500': groupForm.controls['language'].invalid && groupForm.controls['language'].touched
           }"
         />
         <div
           *ngIf="groupForm.controls['language'].invalid && groupForm.controls['language'].touched"
-          class="text-red-600 text-sm mt-1"
+          class="text-red-500 text-xs mt-1 animate-pulse"
         >
-          <div *ngIf="groupForm.controls['language'].errors?.['required']">
-            Language is required.
-          </div>
+          <div *ngIf="groupForm.controls['language'].errors?.['required']">Language is required.</div>
           <div *ngIf="groupForm.controls['language'].errors?.['whitespace']">
             Language cannot contain only spaces.
           </div>
@@ -75,33 +91,56 @@
 
       <!-- Level Field -->
       <div>
-        <label for="level" class="block text-sm font-medium text-gray-300">Level</label>
+        <label for="level" class="block text-xs font-medium text-gray-800">Level</label>
         <select
           id="level"
           formControlName="level"
-          class="w-full mt-1 p-2.5 text-gray-900 rounded-lg bg-gray-700 border border-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+          class="w-full mt-1 p-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C8A1E0] focus:border-transparent transition-all duration-300"
         >
-          <option *ngFor="let level of levelOptions" [value]="level">
+          <option *ngFor="let level of levelOptions" [value]="level" class="bg-[#C8A1E0]">
             {{ level }}
           </option>
         </select>
       </div>
 
+      <!-- <div>
+        <label for="privacy" class="block text-xs font-medium text-gray-800">Privacy</label>
+        <select
+          id="privacy"
+          formControlName="privacy"
+          class="w-full mt-1 p-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C8A1E0] focus:border-transparent transition-all duration-300"
+        >
+          <option *ngFor="let privacy of privacyOptions" [value]="privacy" class="bg-[#C8A1E0]">
+            {{ privacy }}
+          </option>
+        </select>
+      </div> -->
+
       <!-- Actions -->
-      <div class="flex justify-end space-x-4">
+      <div class="col-span-2 flex justify-end space-x-2 pt-3">
         <button
           type="button"
           (click)="onCancel()"
-          class="px-4 py-2 text-gray-300 bg-transparent rounded-lg border border-gray-500 hover:bg-gray-700"
+          class="px-4 py-2 text-sm text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors duration-300"
         >
           Cancel
         </button>
         <button
           type="submit"
-          class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          [disabled]="groupForm.invalid"
+          class="px-4 py-2 text-sm text-white bg-gradient-to-r from-[#C8A1E0] to-purple-600 rounded-md hover:from-purple-500 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+          [disabled]="groupForm.invalid || isSubmitting"
         >
-          Create Room
+          <span *ngIf="isSubmitting" class="animate-spin mr-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+          </span>
+          {{ isSubmitting ? 'Creating...' : 'Create Room' }}
         </button>
       </div>
     </form>

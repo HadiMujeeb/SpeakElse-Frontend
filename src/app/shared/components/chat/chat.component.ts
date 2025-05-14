@@ -1,87 +1,210 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EventEmitter, inject, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { IUser } from '../../models/member.model';
-import { ChatingPageComponent } from '../chating-page/chating-page.component';
+import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { FriendChatService } from '../../../core/services/friend-chat.service';
-import { IChat } from '../../models/chat-message.model';
+import { IChat, IMessage } from '../../models/chat-message.model';
+import { WsService } from '../../../core/services/ws.service';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChatingPageComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './chat.component.html',
-  styleUrl: './chat.component.css',
+  styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewChecked {
   @Output() close = new EventEmitter<void>();
-  activeTab: string = 'friends';
+  @ViewChild('chatContainer') private chatContainer!: ElementRef;
+
+  // Chat state
+  activeTab: 'friends' | 'chats' = 'friends';
+  selectedList: 'followers' | 'following' = 'followers';
   searchQuery: string = '';
-  selectedFriend: IUser | null = null; 
-  userProfileServices = inject(UserProfileService);
+  isOpen: boolean = true;
+  
+  // User data
   userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
   friends: IUser[] = [];
   filteredFriends: IUser[] = [];
-  FriendsChats: IChat[] = [];
-  Chat: IChat|null = null;
-  selectedList='followers'
   followers: IUser[] = [];
   following: IUser[] = [];
-  friendChatServices = inject(FriendChatService)
-  ngOnInit(): void {
-    this.userProfileServices.requestGetAllFriends(this.userId).subscribe((friends: any) => {
-      this.followers = friends.followers;
-      this.following = friends.following;
-    });
   
-    this.friendChatServices.requestGetAllChat(this.userId).subscribe((chats: any) => {
-      this.FriendsChats = chats.chats
+  // Chat data
+  chats: IChat[] = [];
+  filteredChats: IChat[] = [];
+  currentChat: IChat | null = null;
+  newMessage: string = '';
+  status: string = '';
+
+  // Services
+  userProfileServices = inject(UserProfileService);
+  friendChatServices = inject(FriendChatService);
+  wsService = inject(WsService);
+
+  ngOnInit(): void {
+    this.loadFriends();
+    this.loadChats();
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  // Data loading methods
+  private loadFriends() {
+    this.userProfileServices.requestGetAllFriends(this.userId).subscribe({
+      next: (friends: any) => {
+        this.followers = friends.followers || [];
+        this.following = friends.following || [];
+        this.selectList('followers');
+      },
+      error: (error) => {
+        console.error('Error fetching friends:', error);
+      },
     });
-
   }
 
+  private loadChats() {
+    this.friendChatServices.requestGetAllChat(this.userId).subscribe({
+      next: (chats: any) => {
+        const seen = new Set();
+        this.chats = (chats.chats || []).filter((chat: IChat) => {
+          const key = chat.friend?.id;
+          if (key && !seen.has(key)) {
+            seen.add(key);
+            return true;
+          }
+          return false;
+        });
+        this.filteredChats = [...this.chats];
+      },
+      error: (error) => {
+        console.error('Error fetching chats:', error);
+      },
+    });
+  }
+
+  // UI interaction methods
   onSearch() {
-    this.filteredFriends = this.friends.filter((friend) =>
-      friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-  }
-  setActiveTab(tab: string) {
-    if ( tab==='chats') {
-    this.activeTab = tab;
-  }else if (tab === 'friends') {
-    this.activeTab = tab;
-  }
+    if (this.activeTab === 'friends') {
+      const source = this.selectedList === 'followers' ? this.followers : this.following;
+      this.filteredFriends = source.filter((friend) =>
+        friend.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else if (this.activeTab === 'chats') {
+      this.filteredChats = this.chats.filter((chat) =>
+        chat.friend?.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
   }
 
+  setActiveTab(tab: 'friends' | 'chats') {
+    this.activeTab = tab;
+    this.searchQuery = '';
+    if (tab === 'friends') {
+      this.selectList(this.selectedList);
+    } else if (tab === 'chats') {
+      this.filteredChats = [...this.chats];
+    }
+  }
 
+  selectList(list: 'followers' | 'following') {
+    this.selectedList = list;
+    this.filteredFriends = list === 'followers' ? [...this.followers] : [...this.following];
+    this.onSearch();
+  }
+
+  // Chat methods
   openChat(friendId: string) {
-    const chat=this.FriendsChats.find((chat) => chat.friend?.id === friendId)??null
-    if (chat) {
-     this.Chat = chat
+    if (!friendId) return;
+    
+    // Check if chat already exists
+    let existingChat = this.chats.find((chat) => chat.friend?.id === friendId);
+    
+    if (existingChat) {
+      this.currentChat = existingChat;
+      this.wsService.joinPrivateChat(this.currentChat.id);
+      this.setupWebSocketListeners();
     } else {
-      this.friendChatServices.requestCreateChat(this.userId, friendId).subscribe((chat: any) => {
-        this.Chat = chat.chat
+      // Create new chat
+      this.friendChatServices.requestCreateChat(this.userId, friendId).subscribe({
+        next: (response: any) => {
+          const newChat = response.chat;
+          if (!this.chats.some((chat) => chat.friend?.id === newChat.friend?.id)) {
+            this.chats.push(newChat);
+            this.filteredChats = [...this.chats];
+          }
+          this.currentChat = newChat;
+          // this.wsService.joinPrivateChat(this.currentChat.id);
+          this.setupWebSocketListeners();
+        },
+        error: (error) => {
+          console.error('Error creating chat:', error);
+        },
       });
     }
-}
+  }
+
+  private setupWebSocketListeners() {
+    this.wsService.onPrivateMessage().subscribe((message: IMessage) => {
+      if (this.currentChat && message.chatId === this.currentChat.id) {
+        this.currentChat.messages?.push(message);
+      }
+    });
+
+    this.wsService.onFriendStatus().subscribe((status: string) => {
+      this.status = status;
+    });
+  }
+
+  sendMessage() {
+    if (!this.newMessage.trim() || !this.currentChat) return;
+    
+    const message: IMessage = {
+      content: this.newMessage,
+      senderId: this.userId,
+      chatId: this.currentChat.id,
+      createdAt: new Date()
+    };
+
+    // Optimistically update UI
+    this.currentChat.messages = this.currentChat.messages || [];
+    this.currentChat.messages.push(message);
+    this.newMessage = '';
+    
+    // Send via WebSocket
+    this.wsService.sendPrivateMessage(message);
+    
+    // Persist to server
+    this.friendChatServices.requestSendMessage(message).subscribe({
+      next: (res) => console.log(res.message),
+      error: (err) => console.error('Error sending message:', err)
+    });
+  }
 
   closeChat() {
-    this.Chat = null
+    if (this.currentChat) {
+      const lastTime = `Last seen ${new Date()}`;
+      this.wsService.leavePrivateChat(this.currentChat.id, lastTime);
+    }
+    this.currentChat = null;
   }
 
   closeModal() {
-    this.close.emit();
+    this.closeChat();
+    this.isOpen = false;
+    setTimeout(() => this.close.emit(), 300);
   }
 
-  selectList(list: string) {
-    if(list =="followers"){
-      this.selectedList = list;
-      this.filteredFriends =[...this.followers]
-    }else if(list =="following"){
-      this.selectedList = list;
-      this.filteredFriends = [...this.following]
+  private scrollToBottom(): void {
+    try {
+      if (this.chatContainer) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }
+    } catch (err) {
+      console.error('Error while scrolling:', err);
     }
-   
   }
 }

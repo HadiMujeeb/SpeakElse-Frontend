@@ -6,6 +6,22 @@ export interface IProtectedDataResponse {
   user: IUser;
   accessToken: string;
 }
+  // export interface IUser {
+  //   id: string;
+  //   email: string;
+  //   password: string | null;
+  //   name: string;
+  //   avatar?: string | null;
+  //   profession?: string | null;
+  //   language?: string | null;
+  //   country?: string | null;
+  //   description?: string | null;
+  //   isVerified?: boolean;
+  //   isBlocked?: boolean;
+  //   comments?: IComment[];
+  //   userWallet: IuserWallet;
+
+  // }
 export interface IadminauthResponse {
   message: string;
   status: number;

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { WsService } from '../../../core/services/ws.service';
 import { PcService } from '../../../core/services/pc.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { IUser } from '../../../shared/models/member.model';
 import { UserProfileService } from '../../../core/services/user/user-profile.service';
 import { CallendComponent } from '../../../shared/components/callend/callend.component';
 import { ReportModalComponent } from '../../../shared/components/modals/report-modal/report-modal.component';
+import { RoomService } from '../../../core/services/user/room.service';
 // import { FriendChatService } from '../../../core/services/friend-chat.service';
 
 @Component({
@@ -33,7 +34,7 @@ import { ReportModalComponent } from '../../../shared/components/modals/report-m
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css'],
 })
-export class RoomComponent implements OnInit {
+export class RoomComponent implements OnInit , OnDestroy {
   modalOpen: boolean = false;
   screenSharing : boolean = false;
   getRaterId: string = '';
@@ -72,6 +73,7 @@ export class RoomComponent implements OnInit {
   }
   // Injected services
   router = inject(Router);
+  userRoomServices = inject(RoomService);
   userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
 
   constructor(
@@ -86,6 +88,10 @@ export class RoomComponent implements OnInit {
     this.subscribeToStreamEvents();
     this.subscribeToSocketEvents();
     this.updateFriendsList();
+  }
+
+  ngOnDestroy(): void {
+    this.leaveRoom()
   }
 
   // Stream-related methods
@@ -150,11 +156,15 @@ export class RoomComponent implements OnInit {
   // Room control methods
   joinRoom(): void {
     this.isRoomJoined = true;
+
     this.roomID = this.activeRoute.snapshot.paramMap.get('roomId') || '';
     if (this.roomID) {
       this.wsService.joinRoom(this.roomID);
+      this.userRoomServices.updateRoomWithParticipant(this.roomID, this.userId,1);
+      this.wsService.updateRoomCountWithParticipant(this.roomID, this.userId);
     }
   }
+  
 
   leaveRoom(): void {
     this.wsService.leaveRoom(this.localStream?.userId || '');
@@ -254,4 +264,6 @@ export class RoomComponent implements OnInit {
     this.reportUserId = userId;
     console.log(this.reportUserId);
   }
+
+  
 }

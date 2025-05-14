@@ -19,7 +19,6 @@ import { RoomComponent } from '../app/features/user/room/room.component';
 import { guestOnlyGuard } from '../app/core/guards/guestOnly.guard';
 import { RatingComponent } from '../app/shared/components/rating/rating.component';
 import { ChatSidebarComponent } from '../app/shared/components/video-conference/room-chat/chat-sidebar.component';
-import { ChatComponent } from '../app/shared/components/chat/chat.component';
 import { ChatingPageComponent } from '../app/shared/components/chating-page/chating-page.component';
 import { authAdminLoginGuard } from '../app/core/guards/auth-admin-login.guard';
 import { CallendComponent } from '../app/shared/components/callend/callend.component';

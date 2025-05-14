@@ -2,8 +2,8 @@
     <div class="container mx-auto flex justify-between items-center">
       <!-- Logo -->
       <div class="flex items-center space-x-2">
-        <img [src]="logoUrl" alt="Logo" class="h-10 w-auto">
-        <span class="text-2xl font-bold">{{ brandName }}</span>
+        <img [src]="logoUrl" routerLink="/user/home" alt="Logo" class="h-10 w-auto">
+        <span class="text-2xl font-bold hover:text-purple-200" routerLink="/user/home">{{ brandName }}</span>
       </div>
   
       <!-- Navigation -->
@@ -28,12 +28,17 @@
         <ng-template #profileMenu>
           <div class="relative mr-3">
             <!-- Profile Image -->
-            <img 
+            @if(user.avatar){
+              <img 
               [src]="user.avatar"
               alt="Profile" 
               class="h-10 w-10 rounded-full cursor-pointer" 
               (click)="toggleDropdown()">
-  
+            }@else{
+              <img  src="assets/images/defaultImage.avif"alt="Profile" 
+              class="h-10 w-10 rounded-full cursor-pointer" 
+              (click)="toggleDropdown()">
+            }
             <!-- Dropdown Menu -->
             <ul 
               class="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg transition-all duration-300 ease-in-out"

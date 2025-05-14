@@ -1,144 +1,148 @@
-<div class="max-w-screen-xl mx-auto py-10 px-6 lg:px-8">
+<div class="max-w-screen-xl mx-auto py-12 px-6 lg:px-8 relative">
+  <!-- Background Decorative Element -->
+  <div class="absolute inset-0 opacity-10 pointer-events-none">
+    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path d="M0,0 C50,30 50,70 100,100 L100,0 Z" fill="#2E4A7D" />
+    </svg>
+  </div>
+
   <!-- Main Profile Section -->
   <div class="flex flex-col md:flex-row gap-12">
-    <div class="md:w-2/3 bg-white shadow-lg rounded-xl p-8">
+    <!-- Profile Card -->
+    <div class="md:w-2/3 bg-white shadow-xl rounded-2xl p-8 transform hover:shadow-2xl transition-shadow duration-300">
       <!-- Profile Header Section -->
-      <div class="flex items-center gap-8 mb-6">
-        <img class="h-32 w-32 rounded-full border-4 border-indigo-500 shadow-md" [src]="mentor?.avatar" alt="Mentor Avatar" />
-        <div>
-          <h3 class="text-3xl font-semibold text-gray-900">{{ mentor?.name }}</h3>
-          <p class="text-lg text-gray-600 mt-2">{{ mentor?.mentorRole }}</p>
-          <p class="text-md text-gray-500 mt-3">Email: <span class="text-gray-800">{{ mentor?.email }}</span></p>
-          <p class="text-md text-gray-500 mt-1">Country: <span class="text-gray-800">{{ mentor?.country }}</span></p>
-          <p class="text-md text-gray-500 mt-1">Language: <span class="text-gray-800">{{ mentor?.language }}</span></p>
+      <div class="flex flex-col sm:flex-row items-center gap-8 mb-8">
+        <img class="h-36 w-36 rounded-full border-4 border-[#4A90E2] shadow-md object-cover" [src]="mentor?.avatar" alt="Mentor Avatar" />
+        <div class="text-center sm:text-left">
+          <h3 class="text-4xl font-bold text-[#2E4A7D]">{{ mentor?.name }}</h3>
+          <p class="text-lg text-[#2E4A7D]/80 mt-2">{{ mentor?.mentorRole }}</p>
+          <p class="text-md text-[#2E4A7D]/60 mt-3">Email: <span class="text-[#2E4A7D]">{{ mentor?.email }}</span></p>
+          <p class="text-md text-[#2E4A7D]/60 mt-1">Country: <span class="text-[#2E4A7D]">{{ mentor?.country }}</span></p>
+          <p class="text-md text-[#2E4A7D]/60 mt-1">Language: <span class="text-[#2E4A7D]">{{ mentor?.language }}</span></p>
         </div>
       </div>
 
       <!-- Ratings & Pricing Section -->
       <div class="flex items-center justify-between mt-8">
         <div class="flex items-center space-x-2">
-          <span class="text-yellow-400 text-xl">★★★★★</span>
-          <!-- <span class="text-lg text-gray-600">{{ profile.rating }} ({{ profile.reviews }} reviews)</span> -->
+          <span class="text-[#4A90E2] text-xl">★★★★★</span>
+          <!-- Uncomment if rating data is available -->
+          <!-- <span class="text-lg text-[#2E4A7D]/80">{{ profile.rating }} ({{ profile.reviews }} reviews)</span> -->
         </div>
       </div>
 
       <!-- Description Section -->
-      <div class="border-t border-gray-200 mt-8 pt-6">
-        <h4 class="text-xl font-semibold text-gray-800">About</h4>
-        <p class="text-md text-gray-700 mt-4">{{ mentor?.description }}</p>
+      <div class="border-t border-[#4A90E2]/20 mt-8 pt-6">
+        <h4 class="text-2xl font-semibold text-[#2E4A7D]">About</h4>
+        <p class="text-md text-[#2E4A7D]/80 mt-4 leading-relaxed">{{ mentor?.description }}</p>
       </div>
 
       <!-- Edit Profile Button -->
-      <div class="mt-8 flex gap-6">
-        <button (click)="openEditModal()" class="w-full py-3 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition ease-in-out duration-300">
+      <div class="mt-8">
+        <button (click)="openEditModal()" class="w-full py-3 bg-[#4A90E2] text-white font-semibold rounded-lg shadow-md hover:bg-[#2E4A7D] transition ease-in-out duration-300">
           Edit Profile
         </button>
       </div>
     </div>
 
     <!-- Reviews Sidebar -->
-    <div class="md:w-1/3 bg-white shadow-lg rounded-xl p-8">
-      <h3 class="text-2xl font-semibold text-gray-900">Client Reviews</h3>
-      <div class="mt-8 space-y-6">
-        <div *ngFor="let review of reviews; let i = index" class="bg-gray-50 p-6 rounded-xl shadow-md">
+    <div class="md:w-1/3 bg-white shadow-xl rounded-2xl p-8 transform hover:shadow-2xl transition-shadow duration-300">
+      <h3 class="text-3xl font-semibold text-[#2E4A7D] mb-8">Client Reviews</h3>
+      <div class="space-y-6">
+        <div *ngFor="let review of reviews; let i = index" class="bg-[#F7E1D7]/20 p-6 rounded-xl shadow-md">
           <div class="flex justify-between items-center mb-4">
-            <div>
-              <span class="font-semibold text-lg text-gray-900">Review {{ i + 1 }}</span>
-            </div>
-            <span class="text-yellow-400 text-lg">★★★★★ {{ review.rating }}</span>
+            <span class="font-semibold text-lg text-[#2E4A7D]">Review {{ i + 1 }}</span>
+            <span class="text-[#4A90E2] text-lg">★★★★★ {{ review.rating }}</span>
           </div>
-          <p class="text-md text-gray-600">{{ review.feedback }}</p>
-          <div class="mt-4 text-sm text-gray-500">By: {{ review?.giverName }}</div>
+          <p class="text-md text-[#2E4A7D]/80">{{ review.feedback }}</p>
+          <div class="mt-4 text-sm text-[#2E4A7D]/60">By: {{ review?.giverName }}</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Edit Profile Modal -->
 <div *ngIf="isEditModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-xl shadow-xl w-full max-w-md">
-    <div class="flex justify-between items-center mb-3 text-white">
-      <h3 class="text-lg font-semibold">Edit Profile</h3>
-      <button (click)="closeEditModal()" class="text-gray-300 hover:text-white text-2xl">
-        &times;
-      </button>
+  <div class="bg-gradient-to-br from-[#F7E1D7] to-[#4A90E2] p-6 rounded-2xl shadow-2xl w-full max-w-lg">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-semibold text-[#2E4A7D]">Edit Profile</h3>
+      <button (click)="closeEditModal()" class="text-[#2E4A7D] hover:text-[#2E4A7D]/70 text-3xl">&times;</button>
     </div>
 
-    <form [formGroup]="mentorForm" (ngSubmit)="requestEditMemberData()">
-      <div class="space-y-3">
-        <!-- Name -->
-        <div>
-          <label class="text-sm font-medium text-white">Name</label>
-          <input type="text" class="mt-1 p-2 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            formControlName="name" required />
-          <div *ngIf="mentorForm.get('name')?.invalid && mentorForm.get('name')?.touched" class="text-red-400 text-xs mt-1">
-            Name is required
+    <form [formGroup]="mentorForm" (ngSubmit)="requestEditMemberData()" class="space-y-6">
+      <!-- Name -->
+      <div>
+        <label class="text-sm font-medium text-[#2E4A7D]">Name</label>
+        <input type="text" class="mt-1 p-3 w-full bg-white border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-200 placeholder-[#2E4A7D]/50"
+          formControlName="name" placeholder="Enter your name" required />
+        <div *ngIf="mentorForm.get('name')?.invalid && mentorForm.get('name')?.touched" class="text-[#E57373] text-xs mt-1">
+          Name is required
+        </div>
+      </div>
+
+      <!-- Avatar Display -->
+      <div>
+        <label class="text-sm font-medium text-[#2E4A7D]">Avatar (Image)</label>
+        <div class="mb-3 flex items-center space-x-4">
+          <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Current Avatar" class="w-16 h-16 object-cover rounded-full border-2 border-[#4A90E2]">
+          <div *ngIf="!avatarPreview" class="w-16 h-16 bg-[#F7E1D7]/50 rounded-full flex items-center justify-center text-[#2E4A7D]/50 text-xs">
+            No Image
           </div>
         </div>
+        <input type="file" class="mt-1 p-3 w-full bg-white border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-200"
+          (change)="onFileSelect($event)" />
+      </div>
 
-        <!-- Avatar Display -->
-        <div>
-          <label class="text-sm font-medium text-white">Avatar (Image)</label>
-          <div class="mb-2 flex items-center space-x-2">
-            <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Current Avatar" class="w-12 h-12 object-cover rounded-full">
-            <div *ngIf="!avatarPreview" class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white text-xs">
-              No Image
-            </div>
-          </div>
-          <input type="file" class="mt-1 p-2 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            (change)="onFileSelect($event)" />
+      <!-- Country -->
+      <div>
+        <label class="text-sm font-medium text-[#2E4A7D]">Country</label>
+        <input type="text" class="mt-1 p-3 w-full bg-white border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-200 placeholder-[#2E4A7D]/50"
+          formControlName="country" placeholder="Enter your country" required />
+        <div *ngIf="mentorForm.get('country')?.invalid && mentorForm.get('country')?.touched" class="text-[#E57373] text-xs mt-1">
+          Country is required
         </div>
+      </div>
 
-        <!-- Country -->
-        <div>
-          <label class="text-sm font-medium text-white">Country</label>
-          <input type="text" class="mt-1 p-2 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            formControlName="country" required />
-          <div *ngIf="mentorForm.get('country')?.invalid && mentorForm.get('country')?.touched" class="text-red-400 text-xs mt-1">
-            Country is required
-          </div>
+      <!-- Language -->
+      <div>
+        <label class="text-sm font-medium text-[#2E4A7D]">Language</label>
+        <input type="text" class="mt-1 p-3 w-full bg-white border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-200 placeholder-[#2E4A7D]/50"
+          formControlName="language" placeholder="Enter your language" required />
+        <div *ngIf="mentorForm.get('language')?.invalid && mentorForm.get('language')?.touched" class="text-[#E57373] text-xs mt-1">
+          Language is required
         </div>
+      </div>
 
-        <!-- Language -->
-        <div>
-          <label class="text-sm font-medium text-white">Language</label>
-          <input type="text" class="mt-1 p-2 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            formControlName="language" required />
-          <div *ngIf="mentorForm.get('language')?.invalid && mentorForm.get('language')?.touched" class="text-red-400 text-xs mt-1">
-            Language is required
-          </div>
+      <!-- Role -->
+      <div>
+        <label class="text-sm font-medium text-[#2E4A7D]">Role</label>
+        <input type="text" class="mt-1 p-3 w-full bg-white border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-200 placeholder-[#2E4A7D]/50"
+          formControlName="mentorRole" placeholder="Enter your role" required />
+        <div *ngIf="mentorForm.get('mentorRole')?.invalid && mentorForm.get('mentorRole')?.touched" class="text-[#E57373] text-xs mt-1">
+          Role is required
         </div>
+      </div>
 
-        <!-- Role -->
-        <div>
-          <label class="text-sm font-medium text-white">Role</label>
-          <input type="text" class="mt-1 p-2 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            formControlName="mentorRole" required />
-          <div *ngIf="mentorForm.get('mentorRole')?.invalid && mentorForm.get('mentorRole')?.touched" class="text-red-400 text-xs mt-1">
-            Role is required
-          </div>
+      <!-- Description -->
+      <div>
+        <label class="text-sm font-medium text-[#2E4A7D]">Description</label>
+        <textarea class="mt-1 p-3 w-full bg-white border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] transition-all duration-200 placeholder-[#2E4A7D]/50"
+          formControlName="description" placeholder="Enter your description" required rows="4"></textarea>
+        <div *ngIf="mentorForm.get('description')?.invalid && mentorForm.get('description')?.touched" class="text-[#E57373] text-xs mt-1">
+          Description is required
         </div>
+      </div>
 
-        <!-- Description -->
-        <div>
-          <label class="text-sm font-medium text-white">Description</label>
-          <textarea class="mt-1 p-2 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            formControlName="description" required></textarea>
-          <div *ngIf="mentorForm.get('description')?.invalid && mentorForm.get('description')?.touched" class="text-red-400 text-xs mt-1">
-            Description is required
-          </div>
-        </div>
-
-        <!-- Save and Cancel Buttons -->
-        <div class="flex items-center space-x-4">
-          <button type="button" (click)="closeEditModal()" class="w-full py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition ease-in-out duration-300">
-            Cancel
-          </button>
-          <button type="submit" class="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition ease-in-out duration-300"
+      <!-- Save and Cancel Buttons -->
+      <div class="flex items-center space-x-4">
+        <button type="button" (click)="closeEditModal()" class="w-full py-3 bg-[#2E4A7D]/80 text-white font-semibold rounded-lg hover:bg-[#2E4A7D] transition ease-in-out duration-300">
+          Cancel
+        </button>
+        <button type="submit" class="w-full py-3 bg-[#4A90E2] text-white font-semibold rounded-lg hover:bg-[#2E4A7D] transition ease-in-out duration-300"
           [disabled]="mentorForm.invalid">
           Save Changes
         </button>
-        </div>
       </div>
     </form>
   </div>

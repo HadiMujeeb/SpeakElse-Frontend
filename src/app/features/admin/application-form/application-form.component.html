@@ -1,157 +1,203 @@
-<div>
+<!-- application-forms.component.html -->
+<div class="p-6 bg-[#F9FAFB]">
   <!-- Header for Application List -->
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Application Forms</h1>
-    <div class="text-sm">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-[#1F2937]">Application Forms</h1>
+    <div class="text-sm text-[#6B7280]">
       <span>Total Applications: {{ totalApplications }}</span>
       <span class="ml-4">Pending: {{ pendingApplications }}</span>
     </div>
   </div>
 
   <!-- Filter Buttons for Status -->
-  <div class="bg-white rounded-lg shadow">
-    <div class="flex border-b">
+  <div class="bg-[#F9FAFB] rounded-lg shadow-md">
+    <div class="flex border-b border-[#6B7280]/20">
       <button
-        class="px-4 py-2 font-semibold"
+        class="px-4 py-2 font-semibold transition-all duration-200"
         [ngClass]="{
-          'text-blue-600 border-b-2 border-blue-600': activeFilter === 'PENDING',
-          'text-gray-600': activeFilter !== 'PENDING'
+          'text-[#10B981] border-b-2 border-[#10B981]': activeFilter === 'PENDING',
+          'text-[#6B7280] hover:text-[#1F2937]': activeFilter !== 'PENDING'
         }"
         (click)="filterApplications('PENDING')"
-      >Pending</button>
+      >
+        Pending
+      </button>
       <button
-        class="px-4 py-2 font-semibold"
+        class="px-4 py-2 font-semibold transition-all duration-200"
         [ngClass]="{
-          'text-blue-600 border-b-2 border-blue-600': activeFilter === 'APPROVED',
-          'text-gray-600': activeFilter !== 'APPROVED'
+          'text-[#10B981] border-b-2 border-[#10B981]': activeFilter === 'APPROVED',
+          'text-[#6B7280] hover:text-[#1F2937]': activeFilter !== 'APPROVED'
         }"
         (click)="filterApplications('APPROVED')"
-      >Approved</button>
+      >
+        Approved
+      </button>
       <button
-        class="px-4 py-2 font-semibold"
+        class="px-4 py-2 font-semibold transition-all duration-200"
         [ngClass]="{
-          'text-blue-600 border-b-2 border-blue-600': activeFilter === 'REJECTED',
-          'text-gray-600': activeFilter !== 'REJECTED'
+          'text-[#10B981] border-b-2 border-[#10B981]': activeFilter === 'REJECTED',
+          'text-[#6B7280] hover:text-[#1F2937]': activeFilter !== 'REJECTED'
         }"
         (click)="filterApplications('REJECTED')"
-      >Rejected</button>
+      >
+        Rejected
+      </button>
     </div>
 
     <!-- Application Table -->
     <div class="p-4">
-      <table class="w-full">
-        <thead>
-          <tr class="bg-gray-100">
-            <th *ngFor="let header of headers" class="px-4 py-2 text-left">{{ header.label }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let application of applications; let i = index">
-            <td class="border px-4 py-2">{{ i + 1 }}</td>
-            <td class="border px-4 py-2">{{ application.name }}</td>
-            <td class="border px-4 py-2">{{ application.email }}</td>
-            <td class="border px-4 py-2">{{ application.country }}</td>
-            <td class="border px-4 py-2">{{ application.mentorRole }}</td>
-            <td class="border px-4 py-2">
-              <button (click)="viewApplicationDetails(application.id)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200">View</button>
-            </td>
-            <td class="border px-4 py-2">
-              <button (click)="toggleVerification(application)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
-                {{ application.isVerified ? 'Unverify' : 'Verify' }}
-              </button>
-            </td>
-            <td class="border px-4 py-2">
-              <select [(ngModel)]="application.approvalStatus" (change)="updateApprovalStatus(application)">
-                <option value="APPROVED">Approved</option>
-                <option value="REJECTED">Rejected</option>
-              </select>
-            </td>
-          </tr>
-        </tbody>
-        
-      </table>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-[#F9FAFB]">
+              <th *ngFor="let header of headers" class="px-4 py-2 text-left text-[#6B7280] font-medium">{{ header.label }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let application of applications; let i = index" class="hover:bg-[#10B981]/5 transition-colors duration-200">
+              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ i + 1 }}</td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.name }}</td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.email }}</td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.country }}</td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.mentorRole }}</td>
+              <td class="border border-[#6B7280]/20 px-4 py-2">
+                <button
+                  (click)="viewApplicationDetails(application.id)"
+                  class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  View
+                </button>
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2">
+                <button
+                  (click)="toggleVerification(application)"
+                  class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  {{ application.isVerified ? 'Unverify' : 'Verify' }}
+                </button>
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2">
+                <select
+                  [(ngModel)]="application.approvalStatus"
+                  (change)="updateApprovalStatus(application)"
+                  class="w-full px-3 py-2 border border-[#6B7280]/50 rounded-md text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+                >
+                  <option value="APPROVED">Approved</option>
+                  <option value="REJECTED">Rejected</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="mt-4 flex justify-center">
-        <button class="px-3 py-1 border rounded mr-1">&lt;</button>
-        <button class="px-3 py-1 border rounded mr-1 bg-blue-500 text-white">1</button>
-        <button class="px-3 py-1 border rounded mr-1">2</button>
-        <button class="px-3 py-1 border rounded">&gt;</button>
+        <button
+          (click)="previousPage()"
+          class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded mr-1 hover:bg-[#10B981]/10 transition-colors duration-200 disabled:opacity-50"
+          [disabled]="page === 1"
+        >
+          <
+        </button>
+        <button
+          *ngFor="let p of totalPagesArray"
+          class="px-3 py-1 border border-[#6B7280]/50 rounded mr-1 text-[#1F2937] transition-colors duration-200"
+          [ngClass]="{'bg-[#10B981] text-[#F9FAFB]': page === p, 'hover:bg-[#10B981]/10': page !== p}"
+          (click)="goToPage(p)"
+        >
+          {{ p }}
+        </button>
+        <button
+          (click)="nextPage()"
+          class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded hover:bg-[#10B981]/10 transition-colors duration-200 disabled:opacity-50"
+          [disabled]="page === totalPages"
+        >
+          >
+        </button>
       </div>
     </div>
   </div>
 
-<!-- Modal for Viewing Application Details -->
-<div *ngIf="isModalOpen" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 transition-all">
-  <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 max-w-lg transform transition-transform scale-100">
-    <h2 class="text-2xl font-bold mb-4">Application Details for {{ selectedApplication?.name }}</h2>
-    
-    <!-- Resume Section -->
-    <div class="mb-4">
-      <h3 class="text-xl font-semibold mb-2">Resume:</h3>
-      <a href="{{ selectedApplication?.resume }}" target="_blank" class="text-blue-500 underline">Click to View Resume</a>
-    </div>
+  <!-- Modal for Viewing Application Details -->
+  <div *ngIf="isModalOpen" class="fixed inset-0 bg-[#1F2937]/50 flex justify-center items-center z-50 transition-all">
+    <div class="bg-[#F9FAFB] rounded-lg shadow-xl p-6 w-full max-w-lg transform transition-transform scale-100">
+      <h2 class="text-2xl font-bold text-[#1F2937] mb-4">Application Details for {{ selectedApplication?.name }}</h2>
 
-    <!-- User Details Section -->
-    <div class="mb-4">
-      <h3 class="text-xl font-semibold mb-2">User Details:</h3>
-      <p><strong>Name:</strong> {{ selectedApplication?.user?.name }}</p>
-      <p><strong>Email:</strong> {{ selectedApplication?.user?.email }}</p>
-      <p><strong>Country:</strong> {{ selectedApplication?.user?.country }}</p>
-      <p><strong>Language:</strong> {{ selectedApplication?.user?.language }}</p>
-      <p><strong>Profession:</strong> {{ selectedApplication?.user?.profession }}</p>
-    </div>
+      <!-- Resume Section -->
+      <div class="mb-4">
+        <h3 class="text-xl font-semibold text-[#1F2937] mb-2">Resume:</h3>
+        <a
+          href="{{ selectedApplication?.resume }}"
+          target="_blank"
+          class="text-[#10B981] underline hover:text-[#1F2937] transition-colors duration-200"
+        >
+          Click to View Resume
+        </a>
+      </div>
 
-    <!-- Feedback and Rating Section --><div class="mb-4">
-  <h3 class="text-xl font-semibold mb-4 text-gray-700">Feedback and Ratings</h3>
-  
-  <!-- Display Average Rating -->
-  <div class="flex justify-between mb-3">
-    <p class="text-sm text-gray-500">Average Rating:</p>
-    <div class="flex items-center">
-      <!-- Display average stars based on calculated average rating -->
-      <span *ngFor="let star of getStars(getAverageRating())" class="text-yellow-500">★</span>
-      <span class="ml-2 text-sm text-gray-500">({{ getAverageRating() | number: '1.1-1' }} / 5)</span>
-    </div>
-  </div>
-  
-  <!-- Display Total Feedback -->
-  <p class="text-sm text-gray-500 mb-3">
-    Total Feedback: <span class="font-bold">{{ selectedApplication?.user?.comments?.length ?? 0 }}</span>
-  </p>
-  
-  <!-- Feedback and Ratings List -->
-  <div *ngIf="selectedApplication?.user?.comments?.length ?? 0 > 0; else noFeedback">
-    <ul class="space-y-4">
-      <li *ngFor="let comment of selectedApplication?.user?.comments" class="bg-gray-50 p-4 rounded-lg shadow-md">
-        <div class="flex justify-between mb-2">
-          <p class="text-sm font-semibold text-gray-800">Feedback:</p>
-          <p class="text-sm text-gray-600">{{ comment.feedback }}</p>
+      <!-- User Details Section -->
+      <div class="mb-4">
+        <h3 class="text-xl font-semibold text-[#1F2937] mb-2">User Details:</h3>
+        <p class="text-[#1F2937]"><strong>Name:</strong> {{ selectedApplication?.user?.name }}</p>
+        <p class="text-[#1F2937]"><strong>Email:</strong> {{ selectedApplication?.user?.email }}</p>
+        <p class="text-[#1F2937]"><strong>Country:</strong> {{ selectedApplication?.user?.country }}</p>
+        <p class="text-[#1F2937]"><strong>Language:</strong> {{ selectedApplication?.user?.language }}</p>
+        <p class="text-[#1F2937]"><strong>Profession:</strong> {{ selectedApplication?.user?.profession }}</p>
+      </div>
+
+      <!-- Feedback and Rating Section -->
+      <div class="mb-4">
+        <h3 class="text-xl font-semibold text-[#1F2937] mb-4">Feedback and Ratings</h3>
+
+        <!-- Display Average Rating -->
+        <div class="flex justify-between mb-3">
+          <p class="text-sm text-[#6B7280]">Average Rating:</p>
+          <div class="flex items-center">
+            <span *ngFor="let star of getStars(getAverageRating())" class="text-[#10B981]">★</span>
+            <span class="ml-2 text-sm text-[#6B7280]">({{ getAverageRating() | number: '1.1-1' }} / 5)</span>
+          </div>
         </div>
-        <div class="flex justify-between">
-          <p class="text-sm font-semibold text-gray-800">Rating:</p>
-          <p class="text-sm text-yellow-500 font-bold">
-            <!-- Display stars for each comment -->
-            <span *ngFor="let star of getStars(comment.rating)" class="text-yellow-500">★</span>
-            <span class="text-gray-400"> / 5</span>
-          </p>
+
+        <!-- Display Total Feedback -->
+        <p class="text-sm text-[#6B7280] mb-3">
+          Total Feedback: <span class="font-bold text-[#1F2937]">{{ selectedApplication?.user?.comments?.length ?? 0 }}</span>
+        </p>
+
+        <!-- Feedback and Ratings List -->
+        <div *ngIf="selectedApplication?.user?.comments?.length ?? 0 > 0; else noFeedback">
+          <ul class="space-y-4">
+            <li *ngFor="let comment of selectedApplication?.user?.comments" class="bg-[#F9FAFB] border border-[#6B7280]/20 p-4 rounded-lg shadow-sm">
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#1F2937]">Feedback:</p>
+                <p class="text-sm text-[#1F2937]">{{ comment.feedback }}</p>
+              </div>
+              <div class="flex justify-between">
+                <p class="text-sm font-semibold text-[#1F2937]">Rating:</p>
+                <p class="text-sm text-[#10B981] font-bold">
+                  <span *ngFor="let star of getStars(comment.rating)" class="text-[#10B981]">★</span>
+                  <span class="text-[#6B7280]"> / 5</span>
+                </p>
+              </div>
+            </li>
+          </ul>
         </div>
-      </li>
-    </ul>
-  </div>
-  
-  <!-- No Feedback Message -->
-  <ng-template #noFeedback>
-    <p class="text-gray-500">No feedback available.</p>
-  </ng-template>
-</div>
 
-    
+        <!-- No Feedback Message -->
+        <ng-template #noFeedback>
+          <p class="text-[#6B7280]">No feedback available.</p>
+        </ng-template>
+      </div>
 
-    <!-- Close Button -->
-    <div class="flex justify-end mt-4">
-      <button (click)="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200">Close</button>
+      <!-- Close Button -->
+      <div class="flex justify-end mt-4">
+        <button
+          (click)="closeModal()"
+          class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
-</div>
 </div>

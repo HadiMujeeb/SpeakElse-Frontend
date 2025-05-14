@@ -63,14 +63,15 @@ export class MembersComponent implements OnInit {
   openAddMember(): void {
     this.ActionType = ModalAction.AddMember;
     this.isEditModalOpen = true;
-    this.fields = registerField;
+    const excludedFields = ['description','language','avatar'];
+    this.fields = registerField.filter((f) => !excludedFields.includes(f.name));
   }
 
   openEditModal(member: IMember): void {
     this.ActionType = ModalAction.EditMember;
     this.selectedMember = member;
     this.isEditModalOpen = true;
-    const excludedFields = ['password', 'ConfirmPassword', 'confirmPassword'];
+    const excludedFields = ['password', 'confirmPassword','avatar'];
     this.fields = registerField.filter((f) => !excludedFields.includes(f.name));
   }
 

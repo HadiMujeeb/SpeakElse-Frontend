@@ -1,37 +1,10 @@
 <div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
   <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-
-    <!-- Timer Component -->
-    <div class="flex justify-center mb-6">
-      <div class="w-40 h-40 relative flex items-center justify-center">
-        <svg
-          class="w-full h-full absolute"
-          viewBox="0 0 100 100"
-          [style.transform]="'rotate(-90deg)'"
-        >
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#E5E7EB" stroke-width="8" />
-          <circle
-            cx="50"
-            cy="50"
-            r="45"
-            fill="none"
-            stroke="#3B82F6"
-            stroke-width="8"
-            stroke-linecap="round"
-            [style.strokeDasharray]="circumference"
-            [style.strokeDashoffset]="getDashOffset()"
-            style="transition: stroke-dashoffset 1s linear"
-          />
-        </svg>
-        
-        <!-- Timer Content -->
-        <div class="absolute flex flex-col items-center">
-          <div class="text-4xl font-bold text-gray-800">
-            {{ remainingTime }}
-          </div>
-          <div class="text-sm text-gray-500 mt-1">seconds</div>
-        </div>
-      </div>
+    
+    <!-- Simple Timer Display -->
+    <div class="text-center mb-6">
+      <p class="text-3xl font-bold text-gray-800">{{ remainingTime }}</p>
+      <p class="text-sm text-gray-500">seconds remaining</p>
     </div>
 
     <!-- Title -->
@@ -60,14 +33,16 @@
         </ng-container>
       </div>
 
-      <!-- Error message -->
-      <div *ngIf="showError" class="text-red-500 text-center text-sm">
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="text-red-500 text-center text-sm">
         {{ errorMessage }}
       </div>
-<!-- Success message -->
+
+      <!-- Success Message -->
       <div *ngIf="responseMessage" class="text-green-500 text-center mt-4">
         {{ responseMessage }}
       </div>
+
       <!-- Resend Link -->
       <div class="text-center">
         <span class="text-gray-600">Didn't receive code? </span>
@@ -77,17 +52,16 @@
           [disabled]="resendDisabled"
           class="text-blue-600 hover:text-blue-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Resend{{ resendTimer !== null ? ' (' + resendTimer + 's)' : '' }}
+          Resend
         </button>
       </div>
 
       <!-- Verify Button -->
       <button
         type="submit"
-        [disabled]="!otpForm.valid || isSubmitting"
         class="w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {{ isSubmitting ? 'Verifying...' : 'Verify' }}
+        {{ 'Verify' }}
       </button>
     </form>
   </div>

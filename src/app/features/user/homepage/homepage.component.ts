@@ -13,4 +13,9 @@ import { HeaderComponent } from '../../../layouts/user/header/header.component';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css'],
 })
-export class HomepageComponent {}
+export class HomepageComponent implements OnDestroy {
+
+ngOnDestroy(): void {
+  console.log("destory ......")
+}
+}

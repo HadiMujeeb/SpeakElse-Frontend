@@ -8,6 +8,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './nav-logo.component.css'
 })
 export class NavLogoComponent {
-@Input() logoSrc:string = '../assets/images/letter-s (1).png';
-@Input() platformName:string ='SpeakElse';
+logoSrc:string = '../assets/images/letter-s (1).png';
+platformName:string ='SpeakElse';
 }

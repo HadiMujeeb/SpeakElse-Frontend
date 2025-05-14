@@ -1,17 +1,89 @@
-<div id="friend-list-modal" class="fixed inset-0 z-50 flex items-start justify-end">
+<div
+  id="chat-modal"
+  class="fixed inset-0 z-50 flex items-start justify-end transition-opacity duration-300"
+  [ngClass]="{'opacity-100': isOpen, 'opacity-0 pointer-events-none': !isOpen}"
+>
+  <!-- Main Chat Container -->
   <div
-    class="relative w-80 h-[calc(100vh-4rem)] bg-gray-900 text-white rounded-l-lg shadow-lg mt-8 mb-8 mr-4 p-4"
+    class="relative w-80 max-w-[80vw] h-[calc(100vh-8rem)] bg-[#1E3A8A] text-white rounded-l-2xl shadow-2xl mt-4 mb-4 mr-2 transform transition-transform duration-300"
+    [ngClass]="{'translate-x-0': isOpen, 'translate-x-full': !isOpen}"
   >
-    <!-- Header -->
-    <div *ngIf="!selectedFriend" class="border-b border-gray-700">
-      <div class="flex justify-between items-center mb-4">
+    <!-- Chat View -->
+    <div *ngIf="currentChat" class="flex flex-col h-full">
+  <!-- Header with Back and Friend Info -->
+  <div class="flex items-center justify-between p-3 border-b border-[#BFDBFE]/50">
+    <div class="flex items-center space-x-2">
+      <button (click)="closeChat()" class="p-1 hover:bg-[#BFDBFE]/20 rounded-full transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+      <img [src]="currentChat.friend?.avatar || 'assets/images/default-avatar.png'" [alt]="currentChat.friend?.name" class="w-8 h-8 rounded-full border-2 border-[#93C5FD]/50" />
+      <div>
+        <p class="font-semibold text-base">{{ currentChat.friend?.name }}</p>
+        <p class="text-xs text-[#D1D5DB]">{{ status | date:'shortTime' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Messages -->
+<!-- Chat Messages -->
+<div #chatContainer class="flex-1 overflow-y-auto p-3 space-y-4 bg-[#1E3A8A]">
+  <div *ngFor="let message of currentChat?.messages" 
+       [ngClass]="{
+         'flex justify-end': message.senderId === userId,
+         'flex justify-start': message.senderId !== userId
+       }">
+    <div 
+      class="px-4 py-2 max-w-[62%] shadow-md rounded-2xl break-words whitespace-pre-line"
+      [ngClass]="{
+        'bg-[#A3BFFA] text-gray-800 font-bold ml-auto': message.senderId === userId,
+        'bg-[#E2E8F0] text-gray-800 font-bold mr-auto': message.senderId !== userId
+      }">
+      <p class="text-sm leading-relaxed">{{ message.content }}</p>
+      <div class="text-xs text-gray-800 mt-1 text-right">
+        {{ message.createdAt | date:'shortTime' }}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Message Input -->
+  <div class="p-3 border-t border-[#BFDBFE]/50">
+    <div class="flex items-center space-x-2">
+      <input 
+        type="text" 
+        [(ngModel)]="newMessage"
+        (keyup.enter)="sendMessage()"
+        placeholder="Type a message..." 
+        class="flex-grow bg-[#4B5563] text-white placeholder-[#D1D5DB] rounded-full px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#93C5FD] transition-shadow"
+      />
+      <button 
+        (click)="sendMessage()"
+        class="bg-[#93C5FD] text-white rounded-full p-1 hover:bg-[#BFDBFE] transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+    <!-- Friend/Chat List View -->
+    <div *ngIf="!currentChat" class="flex flex-col h-full">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-3 border-b border-[#BFDBFE]/50">
         <div class="flex space-x-2">
           <button
-            class="p-2 hover:bg-gray-700 rounded"
-            [class.text-blue-500]="activeTab === 'friends'"
+            class="p-1 rounded-full hover:bg-[#BFDBFE]/30 transition-colors"
+            [ngClass]="{'text-[#93C5FD] bg-[#93C5FD]/20': activeTab === 'friends', 'text-[#D1D5DB]': activeTab !== 'friends'}"
             (click)="setActiveTab('friends')"
+            aria-label="Friends Tab"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -21,11 +93,12 @@
             </svg>
           </button>
           <button
-            class="p-2 hover:bg-gray-700 rounded"
-            [class.text-blue-500]="activeTab === 'chats'"
+            class="p-1 rounded-full hover:bg-[#BFDBFE]/30 transition-colors"
+            [ngClass]="{'text-[#93C5FD] bg-[#93C5FD]/20': activeTab === 'chats', 'text-[#D1D5DB]': activeTab !== 'chats'}"
             (click)="setActiveTab('chats')"
+            aria-label="Chats Tab"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -35,102 +108,142 @@
             </svg>
           </button>
         </div>
-        <button class="p-2 hover:bg-gray-700 rounded" (click)="closeModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button
+          class="p-1 rounded-full hover:bg-red-500/30 transition-colors"
+          (click)="closeModal()"
+          aria-label="Close Modal"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Friend List -->
+        <ng-container *ngIf="activeTab === 'friends'">
+          <!-- Tabs for Followers and Following -->
+          <div class="flex justify-around p-2 border-b border-[#BFDBFE]/50">
+            <button
+              class="py-1 px-3 text-sm font-medium transition-colors"
+              [ngClass]="{
+                'border-b-2 border-[#93C5FD] text-[#93C5FD]': selectedList === 'followers',
+                'text-[#D1D5DB] hover:text-[#93C5FD]': selectedList !== 'followers'
+              }"
+              (click)="selectList('followers')"
+            >
+              Followers
+            </button>
+            <button
+              class="py-1 px-3 text-sm font-medium transition-colors"
+              [ngClass]="{
+                'border-b-2 border-[#93C5FD] text-[#93C5FD]': selectedList === 'following',
+                'text-[#D1D5DB] hover:text-[#93C5FD]': selectedList !== 'following'
+              }"
+              (click)="selectList('following')"
+            >
+              Following
+            </button>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="p-3">
+            <div class="relative">
+              <input
+                type="text"
+                placeholder="Search friends..."
+                class="w-full bg-[#4B5563] text-white placeholder-[#D1D5DB] rounded-full px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#93C5FD] transition-shadow"
+                [(ngModel)]="searchQuery"
+                (input)="onSearch()"
+              />
+              <svg
+                class="absolute right-2 top-2 h-4 w-4 text-[#D1D5DB]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Friends List -->
+          <div class="flex-1 overflow-y-auto p-3 space-y-2">
+            <div
+              *ngFor="let friend of filteredFriends"
+              class="flex items-center justify-between p-2 hover:bg-[#BFDBFE]/20 rounded-lg cursor-pointer transition-all duration-200"
+              (click)="openChat(friend.id)"
+            >
+              <div class="flex items-center space-x-2">
+                <img
+                  [src]="friend.avatar || 'assets/images/default-avatar.png'"
+                  [alt]="friend.name"
+                  class="w-8 h-8 rounded-full border-2 border-[#93C5FD]/50"
+                />
+                <span class="font-medium text-white text-sm">{{ friend.name }}</span>
+              </div>
+            </div>
+            <div *ngIf="!filteredFriends.length" class="text-center text-[#D1D5DB] py-3 text-sm">
+              No friends found
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Chats List -->
+        <ng-container *ngIf="activeTab === 'chats'">
+          <!-- Search Bar -->
+          <div class="p-3">
+            <div class="relative">
+              <input
+                type="text"
+                placeholder="Search chats..."
+                class="w-full bg-[#4B5563] text-white placeholder-[#D1D5DB] rounded-full px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#93C5FD] transition-shadow"
+                [(ngModel)]="searchQuery"
+                (input)="onSearch()"
+              />
+              <svg
+                class="absolute right-2 top-2 h-4 w-4 text-[#D1D5DB]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Chats List -->
+          <div class="flex-1 overflow-y-auto p-3 space-y-2">
+            <div
+              *ngFor="let chat of filteredChats"
+              class="flex items-center justify-between p-2 hover:bg-[#BFDBFE]/20 rounded-lg cursor-pointer transition-all duration-200"
+              (click)="openChat(chat.friend?.id || '')"
+            >
+              <div class="flex items-center space-x-2">
+                <img
+                  [src]="chat.friend?.avatar || 'assets/images/default-avatar.png'"
+                  [alt]="chat.friend?.name"
+                  class="w-8 h-8 rounded-full border-2 border-[#93C5FD]/50"
+                />
+                <span class="font-medium text-white text-sm">{{ chat.friend?.name || 'Unknown' }}</span>
+              </div>
+            </div>
+            <div *ngIf="!filteredChats.length" class="text-center text-[#D1D5DB] py-3 text-sm">
+              No chats found
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
-
-    <!-- Friend List -->
-    <ng-container *ngIf="!Chat && activeTab === 'friends'">
-      <!-- Tabs for Followers, Following, and All -->
-      <div class="flex justify-around border-b border-gray-700 mb-4">
-       
-        <button
-          class="py-2 px-4 focus:outline-none"
-          [ngClass]="{
-            'border-b-2 border-blue-500 text-blue-500': selectedList === 'followers',
-            'text-gray-400': selectedList !== 'followers'
-          }"
-          (click)="selectList('followers')"
-        >
-          Followers
-        </button>
-        <button
-          class="py-2 px-4 focus:outline-none"
-          [ngClass]="{
-            'border-b-2 border-blue-500 text-blue-500': selectedList === 'following',
-            'text-gray-400': selectedList !== 'following'
-          }"
-          (click)="selectList('following')"
-        >
-          Following
-        </button>
-      </div>
-    
-      <!-- Search Bar -->
-      <div class="space-y-4 pb-4">
-        <div class="relative">
-          <input
-            type="text"
-            placeholder="Search by name"
-            class="w-full bg-gray-800 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [(ngModel)]="searchQuery"
-            (input)="onSearch()"
-          />
-        </div>
-      </div>
-    
-      <!-- Friends List -->
-      <div class="overflow-y-auto h-[calc(100%)] -m-4 p-4">
-        <div
-          *ngFor="let friend of filteredFriends"
-          class="flex items-center justify-between p-4 hover:bg-gray-800 cursor-pointer border-b border-gray-700"
-          (click)="openChat(friend.id)"
-        >
-          <div class="flex items-center space-x-3">
-            <img [src]="friend.avatar" [alt]="friend.name" class="w-10 h-10 rounded-full" />
-            <span class="font-medium">{{ friend.name }}</span>
-          </div>
-        </div>
-      </div>
-    </ng-container>
-    
-    <ng-container *ngIf="!Chat && activeTab === 'chats'">
-      <div class="space-y-4 pb-4">
-        <div class="relative">
-          <input
-            type="text"
-            placeholder="Search by name"
-            class="w-full bg-gray-800 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [(ngModel)]="searchQuery"
-            (input)="onSearch()"
-          />
-        </div>
-      </div>
-
-      <div class="overflow-y-auto h-[calc(100%)] -m-4 p-4">
-        <div
-          *ngFor="let friend of FriendsChats"
-          class="flex items-center justify-between p-4 hover:bg-gray-800 cursor-pointer border-b border-gray-700"
-          (click)="openChat(friend.friend?.id||'')"
-        >
-          <div class="flex items-center space-x-3">
-            <img [src]="friend.friend?.avatar" [alt]="friend.friend?.name" class="w-10 h-10 rounded-full" />
-            <span class="font-medium">{{ friend.friend?.name }}</span>
-          </div>
-        </div>
-      </div>
-    </ng-container>
-
-    <!-- Chat Page -->
-    <ng-container *ngIf="Chat">
-      <app-chating-page
-        [Chat]="Chat"
-        (GoBack)="closeChat()"
-      ></app-chating-page>
-    </ng-container>
   </div>
-</div>

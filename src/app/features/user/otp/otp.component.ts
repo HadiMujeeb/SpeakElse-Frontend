@@ -8,10 +8,9 @@ import {
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 import { Router } from '@angular/router';
-import { interval, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { VerifyOtpRequest } from '../../../shared/models/otp-request.model';
-import { lastValueFrom } from 'rxjs'; // Import lastValueFrom for RxJS 7+
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-otp',
@@ -26,18 +25,16 @@ export class OTPComponent implements OnInit, OnDestroy {
 
   otpForm!: FormGroup;
   isSubmitting = false;
-  showError = false;
-  errorMessage = '';
-  resendDisabled = false;
+  errorMessage:string|null = null;
+  resendDisabled:boolean = false
 
-  private readonly TIMER_DURATION = 120; // Total timer duration in seconds
-  public circumference = 2 * Math.PI * 45;
+  private readonly TIMER_DURATION = 120;
   remainingTime: number;
-  private timerProgress = 100;
-  private destroy$ = new Subject<void>();
   responseMessage: string | null = null;
   resendTimer: number | null = null;
   otpControls = Array.from({ length: 4 });
+
+  private intervalId: any;
 
   constructor() {
     this.initForm();
@@ -49,8 +46,9 @@ export class OTPComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
     this.saveRemainingTime();
   }
 
@@ -73,34 +71,25 @@ export class OTPComponent implements OnInit, OnDestroy {
       this.remainingTime = this.TIMER_DURATION;
     }
 
-    this.resendDisabled = this.remainingTime <= 0;
 
-    interval(1000)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.remainingTime > 0) {
-          this.remainingTime--;
-          this.timerProgress = (this.remainingTime / this.TIMER_DURATION) * 100;
-          this.resendTimer = this.remainingTime;
-        } else {
-          this.resendDisabled = false;
-          this.resendTimer = null;
-        }
+    this.intervalId = setInterval(() => {
+      if (this.remainingTime > 0) {
+        this.remainingTime--;
+        this.resendTimer = this.remainingTime;
+      } else {
+        clearInterval(this.intervalId);
+        this.resendTimer = null;
+      }
 
-        this.saveRemainingTime();
-      });
-  }
-
-  getDashOffset(): number {
-    return this.circumference - (this.timerProgress / 100) * this.circumference;
+      this.saveRemainingTime();
+    }, 1000);
   }
 
   onOtpInput(event: any, index: number) {
+    this.responseMessage =null
     const input = event.target;
     const nextInput = input.nextElementSibling;
     const prevInput = input.previousElementSibling;
-
-    this.showError = false;
 
     if (event.data && !/^[0-9]$/.test(event.data)) {
       input.value = '';
@@ -113,6 +102,7 @@ export class OTPComponent implements OnInit, OnDestroy {
 
     if (event.key === 'Backspace' && prevInput && !input.value) {
       prevInput.focus();
+      this.errorMessage = null
     }
   }
 
@@ -124,7 +114,6 @@ export class OTPComponent implements OnInit, OnDestroy {
     const pastedData = clipboardData.getData('text').trim();
 
     if (!/^\d{4}$/.test(pastedData)) {
-      this.showError = true;
       this.errorMessage = 'Please paste a valid 4-digit code';
       return;
     }
@@ -141,49 +130,37 @@ export class OTPComponent implements OnInit, OnDestroy {
     return localStorage.getItem('email');
   }
 
-  async resendOtp() {
-    if (this.resendDisabled) return;
-
-    try {
-      this.destroy$.next();
-      this.destroy$.complete();
-
-      this.destroy$ = new Subject<void>();
-
-      this.otpForm.reset();
-      this.startTimer();
-      this.resendDisabled = true;
-      this.showError = false;
-      const email = this.getEmail();
-      const response = await lastValueFrom(this.AuthServices.resentOtp(email));
-
-      if (response) {
-        console.log('OTP resent successfully:', response);
-        this.responseMessage = response.message || 'OTP sent successfully!';
-      } else {
-        this.showError = true;
+  resendOtp() {
+    clearInterval(this.intervalId);
+    this.remainingTime = 0
+    this.saveRemainingTime()
+    this.otpForm.reset()
+    this.resendDisabled = true
+    this.responseMessage = null
+    this.errorMessage = null
+  
+    const email = this.getEmail();
+  
+    this.AuthServices.resentOtp(email).subscribe({
+      next: (response) => {
+        this.responseMessage = response.message;
+        this.startTimer();
+        this.resendDisabled = false
+      },
+      error: (error) => {
         this.errorMessage = 'Failed to resend OTP. Please try again.';
-      }
-    } catch (error) {
-      this.showError = true;
-      this.errorMessage = 'Failed to resend OTP. Please try again.';
-    }
+      },
+    });
   }
+  
 
   onSubmit() {
     if (this.otpForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      this.showError = false;
 
       const email = this.getEmail();
 
-      if (!email) {
-        this.showError = true;
-        this.errorMessage = 'Email not found in local storage.';
-        this.isSubmitting = false;
-        return;
-      }
-
+      if(!email) return
       const enteredOtp = Object.values(this.otpForm.value).join('');
       const data: VerifyOtpRequest = { email, enteredotp: enteredOtp };
 
@@ -195,13 +172,14 @@ export class OTPComponent implements OnInit, OnDestroy {
           }
         },
         error: (error) => {
-          this.showError = true;
-          console.error('Error:', error?.error?.message || error);
-          this.errorMessage =
-            error.error?.message || 'An error occurred. Please try again.'; // Ensure correct error message display
+          this.errorMessage =error.error?.message || 'An error occurred. Please try again.';
+          this.isSubmitting = false
         },
         complete: () => {
           this.isSubmitting = false;
+          clearInterval(this.intervalId);
+          this.remainingTime = 0
+          this.removeRemainingTime()
         },
       });
     }
@@ -214,5 +192,9 @@ export class OTPComponent implements OnInit, OnDestroy {
 
   private saveRemainingTime(): void {
     localStorage.setItem('remainingTime', this.remainingTime.toString());
+  }
+
+  private removeRemainingTime():void{
+    localStorage.removeItem('remainingTime')
   }
 }

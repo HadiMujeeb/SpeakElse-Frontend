@@ -8,6 +8,7 @@ import { VerifyOtpReponse, VerifyOtpRequest } from '../../../shared/models/otp-r
 import { IProtectedDataResponse } from '../../../shared/models/protected-data-response.model';
 import { IUserProfile } from '../../../shared/models/user-profile.model';
 import { USER_API } from '../../../../routes/routesFile';
+import { ISuccessResponse } from '../../../shared/models/success.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUserService {
@@ -17,7 +18,7 @@ export class AuthUserService {
 
   constructor(public httpClient: HttpClient) {}
 
-  RegisterationRequest(registerCredentails: IUserRegisterationCredentials): Observable<IRegisterSuccessfullResponse> {
+  registerationRequest(registerCredentails: IUserRegisterationCredentials): Observable<IRegisterSuccessfullResponse> {
     return this.httpClient.post<IRegisterSuccessfullResponse>(`${this.api}/registerUser`, registerCredentails)
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message))));
   }
@@ -35,6 +36,11 @@ export class AuthUserService {
   loginRequest(loginCredentials: IUserLoginCredentials): Observable<ILoginSuccessResponse> {
     return this.httpClient.post<ILoginSuccessResponse>(`${this.api}/loginUser`, loginCredentials)
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Login Failed'))));
+  }
+
+  loginWithGoogle(idToken: string): Observable<ILoginSuccessResponse> {
+    return this.httpClient.post<any>(`${this.api}/google-login`,  {idToken} )
+      .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Google Login Failed'))));
   }
 
   getProtectedData(accessToken: string | null): Observable<IProtectedDataResponse> {
@@ -73,9 +79,8 @@ export class AuthUserService {
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Failed to update profile'))));
   }
 
-  sendResetPasswordEmail(email: string): Observable<any> {
-    console.log('Sending reset password email to:', email);
-    return this.httpClient.post(`${this.api}/sendEmailReset`, { email })
+  sendResetPasswordEmail(email: string): Observable<ISuccessResponse> {
+    return this.httpClient.post<ISuccessResponse>(`${this.api}/sendEmailReset`, { email })
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message))));
   }
 

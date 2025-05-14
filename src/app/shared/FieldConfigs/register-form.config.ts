@@ -24,8 +24,9 @@ export const registerField: FormField[] = [
     errors: [
       { type: 'required', message: 'Email is required.' },
       { type: 'email', message: 'Please enter a valid email address.' },
-      { type: 'whitespace', message: 'Email cannot contain only spaces.' },
-    ],
+      { type: 'whitespace', message: 'Username cannot contain only spaces.' },
+      { type: 'userExists', message: 'This email is already registered.' }
+    ]    
   },
   {
     name: 'country',
@@ -102,7 +103,7 @@ export const registerField: FormField[] = [
       {
         type: 'pattern',
         message:
-          'Password must contain at least 1 uppercase and lowercase letter, 1 digit, and 1 special character.',
+          'Password must include uppercase, lowercase, number, and special character.',
       },
       { type: 'whitespace', message: 'Password cannot contain only spaces.' },
     ],

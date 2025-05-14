@@ -1,65 +1,67 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7E1D7] to-[#4A90E2] overflow-hidden">
+  <!-- Background Decorative Element -->
+  <div class="absolute inset-0 opacity-10 pointer-events-none">
+    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path d="M0,0 C50,30 50,70 100,100 L100,0 Z" fill="#2E4A7D" />
+    </svg>
+  </div>
+
+  <div class="relative flex flex-col items-center max-w-md w-full p-6">
+    <!-- Welcome Text -->
+    <h1 class="text-3xl font-bold text-[#2E4A7D] mb-2">Welcome, Mentors!</h1>
+    <p class="text-sm text-[#2E4A7D]/80 mb-8 text-center">
+      Empower the next generation with your wisdom. Log in to MentorHub.
+    </p>
+
+    <!-- Form -->
     <form 
       [formGroup]="loginForm" 
       (ngSubmit)="onSubmit()" 
-      class="flex flex-col bg-gradient-to-br from-gray-800 to-gray-700 p-8 rounded-lg shadow-lg max-w-md w-full space-y-6"
+      class="flex flex-col bg-white p-8 rounded-2xl shadow-xl w-full space-y-6 transform hover:shadow-2xl transition-shadow duration-300"
     >
       <!-- Loop through fields -->
       <ng-container *ngFor="let field of fields">
         <div class="relative">
           <label 
             [for]="field.name" 
-            class="block text-sm font-medium text-white mb-1"
+            class="block text-sm font-medium text-[#2E4A7D] mb-2"
           >
             {{ field.label }}
           </label>
-          <input 
-            [type]="field.type"
-            [formControlName]="field.name"
-            [placeholder]="field.placeholder"
-            [id]="field.name"
-            class="w-full px-4 py-3 bg-black text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-          />
+          <div class="relative">
+            <input 
+              [type]="field.type"
+              [formControlName]="field.name"
+              [placeholder]="field.placeholder"
+              [id]="field.name"
+              class="w-full pl-10 pr-4 py-3 bg-[#F7E1D7]/30 text-[#2E4A7D] border border-[#4A90E2]/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] transition-all duration-200 placeholder-[#2E4A7D]/50"
+            />
+            <!-- Icons for Inputs -->
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A90E2]">
+              <svg *ngIf="field.name === 'email'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+              </svg>
+              <svg *ngIf="field.name === 'password'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.104-.896-2-2-2s-2 .896-2 2c0 .738.402 1.378 1 1.723V16h2v-3.277c.598-.345 1-.985 1-1.723zm9-5v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h1l1-2h10l1 2h1a2 2 0 012 2z" />
+              </svg>
+            </span>
+          </div>
           <div 
             *ngIf="loginForm.get(field.name)?.touched && loginForm.get(field.name)?.invalid" 
-            class="text-red-500 text-xs absolute mt-1"
+            class="text-red-400 text-xs absolute mt-1"
           >
             {{ getErrorMessage(field.name) }}
           </div>
         </div>
       </ng-container>
-  
-      <!-- Remember me and Forgot password -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <input 
-            type="checkbox" 
-            id="remember" 
-            formControlName="remember" 
-            class="h-4 w-4 text-white focus:ring-white border-gray-500 rounded"
-          />
-          <label 
-            for="remember" 
-            class="ml-2 text-sm text-white"
-          >
-            Remember me
-          </label>
-        </div>
-        <a 
-          routerLink="/auth/forgot-password" 
-          class="text-sm text-white underline hover:text-gray-300 transition"
-        >
-          Forgot password?
-        </a>
-      </div>
-  
+
       <!-- Login Button -->
       <button 
         type="submit" 
-        class="w-full py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg transition duration-200 shadow-md"
+        class="w-full py-3 bg-[#4A90E2] hover:bg-[#2E4A7D] text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
       >
         Log in
       </button>
     </form>
   </div>
-  
+</div>

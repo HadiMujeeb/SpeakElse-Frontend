@@ -5,6 +5,7 @@ import { IMember } from '../../shared/models/member.model';
 import { userData } from '../../shared/models/socket-io.model';
 import { IMessage } from '../../shared/models/chat-message.model';
 import { environment } from '../../../environment/environment.development';
+import { IUserCreatedRoom, RoomInfo } from '../../shared/models/room.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,9 @@ export class WsService {
   private privateMessageSubject = new Subject<IMessage>();
   private statusSubject = new Subject<string>();
   private messageSubject = new Subject<string>();
+
+  private roomCreatedSubject = new Subject<IUserCreatedRoom>();
+  
   roomID: string = '';
   privateChatID: string = '';
   userData: IMember = JSON.parse(localStorage.getItem('userData') || '{}');
@@ -24,8 +28,27 @@ export class WsService {
       this.messageSubject.next(message);
       console.log("new message",message);
     });
+
+    this.socket.on('room-created', (room: IUserCreatedRoom) => {
+      console.log("Room created received:", room);
+      this.roomCreatedSubject.next(room);
+    }); 
   }
 
+  broadcastCreateRoom(room: IUserCreatedRoom): void {
+    this.socket.emit('room-created', room);
+  }
+  onRoomCreated(): Observable<IUserCreatedRoom> {
+    return this.roomCreatedSubject.asObservable();
+  }
+
+  updateRoomCountWithParticipant(roomId: string, participantId: string): void {
+    this.socket.emit('update-room-count', { roomId, participantId });
+  }
+  
+  onRoomCountUpdated(callback: (data: { roomId: string; participantId: string ,count:number}) => void): void {
+    this.socket.on('room-count-updated', callback);
+  }
 
   joinPrivateChat(chatId: string): void {
     this.socket.emit('join private chat', chatId);
@@ -44,6 +67,7 @@ export class WsService {
 
   onPrivateMessage(): Observable<IMessage> {
     this.socket.on('private chat message', (message: IMessage) => {
+      console.log("reverced",message)
       this.privateMessageSubject.next(message);
     });
     return this.privateMessageSubject.asObservable();
@@ -96,7 +120,7 @@ export class WsService {
     }
     this.roomID = roomID;
     this.socket.emit('join room', roomID);
-   
+    
   }
 
   // Listen for the 'all users' event to receive existing users in the room
@@ -154,5 +178,22 @@ export class WsService {
   // Listen for user disconnect event
   onUserDisconnect(callback: () => void): void {
     this.socket.on('disconnect', callback);
+  }
+
+  getAllRoomsInfo(): void {
+    this.socket.emit('get all rooms info');
+  }
+  
+  onRoomsInfo(callback: (roomsInfo: RoomInfo[]) => void): void {
+    this.socket.on('rooms info', callback);
+  }
+  addRoomtoBackend(roomData:IUserCreatedRoom):void{
+    this.socket.emit('add-room',roomData)
+  }
+ 
+
+  deletedRoom(callback:(roomId:string)=> void):void {
+  this.socket.on('room deleted',callback)
+
   }
 }

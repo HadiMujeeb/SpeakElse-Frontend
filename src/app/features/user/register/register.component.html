@@ -17,14 +17,10 @@
             <h2 class="text-3xl font-semibold mb-4">Sign Up</h2>
             <p class="text-sm mb-8">New to SpeakElse? <a href="#" class="text-purple-dark hover:underline">Sign Up</a></p>
           
-            <div *ngIf="loginError" class="mb-4 text-red-500">
-                {{ loginError }}
-              </div>
-          
             <!-- Registration Form -->
             <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
                 <ng-container *ngFor="let field of fields">
-                    <div class="mb-4">
+                    <div class="mb-9">
                         <label [for]="field.name" class="block text-sm text-white">{{ field.label }}</label>
                         <div class="relative">
                             <input

@@ -1,11 +1,5 @@
-// src/app/components/register/register.component.ts
 import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import {FormBuilder,FormGroup,ReactiveFormsModule,Validators} from '@angular/forms';
 import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 import { CommonModule } from '@angular/common';
 import { registerField } from '../../../shared/FieldConfigs/register-form.config';
@@ -24,8 +18,7 @@ import { noWhitespaceValidator } from '../../../shared/utilitys/whiteSpaceValida
 export class RegisterComponent implements OnInit {
   registrationForm!: FormGroup;
   fields = this.filterFields(registerField);
-  loginError: string | null = null;
-  AuthUserServices = inject(AuthUserService);
+  authUserServices = inject(AuthUserService);
   router = inject(Router);
 
   constructor(private fb: FormBuilder) {}
@@ -72,24 +65,17 @@ export class RegisterComponent implements OnInit {
   }
 
   private filterFields(fields: any[]): any[] {
-    const excludedFields = [
-      'country',
-      'role',
-      'description',
-      'language',
-      'profession',
-      'avatar',
-    ];
+    const excludedFields = ['country','role','description','language','profession','avatar'];
     return fields.filter((field) => !excludedFields.includes(field.name));
   }
 
   getErrorMessage(fieldName: string): string {
     const field = this.fields.find((f) => f.name === fieldName);
-    if (field) {
+    
       const control = this.registrationForm.get(fieldName);
+      if (field) {
       if (control && control.errors) {
         const firstErrorType = Object.keys(control.errors)[0];
-
         const errorMessage = field.errors.find(
           (err: any) => err.type === firstErrorType
         )?.message;
@@ -109,19 +95,24 @@ export class RegisterComponent implements OnInit {
       const credentials: IUserRegisterationCredentials =
         this.registrationForm.value;
 
-      this.AuthUserServices.RegisterationRequest(credentials).subscribe(
-        (response) => {
-          console.log('Registration successful:', response);
+      this.authUserServices.registerationRequest(credentials).subscribe({
+        next:(response) => {
           this.router.navigate(['/auth/otp']);
         },
-        (error) => {
-          console.error('Registration failed:', error.message);
-          this.loginError = error.message;
+        error:(error) => {
+          if (error.message === "Email already exists.") {
+            this.registrationForm.get('email')?.setErrors({ userExists: true });
+          } else if (error.message === "Invalid password. Please try again.") {
+            this.registrationForm.get('password')?.setErrors({ pattern: true });
+          } else if (error.message === "Password mismatch. Please make sure both passwords match."){
+            this.registrationForm.get('confirmPassword')?.setErrors({ mismatch: true });
+          }else{
+            console.error('Registration failed:', error.message);
+          }
         }
-      );
+    });
     } else {
       this.registrationForm.markAllAsTouched();
-      console.log('Form is invalid');
     }
   }
 }

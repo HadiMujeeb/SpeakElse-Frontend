@@ -1,11 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { resetEmail } from '../../../shared/FieldConfigs/reset-password.config';
+import {FormBuilder,FormGroup,ReactiveFormsModule,Validators} from '@angular/forms';
 import { AuthUserService } from '../../../core/services/user/auth-user.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -20,7 +14,8 @@ import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.compon
 })
 export class ResetPasswordMailComponent {
   resetPasswordForm!: FormGroup;
-  resetError: string | null = null;
+  emailSentSuccess: string | null = null;
+  emailSendError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -35,19 +30,16 @@ export class ResetPasswordMailComponent {
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {
       const email = this.resetPasswordForm.value.email;
-
-      console.log(email, 'email');
-
-      this.authService.sendResetPasswordEmail(email).subscribe(
-        (response) => {
+      this.authService.sendResetPasswordEmail(email).subscribe({
+        next:(response) => {
           this.resetPasswordForm.reset();
-          console.log('Reset password email sent:', response);
+          this.emailSentSuccess = response.message;
+          
         },
-        (error) => {
-          console.error('Error sending reset password email:', error);
-          this.resetError = error.message;
+        error:(error) => {
+          this.emailSendError = error.message;
         }
-      );
+    });
     } else {
       console.log('Form is invalid');
     }

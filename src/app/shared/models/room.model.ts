@@ -4,6 +4,7 @@ export interface IrequestCreateRoom {
  Level : string;
  language : string;
  maxPeople : string;
+ privacy: "PUBLIC" |"PRIVATE";
 }
 
 export interface IRoom {
@@ -29,3 +30,41 @@ export interface IRoom {
     };
  
 }
+
+export interface IUserCreatedRoom {
+    id: string;
+    language?: string;
+    topic?: string;
+    peopleCount: {
+        joined: number;
+        limit: number
+      };
+    level: string;
+    privacy: string;
+    participants: string[];
+    createdAt: Date;
+    creator:{
+      id: string;
+      name:string;
+      country?:string;
+      profession?:string;
+      avatar?: string;
+    }
+    }
+
+    export interface RoomInfo {
+        roomId: string;
+        memberCount: number;
+        members: string[]; // Array of userIds
+      }
+      
+
+    export interface IReponseCreatedRoom {
+        message:string;
+        room:IUserCreatedRoom
+    }
+
+    export interface IResponseGellAllRoom {
+        message:string;
+        rooms:IUserCreatedRoom[]
+    }

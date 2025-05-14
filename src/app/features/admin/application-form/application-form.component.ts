@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-application-form',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './application-form.component.html',
   styleUrls: ['./application-form.component.css']
 })
@@ -18,6 +18,13 @@ export class ApplicationFormComponent implements OnInit {
   activeFilter: string = 'PENDING';
   AllApplications: IApplication[] = [];
   applications: IApplication[] = [];
+
+  // Pagination properties
+  page: number = 1;
+  pageSize: number = 5;
+  totalPages: number = 0;
+  totalPagesArray: number[] = [];
+
   headers = [
     { label: 'No' },
     { label: 'Name' },
@@ -35,28 +42,56 @@ export class ApplicationFormComponent implements OnInit {
   ngOnInit() {
     this.fetchAllApplications();
   }
+
   toggleVerification(application: any) {
     application.isVerified = !application.isVerified;
-   this.mentorFormService.requestVerifyApplication(application.email).subscribe((data: any) => {
-    console.log(data.message);
-   })
-    
+    this.mentorFormService.requestVerifyApplication(application.email).subscribe((data: any) => {
+      console.log(data.message);
+    });
   }
 
   fetchAllApplications() {
     this.mentorFormService.requestGetMentorForm().subscribe((data: any) => {
       this.AllApplications = data.applications;
-      this.filterApplications("PENDING");
-
+      this.filterApplications(this.activeFilter);
     });
   }
-  // Filter applications based on status
+
   filterApplications(status: string) {
     this.activeFilter = status;
-    this.applications = this.AllApplications.filter(app => app.approvalStatus === status);
+    const filtered = this.AllApplications.filter(app => app.approvalStatus === status);
+    this.totalApplications = filtered.length;
+    this.totalPages = Math.ceil(this.totalApplications / this.pageSize);
+    this.totalPagesArray = Array(this.totalPages).fill(0).map((_, i) => i + 1);
+    this.page = 1;
+    this.paginate(filtered);
   }
 
-  // Function to open the modal with application details
+  paginate(apps: IApplication[]) {
+    const start = (this.page - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    this.applications = apps.slice(start, end);
+  }
+
+  nextPage() {
+    if (this.page < this.totalPages) {
+      this.page++;
+      this.filterApplications(this.activeFilter);
+    }
+  }
+
+  previousPage() {
+    if (this.page > 1) {
+      this.page--;
+      this.filterApplications(this.activeFilter);
+    }
+  }
+
+  goToPage(p: number) {
+    this.page = p;
+    this.filterApplications(this.activeFilter);
+  }
+
   viewApplicationDetails(applicationId: string) {
     const application = this.applications.find(app => app.id === applicationId);
     if (application) {
@@ -66,40 +101,36 @@ export class ApplicationFormComponent implements OnInit {
     }
   }
 
-// Method to calculate average rating
-getAverageRating(): number {
-  const comments = this.selectedApplication?.user?.comments;
-  if (comments && comments.length > 0) {
-    const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
-    return totalRating / comments.length;
+  getAverageRating(): number {
+    const comments = this.selectedApplication?.user?.comments;
+    if (comments && comments.length > 0) {
+      const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
+      return totalRating / comments.length;
+    }
+    return 0;
   }
-  return 0;
-}
 
-// Method to get stars based on a rating value
-getStars(rating: number): string[] {
-  return Array(rating).fill('★');
-}
-updateApprovalStatus(application: any) {
- 
-  this.mentorFormService.requestApproveApplication(application.email,application.approvalStatus).subscribe((data: any) => {
-    console.log(data.message);
-    this.fetchAllApplications();
-  })
-  this.sendEmail(application);
-}
+  getStars(rating: number): string[] {
+    return Array(rating).fill('★');
+  }
 
-  
-  // Close the modal
+  updateApprovalStatus(application: any) {
+    this.mentorFormService.requestApproveApplication(application.email, application.approvalStatus).subscribe((data: any) => {
+      console.log(data.message);
+      this.fetchAllApplications();
+    });
+    this.sendEmail(application);
+  }
+
   closeModal() {
     this.isModalOpen = false;
     this.selectedApplication = null;
   }
 
   sendEmail(application: any): void {
-     application.isMailSend = 1;
-    this.mentorFormService.sendApplicationEmail(application.email,application.approvalStatus).subscribe((data: any) => {
-      console.log(data.message); 
-    })
+    application.isMailSend = 1;
+    this.mentorFormService.sendApplicationEmail(application.email, application.approvalStatus).subscribe((data: any) => {
+      console.log(data.message);
+    });
   }
 }

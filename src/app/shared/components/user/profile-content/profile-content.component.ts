@@ -18,10 +18,18 @@ import { IReponseRatings } from '../../../models/friendsRating.model';
   styleUrl: './profile-content.component.css',
 })
 export class ProfileContentComponent implements OnInit {
+  userProfileServices = inject(UserProfileService);
+  router = inject(Router);
+  user: any;
+  selectedMember: IMember | null = null;
+  fields: any[] = [];
+  isEditModalOpen = false;
+  ActionType!: ModalAction;
+  defaultImage = 'assets/images/defultImage.avif'
 
   userRating = {
-    rating: 0, // Will be calculated dynamically
-    reviews: 0, // Total number of reviews
+    rating: 0,
+    reviews: 0, 
     ratingBreakdown: [
       { stars: 5, count: 0 },
       { stars: 4, count: 0 },
@@ -32,14 +40,9 @@ export class ProfileContentComponent implements OnInit {
   };
 
   feedbacks: { name: string; date: string; rating: number; comment: string , avatar: string}[] = [];
-  user: any;
-  selectedMember: IMember | null = null;
-  fields: any[] = [];
-  isEditModalOpen = false;
-  ActionType!: ModalAction;
+ 
 
-  userProfileServices = inject(UserProfileService);
-  router = inject(Router);
+
   ngOnInit(): void {
     const userData = localStorage.getItem('userData');
     if (userData) {
@@ -47,7 +50,6 @@ export class ProfileContentComponent implements OnInit {
     }
     
     if (this.user?.id) {
-      // Fetch ratings from the API
       this.userProfileServices.requestGetFriendRating(this.user.id).subscribe(
         (ratings: IReponseRatings[]) => {
           this.processRatings(ratings);
@@ -117,6 +119,7 @@ export class ProfileContentComponent implements OnInit {
       'confirmPassword',
       'email',
       'role',
+      'description'
     ];
     this.fields = registerField.filter((f) => !excludedFields.includes(f.name));
   }

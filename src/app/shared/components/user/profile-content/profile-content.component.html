@@ -16,7 +16,12 @@
     <div class="bg-white shadow rounded-lg p-6 mb-8">
         <div class="flex items-center">
           <div class="w-32 h-32 bg-gray-300 rounded-full mr-6 overflow-hidden">
-            <img *ngIf="user.avatar" [src]="user.avatar" alt="User Avatar" class="w-full h-full object-cover">
+            @if(user.avatar){
+              <img  [src]="user.avatar" alt="User Avatar" class="w-full h-full object-cover">
+            }@else{
+              <img  src="assets/images/defaultImage.avif" alt="User Avatar" class="w-full h-full object-cover">
+            }
+           
           </div>
           
           <div class="flex-grow">
@@ -27,11 +32,11 @@
               </button>
             </div>
             <div class="text-gray-700 space-y-1">
-              <p><strong>Language:</strong> {{ user.language }}</p>
-              <p><strong>Profession:</strong> {{ user.profession }}</p>
-              <p><strong>Email:</strong> {{ user.email }}</p>
-              <p><strong>About Me:</strong> {{ user.description }}</p>
-          </div>
+              <p><strong>Language:</strong> {{ (user.language && user.language !== 'null') ? user.language : '' }}</p>
+              <p><strong>Profession:</strong> {{ (user.profession && user.profession !== 'null') ? user.profession : '' }}</p>
+              <p><strong>Email:</strong> {{ (user.email && user.email !== 'null') ? user.email : '' }}</p>
+            </div>
+            
           </div>
           <!-- <div class="ml-4">
             <span class="bg-yellow-400 text-yellow-800 py-1 px-3 rounded-full text-sm font-semibold">

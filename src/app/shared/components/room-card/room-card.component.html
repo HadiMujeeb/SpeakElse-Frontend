@@ -3,8 +3,11 @@
       <div *ngFor="let room of filteredRooms" class="bg-pink-100 p-3 shadow hover:shadow-lg transition-shadow rounded-lg min-w-[300px]">
         <div class="flex items-start gap-4">
           <!-- Host Profile Image -->
-          <img [src]="room.creator.avatar" [alt]="room.creator.name" class="w-16 h-20 object-cover border border-gray-950 rounded" />
-  
+          @if(room.creator.avatar){
+            <img [src]="room.creator.avatar" [alt]="room.creator.name" class="w-16 h-20 object-cover" />
+          }@else{
+            <img  src="assets/images/defaultImage.avif" alt="User Avatar" class="w-20 h-20 object-cover">
+          }
           <div class="flex-1">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -15,7 +18,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-sm">Limit: {{ room.maxPeople }}</span>
                 <div class="flex items-center">
-                  <span class="text-yellow-500">★</span>
+                  <span class="text-yellow-500">★</span> 
                   <span class="ml-1">{{ room.creator.rating }}</span>
                 </div>
               </div>
@@ -49,8 +52,8 @@
     </div>
   </div>
   
-  <div class="mt-4 flex justify-center">
+  <!-- <div class="mt-4 flex justify-center">
     <button (click)="previousPage()" class="px-3 py-1 border rounded mr-1">&lt;</button>
     <button *ngFor="let p of totalPagesArray" class="px-3 py-1 border rounded mr-1 text-black" [ngClass]="{'bg-blue-500': page == p}">{{ p }}</button>
     <button (click)="nextPage()" class="px-3 py-1 border rounded">&gt;</button>
-  </div>
+  </div> -->

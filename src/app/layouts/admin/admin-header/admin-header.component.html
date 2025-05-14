@@ -1,21 +1,21 @@
-<header class="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-4 flex justify-between items-center shadow-md">
-    <div class="flex items-center space-x-4">
-        <div class="text-3xl font-bold tracking-wide">
-            Speak<span class="text-yellow-300">Else</span>
-        </div>
+<header class="bg-gradient-to-r from-[#1F2937] to-[#1F2937]/90 text-[#F9FAFB] p-4 flex justify-between items-center shadow-lg">
+  <div class="flex items-center space-x-4">
+    <div class="text-3xl font-bold tracking-wide">
+      Speak<span class="text-[#10B981]">Else</span>
     </div>
-    <div class="flex items-center space-x-6">
-        <div class="text-lg font-medium hidden md:block">Welcome,{{admin?.name}} </div>
-        <div class="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
-            <img [src]="admin?.avatar" alt="Admin Avatar" class="w-full h-full object-cover">
-        </div>
-        <button 
-            class="ml-4 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition duration-300" 
-            (click)="logout()">
-            Log Out
-        </button>
+  </div>
+  <div class="flex items-center space-x-6">
+    <div class="text-lg font-medium hidden md:block text-[#F9FAFB]">
+      Welcome, {{ admin?.name }}
     </div>
+    <div class="w-12 h-12 bg-[#F9FAFB]/20 rounded-full overflow-hidden ring-2 ring-[#10B981]/50">
+      <img [src]="admin?.avatar" alt="Admin Avatar" class="w-full h-full object-cover" />
+    </div>
+    <button 
+      class="ml-4 bg-[#10B981] hover:bg-[#1F2937] px-4 py-2 rounded-lg text-sm font-semibold text-[#F9FAFB] transition-all duration-300 hover:shadow-md"
+      (click)="logout()"
+    >
+      Log Out
+    </button>
+  </div>
 </header>
-
-
-
