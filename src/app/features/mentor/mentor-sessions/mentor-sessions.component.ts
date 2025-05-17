@@ -22,7 +22,7 @@ export class MentorSessionsComponent implements OnInit {
   sessionForm: FormGroup;
   rescheduleForm: FormGroup;
   currentSessionId: string | null = null;
-  mentor = JSON.parse(localStorage.getItem('mentorData') || '{}');
+  mentor: any = {};
   sessions: IMentorRoom[] = [];
   paginatedSessions: IMentorRoom[] = [];
   mentorServices = inject(MentorSessionService);
@@ -51,18 +51,29 @@ export class MentorSessionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.currentDateTime)
+    const mentorData = localStorage.getItem('mentorData');
+    this.mentor = mentorData ? JSON.parse(mentorData) : {};
     this.getAllSessions();
   }
 
   getAllSessions() {
-    this.mentorServices.requestGetAllSessions().subscribe((res) => {
-   
-       this.sessions = res.mentorRooms.map(session => ({
-    ...session,
-    startTime: new Date(session.startTime),
-    endTime: new Date(session.endTime)
-  }));
+    this.mentorServices.requestGetAllSessions().subscribe({
+      next: (res) => {
+        if (Array.isArray(res?.mentorRooms)) {
+          this.sessions = res.mentorRooms.map(session => ({
+            ...session,
+            startTime: new Date(session.startTime),
+            endTime: new Date(session.endTime),
+          }));
+          this.updatePaginatedSessions();
+        } else {
+          console.error('mentorRooms not available:', res);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching sessions:', err);
+        alert('Error fetching your sessions. Please try again later.');
+      }
     });
   }
 
@@ -98,10 +109,17 @@ export class MentorSessionsComponent implements OnInit {
       data.startTime = new Date(data.startTime).toISOString();
       data.endTime = new Date(data.endTime).toISOString();
       data.mentorId = this.mentor.id;
+
       const roomData: IMentorRoom = data;
-      this.mentorServices.requestCreateSession(roomData).subscribe(() => {
-        this.getAllSessions();
-        this.closeModal();
+      this.mentorServices.requestCreateSession(roomData).subscribe({
+        next: () => {
+          this.getAllSessions();
+          this.closeModal();
+        },
+        error: (err) => {
+          console.error('Error creating session:', err);
+          alert('Failed to create session. Please try again.');
+        }
       });
     } else {
       this.sessionForm.markAllAsTouched();
@@ -109,7 +127,7 @@ export class MentorSessionsComponent implements OnInit {
   }
 
   joinSession(id: string) {
-    this.userRoomServices.setMemberType("MENTOR")
+    this.userRoomServices.setMemberType("MENTOR");
     this.router.navigate([`/mentor/mentorRoom/${id}`]);
   }
 
@@ -125,25 +143,37 @@ export class MentorSessionsComponent implements OnInit {
   }
 
   submitReschedule() {
-    this.isRescheduleModalOpen = true;
-    if (this.rescheduleForm.valid) {
+    if (this.rescheduleForm.valid && this.currentSessionId) {
       const data = this.rescheduleForm.value;
       data.startTime = new Date(data.startTime).toISOString();
       data.endTime = new Date(data.endTime).toISOString();
-      data.roomId = this.currentSessionId || '';
-      this.mentorServices.requestResheduleSession(data).subscribe((res: any) => {
-        this.getAllSessions();
-        this.closeRescheduleModal();
-      }, (err) => console.log(err));
+      data.roomId = this.currentSessionId;
+
+      this.mentorServices.requestResheduleSession(data).subscribe({
+        next: () => {
+          this.getAllSessions();
+          this.closeRescheduleModal();
+        },
+        error: (err) => {
+          console.error('Error rescheduling session:', err);
+          alert('Rescheduling failed. Please try again.');
+        }
+      });
     } else {
       this.rescheduleForm.markAllAsTouched();
     }
   }
 
   cancelSession(id: string) {
-    this.mentorServices.requestCancelSession(id, this.mentor.id).subscribe((res: any) => {
-      console.log(res.message);
-      this.getAllSessions();
-    }, (err) => console.log(err));
+    this.mentorServices.requestCancelSession(id, this.mentor.id).subscribe({
+      next: (res: any) => {
+        console.log(res.message);
+        this.getAllSessions();
+      },
+      error: (err) => {
+        console.error('Error cancelling session:', err);
+        alert('Unable to cancel session.');
+      }
+    });
   }
 }

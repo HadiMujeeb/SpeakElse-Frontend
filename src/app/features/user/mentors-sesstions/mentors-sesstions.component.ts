@@ -42,7 +42,8 @@ export class MentorsSesstionsComponent implements OnInit {
   }
 
   getAllSessions() {
-    this.mentorServices.requestGetAllSessions().subscribe((res) => {
+  this.mentorServices.requestGetAllSessions().subscribe((res) => {
+    if (Array.isArray(res?.mentorRooms)) {
       this.sessions = res.mentorRooms
         .filter((room: IMentorRoom) => room.createdAt)
         .map((room: IMentorRoom) => ({
@@ -56,11 +57,14 @@ export class MentorsSesstionsComponent implements OnInit {
       this.totalPages = Math.ceil(this.sessions.length / this.pageSize);
       this.totalPagesArray = Array.from({ length: this.totalPages }, (_, i) => i + 1);
       this.updatePaginatedSessions();
-    });
-  }
+    } else {
+      console.error("mentorRooms is not an array:", res);
+    }
+  });
+}
+
 
   updatePaginatedSessions(): void {
-    console.log("working..................")
     const start = (this.page - 1) * this.pageSize;
     const end = start + this.pageSize;
     this.paginatedSessions = this.sessions.slice(start, end);
