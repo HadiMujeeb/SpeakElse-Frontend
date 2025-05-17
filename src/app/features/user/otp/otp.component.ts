@@ -167,7 +167,7 @@ export class OTPComponent implements OnInit, OnDestroy {
       this.AuthServices.VerifyOtp(data).subscribe({
         next: (response) => {
           if (response.message) {
-            localStorage.setItem('accessToken', response.accessToken);
+            localStorage.setItem('Token', response.accessToken);
             this.router.navigate(['/user/home']);
           }
         },
