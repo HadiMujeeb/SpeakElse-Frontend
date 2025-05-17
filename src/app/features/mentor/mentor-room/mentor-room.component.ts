@@ -124,7 +124,12 @@ export class MentorRoomComponent implements OnInit, OnDestroy {
         this.localStream = null;
       }
       this.pcService.closeAllConnections();
+      if(this.memberType === 'MENTOR'){
       this.router.navigate(['/mentor/main/sessions']);
+      }else{
+        this.router.navigate(['/user/mentorSessions']);
+      }
+      
     });
 
     this.wsService.onUserAudioStatusChange((userId: string) => {
@@ -161,8 +166,12 @@ export class MentorRoomComponent implements OnInit, OnDestroy {
       this.localStream = null;
     }
     this.pcService.closeAllConnections();
+    if(this.memberType === 'MENTOR'){
+      this.router.navigate(['/mentor/main/sessions']);
+      }else{
+        this.router.navigate(['/user/mentorSessions']);
+      }
     this.userRoomServices.removeMemberType()
-    this.router.navigate(['/mentor/main/sessions']);
   }
 
   toggleAudio(): void {

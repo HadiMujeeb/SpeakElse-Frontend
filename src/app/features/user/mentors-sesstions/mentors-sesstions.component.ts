@@ -44,6 +44,7 @@ export class MentorsSesstionsComponent implements OnInit {
   getAllSessions() {
   this.mentorServices.requestGetAllSessions().subscribe((res) => {
     if (Array.isArray(res?.mentorRooms)) {
+      console.log(res)
       this.sessions = res.mentorRooms
         .filter((room: IMentorRoom) => room.createdAt)
         .map((room: IMentorRoom) => ({
