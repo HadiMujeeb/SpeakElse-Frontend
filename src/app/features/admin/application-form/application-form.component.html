@@ -1,19 +1,19 @@
-<!-- application-forms.component.html -->
-<div class="p-6 bg-[#F9FAFB]">
-  <!-- Header for Application List -->
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-[#1F2937]">Application Forms</h1>
-    <div class="text-sm text-[#6B7280]">
+<div class="p-6 sm:p-4 bg-[#F9FAFB]">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-2 sm:space-y-0">
+    <h1 class="text-2xl sm:text-xl font-bold text-[#1F2937]">Application Forms</h1>
+    <div class="text-sm sm:text-xs text-[#6B7280]">
       <span>Total Applications: {{ totalApplications }}</span>
-      <span class="ml-4">Pending: {{ pendingApplications }}</span>
+      <span class="ml-4 sm:ml-2">Pending: {{ pendingApplications }}</span>
     </div>
   </div>
 
-  <!-- Filter Buttons for Status -->
+  <!-- Filter Buttons and Table Container -->
   <div class="bg-[#F9FAFB] rounded-lg shadow-md">
-    <div class="flex border-b border-[#6B7280]/20">
+    <!-- Filter Tabs -->
+    <div class="flex flex-wrap border-b border-[#6B7280]/20">
       <button
-        class="px-4 py-2 font-semibold transition-all duration-200"
+        class="px-4 py-2 sm:px-3 sm:py-1.5 font-semibold text-sm sm:text-xs transition-all duration-200"
         [ngClass]="{
           'text-[#10B981] border-b-2 border-[#10B981]': activeFilter === 'PENDING',
           'text-[#6B7280] hover:text-[#1F2937]': activeFilter !== 'PENDING'
@@ -23,7 +23,7 @@
         Pending
       </button>
       <button
-        class="px-4 py-2 font-semibold transition-all duration-200"
+        class="px-4 py-2 sm:px-3 sm:py-1.5 font-semibold text-sm sm:text-xs transition-all duration-200"
         [ngClass]="{
           'text-[#10B981] border-b-2 border-[#10B981]': activeFilter === 'APPROVED',
           'text-[#6B7280] hover:text-[#1F2937]': activeFilter !== 'APPROVED'
@@ -33,7 +33,7 @@
         Approved
       </button>
       <button
-        class="px-4 py-2 font-semibold transition-all duration-200"
+        class="px-4 py-2 sm:px-3 sm:py-1.5 font-semibold text-sm sm:text-xs transition-all duration-200"
         [ngClass]="{
           'text-[#10B981] border-b-2 border-[#10B981]': activeFilter === 'REJECTED',
           'text-[#6B7280] hover:text-[#1F2937]': activeFilter !== 'REJECTED'
@@ -44,43 +44,62 @@
       </button>
     </div>
 
-    <!-- Application Table -->
-    <div class="p-4">
-      <div class="overflow-x-auto">
+    <!-- Table Section -->
+    <div class="p-4 sm:p-3">
+      <!-- Table (Desktop) -->
+      <div class="hidden sm:block overflow-x-auto">
         <table class="w-full">
           <thead>
             <tr class="bg-[#F9FAFB]">
-              <th *ngFor="let header of headers" class="px-4 py-2 text-left text-[#6B7280] font-medium">{{ header.label }}</th>
+              <th
+                *ngFor="let header of headers"
+                class="px-4 py-2 sm:px-3 sm:py-1.5 text-left text-[#6B7280] font-medium text-sm sm:text-xs"
+              >
+                {{ header.label }}
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let application of applications; let i = index" class="hover:bg-[#10B981]/5 transition-colors duration-200">
-              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ i + 1 }}</td>
-              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.name }}</td>
-              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.email }}</td>
-              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.country }}</td>
-              <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ application.mentorRole }}</td>
-              <td class="border border-[#6B7280]/20 px-4 py-2">
+            <tr
+              *ngFor="let application of applications; let i = index"
+              class="hover:bg-[#10B981]/5 transition-colors duration-200"
+            >
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ i + 1 }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ application.name }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ application.email }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ application.country }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ application.mentorRole }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5">
                 <button
                   (click)="viewApplicationDetails(application.id)"
-                  class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+                  class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 sm:px-3 sm:py-1.5 rounded-lg text-sm sm:text-xs hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   View
                 </button>
               </td>
-              <td class="border border-[#6B7280]/20 px-4 py-2">
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5">
                 <button
                   (click)="toggleVerification(application)"
-                  class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+                  class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 sm:px-3 sm:py-1.5 rounded-lg text-sm sm:text-xs hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   {{ application.isVerified ? 'Unverify' : 'Verify' }}
                 </button>
               </td>
-              <td class="border border-[#6B7280]/20 px-4 py-2">
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5">
                 <select
                   [(ngModel)]="application.approvalStatus"
                   (change)="updateApprovalStatus(application)"
-                  class="w-full px-3 py-2 border border-[#6B7280]/50 rounded-md text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+                  class="w-full px-3 py-2 sm:py-1.5 border border-[#6B7280]/50 rounded-md text-[#1F2937] text-sm sm:text-xs focus:outline-none focus:ring-2 focus:ring-[#10B981]"
                 >
                   <option value="APPROVED">Approved</option>
                   <option value="REJECTED">Rejected</option>
@@ -91,27 +110,74 @@
         </table>
       </div>
 
+      <!-- Card Layout (Mobile) -->
+      <div class="block sm:hidden space-y-4">
+        <div
+          *ngFor="let application of applications; let i = index"
+          class="bg-white p-4 rounded-lg shadow-sm border border-[#6B7280]/20 hover:bg-[#10B981]/5 transition-colors duration-200"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium text-[#1F2937]">#{{ i + 1 }}</span>
+            <div class="flex space-x-2">
+              <button
+                (click)="viewApplicationDetails(application.id)"
+                class="bg-[#10B981] text-[#F9FAFB] px-3 py-1.5 rounded-lg text-xs hover:bg-[#1F2937] transition-all duration-200"
+              >
+                View
+              </button>
+              <button
+                (click)="toggleVerification(application)"
+                class="bg-[#10B981] text-[#F9FAFB] px-3 py-1.5 rounded-lg text-xs hover:bg-[#1F2937] transition-all duration-200"
+              >
+                {{ application.isVerified ? 'Unverify' : 'Verify' }}
+              </button>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <p class="text-sm text-[#1F2937]"><strong>Name:</strong> {{ application.name }}</p>
+            <p class="text-sm text-[#1F2937]"><strong>Email:</strong> {{ application.email }}</p>
+            <p class="text-sm text-[#1F2937]"><strong>Country:</strong> {{ application.country }}</p>
+            <p class="text-sm text-[#1F2937]"><strong>Mentor Role:</strong> {{ application.mentorRole }}</p>
+            <p class="text-sm text-[#1F2937]"><strong> value="APPROVED">Status:</strong>
+              <select
+                [(ngModel)]="application.approvalStatus"
+                (change)="updateApprovalStatus(application)"
+                class="w-full px-2 py-1 border border-[#6B7280]/50 rounded-md text-[#1F2937] text-xs focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+              >
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Pagination -->
-      <div class="mt-4 flex justify-center">
+      <div class="mt-4 flex justify-center flex-wrap gap-1">
         <button
           (click)="previousPage()"
-          class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded mr-1 hover:bg-[#10B981]/10 transition-colors duration-200 disabled:opacity-50"
           [disabled]="page === 1"
+          class="px-3 py-1 sm:px-2 sm:py-0.5 border border-[#6B7280]/50 text-[#1F2937] rounded text-sm sm:text-xs hover:bg-[#10B981]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
           <
         </button>
-        <button
-          *ngFor="let p of totalPagesArray"
-          class="px-3 py-1 border border-[#6B7280]/50 rounded mr-1 text-[#1F2937] transition-colors duration-200"
-          [ngClass]="{'bg-[#10B981] text-[#F9FAFB]': page === p, 'hover:bg-[#10B981]/10': page !== p}"
-          (click)="goToPage(p)"
-        >
-          {{ p }}
-        </button>
+        <ng-container *ngFor="let p of totalPagesArray; let i = index">
+          <button
+            *ngIf="totalPages <= 5 || (p >= page - 2 && p <= page + 2)"
+            (click)="goToPage(p)"
+            class="px-3 py-1 sm:px-2 sm:py-0.5 border border-[#6B7280]/50 rounded text-[#1F2937] text-sm sm:text-xs transition-colors duration-200"
+            [ngClass]="{
+              'bg-[#10B981] text-[#F9FAFB]': page === p,
+              'hover:bg-[#10B981]/10': page !== p
+            }"
+          >
+            {{ p }}
+          </button>
+        </ng-container>
         <button
           (click)="nextPage()"
-          class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded hover:bg-[#10B981]/10 transition-colors duration-200 disabled:opacity-50"
           [disabled]="page === totalPages"
+          class="px-3 py-1 sm:px-2 sm:py-0.5 border border-[#6B7280]/50 text-[#1F2937] rounded text-sm sm:text-xs hover:bg-[#10B981]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
           >
         </button>
@@ -120,17 +186,22 @@
   </div>
 
   <!-- Modal for Viewing Application Details -->
-  <div *ngIf="isModalOpen" class="fixed inset-0 bg-[#1F2937]/50 flex justify-center items-center z-50 transition-all">
-    <div class="bg-[#F9FAFB] rounded-lg shadow-xl p-6 w-full max-w-lg transform transition-transform scale-100">
-      <h2 class="text-2xl font-bold text-[#1F2937] mb-4">Application Details for {{ selectedApplication?.name }}</h2>
+  <div
+    *ngIf="isModalOpen"
+    class="fixed inset-0 bg-[#1F2937]/50 flex justify-center items-center z-50 p-4 sm:p-2 transition-all"
+  >
+    <div
+      class="bg-[#F9FAFB] rounded-lg shadow-xl p-6 sm:p-4 w-full max-w-lg sm:max-w-[90%] max-h-[80vh] overflow-y-auto transform transition-transform scale-100"
+    >
+      <h2 class="text-2xl sm:text-xl font-bold text-[#1F2937] mb-4">Application Details for {{ selectedApplication?.name }}</h2>
 
       <!-- Resume Section -->
       <div class="mb-4">
-        <h3 class="text-xl font-semibold text-[#1F2937] mb-2">Resume:</h3>
+        <h3 class="text-xl sm:text-lg font-semibold text-[#1F2937] mb-2">Resume:</h3>
         <a
           href="{{ selectedApplication?.resume }}"
           target="_blank"
-          class="text-[#10B981] underline hover:text-[#1F2937] transition-colors duration-200"
+          class="text-[#10B981] underline hover:text-[#1F2937] transition-colors duration-200 text-sm sm:text-xs"
         >
           Click to View Resume
         </a>
@@ -138,43 +209,46 @@
 
       <!-- User Details Section -->
       <div class="mb-4">
-        <h3 class="text-xl font-semibold text-[#1F2937] mb-2">User Details:</h3>
-        <p class="text-[#1F2937]"><strong>Name:</strong> {{ selectedApplication?.user?.name }}</p>
-        <p class="text-[#1F2937]"><strong>Email:</strong> {{ selectedApplication?.user?.email }}</p>
-        <p class="text-[#1F2937]"><strong>Country:</strong> {{ selectedApplication?.user?.country }}</p>
-        <p class="text-[#1F2937]"><strong>Language:</strong> {{ selectedApplication?.user?.language }}</p>
-        <p class="text-[#1F2937]"><strong>Profession:</strong> {{ selectedApplication?.user?.profession }}</p>
+        <h3 class="text-xl sm:text-lg font-semibold text-[#1F2937] mb-2">User Details:</h3>
+        <p class="text-[#1F2937] text-sm sm:text-xs"><strong>Name:</strong> {{ selectedApplication?.user?.name }}</p>
+        <p class="text-[#1F2937] text-sm sm:text-xs"><strong>Email:</strong> {{ selectedApplication?.user?.email }}</p>
+        <p class="text-[#1F2937] text-sm sm:text-xs"><strong>Country:</strong> {{ selectedApplication?.user?.country }}</p>
+        <p class="text-[#1F2937] text-sm sm:text-xs"><strong>Language:</strong> {{ selectedApplication?.user?.language }}</p>
+        <p class="text-[#1F2937] text-sm sm:text-xs"><strong>Profession:</strong> {{ selectedApplication?.user?.profession }}</p>
       </div>
 
       <!-- Feedback and Rating Section -->
       <div class="mb-4">
-        <h3 class="text-xl font-semibold text-[#1F2937] mb-4">Feedback and Ratings</h3>
+        <h3 class="text-xl sm:text-lg font-semibold text-[#1F2937] mb-4">Feedback and Ratings</h3>
 
         <!-- Display Average Rating -->
         <div class="flex justify-between mb-3">
-          <p class="text-sm text-[#6B7280]">Average Rating:</p>
+          <p class="text-sm sm:text-xs text-[#6B7280]">Average Rating:</p>
           <div class="flex items-center">
-            <span *ngFor="let star of getStars(getAverageRating())" class="text-[#10B981]">★</span>
-            <span class="ml-2 text-sm text-[#6B7280]">({{ getAverageRating() | number: '1.1-1' }} / 5)</span>
+            <span *ngFor="let star of getStars(getAverageRating())" class="text-[#10B981] text-base sm:text-sm">★</span>
+            <span class="ml-2 text-sm sm:text-xs text-[#6B7280]">({{ getAverageRating() | number: '1.1-1' }} / 5)</span>
           </div>
         </div>
 
         <!-- Display Total Feedback -->
-        <p class="text-sm text-[#6B7280] mb-3">
+        <p class="text-sm sm:text-xs text-[#6B7280] mb-3">
           Total Feedback: <span class="font-bold text-[#1F2937]">{{ selectedApplication?.user?.comments?.length ?? 0 }}</span>
         </p>
 
         <!-- Feedback and Ratings List -->
         <div *ngIf="selectedApplication?.user?.comments?.length ?? 0 > 0; else noFeedback">
-          <ul class="space-y-4">
-            <li *ngFor="let comment of selectedApplication?.user?.comments" class="bg-[#F9FAFB] border border-[#6B7280]/20 p-4 rounded-lg shadow-sm">
+          <ul class="space-y-4 sm:space-y-3">
+            <li
+              *ngFor="let comment of selectedApplication?.user?.comments"
+              class="bg-[#F9FAFB] border border-[#6B7280]/20 p-4 sm:p-3 rounded-lg shadow-sm"
+            >
               <div class="flex justify-between mb-2">
-                <p class="text-sm font-semibold text-[#1F2937]">Feedback:</p>
-                <p class="text-sm text-[#1F2937]">{{ comment.feedback }}</p>
+                <p class="text-sm sm:text-xs font-semibold text-[#1F2937]">Feedback:</p>
+                <p class="text-sm sm:text-xs text-[#1F2937]">{{ comment.feedback }}</p>
               </div>
               <div class="flex justify-between">
-                <p class="text-sm font-semibold text-[#1F2937]">Rating:</p>
-                <p class="text-sm text-[#10B981] font-bold">
+                <p class="text-sm sm:text-xs font-semibold text-[#1F2937]">Rating:</p>
+                <p class="text-sm sm:text-xs text-[#10B981] font-bold">
                   <span *ngFor="let star of getStars(comment.rating)" class="text-[#10B981]">★</span>
                   <span class="text-[#6B7280]"> / 5</span>
                 </p>
@@ -185,15 +259,15 @@
 
         <!-- No Feedback Message -->
         <ng-template #noFeedback>
-          <p class="text-[#6B7280]">No feedback available.</p>
+          <p class="text-[#6B7280] text-sm sm:text-xs">No feedback available.</p>
         </ng-template>
       </div>
 
       <!-- Close Button -->
-      <div class="flex justify-end mt-4">
+      <div class="flex justify-end mt-4 sm:mt-3">
         <button
           (click)="closeModal()"
-          class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+          class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 sm:px-3 sm:py-1.5 rounded-lg text-sm sm:text-xs hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
         >
           Close
         </button>

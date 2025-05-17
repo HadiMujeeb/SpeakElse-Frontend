@@ -1,17 +1,19 @@
-<!-- members.component.html -->
-<div class="p-6 bg-[#F9FAFB]">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-[#1F2937]">Members</h1>
-    <div class="text-sm text-[#6B7280]">
-      <span>Total Members: {{ totalMembers }}</span>
-      <!-- <span class="ml-4">Current Used: {{ currentUsed }}</span> -->
+<div class="p-6 sm:p-4 bg-[#F9FAFB]">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-2 sm:space-y-0">
+    <h1 class="text-2xl sm:text-xl font-bold text-[#1F2937]">Members</h1>
+    <div class="text-sm sm:text-xs text-[#6B7280]">
+      <!-- <span>Total Users: {{ totalUsers }}</span>
+      <span class="ml-4 sm:ml-2">Total Admins: {{ totalAdmins }}</span> -->
     </div>
   </div>
 
+  <!-- Tabs and Table Container -->
   <div class="bg-[#F9FAFB] rounded-lg shadow-md">
+    <!-- Tabs -->
     <div class="flex border-b border-[#6B7280]/20">
-      <button 
-        class="px-4 py-2 font-semibold transition-all duration-200" 
+      <button
+        class="px-4 py-2 sm:px-3 sm:py-1.5 font-semibold text-sm sm:text-xs transition-all duration-200"
         [ngClass]="{
           'text-[#10B981] border-b-2 border-[#10B981]': activeRole === 'USER',
           'text-[#6B7280] hover:text-[#1F2937]': activeRole !== 'USER'
@@ -20,75 +22,171 @@
       >
         Users
       </button>
-      <button 
-        class="px-4 py-2 font-semibold transition-all duration-200"
+      <button
+        class="px-4 py-2 sm:px-3 sm:py-1.5 font-semibold text-sm sm:text-xs transition-all duration-200"
         [ngClass]="{
           'text-[#10B981] border-b-2 border-[#10B981]': activeRole === 'ADMIN',
           'text-[#6B7280] hover:text-[#1F2937]': activeRole !== 'ADMIN'
-        }" 
+        }"
         (click)="filterMembers('ADMIN')"
       >
         Admins
       </button>
     </div>
 
-    <div class="p-4">
-      <button 
-        (click)="openAddMember()" 
-        class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 rounded-lg mb-4 hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
+    <!-- Table Section -->
+    <div class="p-4 sm:p-3">
+      <button
+        (click)="openAddMember()"
+        class="bg-[#10B981] text-[#F9FAFB] px-4 py-2 sm:px-3 sm:py-1.5 rounded-lg mb-4 sm:mb-3 text-sm sm:text-xs font-semibold hover:bg-[#1F2937] transition-all duration-200 shadow-sm hover:shadow-md"
       >
         Add Member
       </button>
 
-      <table class="w-full">
-        <thead>
-          <tr class="bg-[#F9FAFB]">
-            <th *ngFor="let header of headers" class="px-4 py-2 text-left text-[#6B7280] font-medium">{{ header.label }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let member of filteredMembers; let i = index" class="hover:bg-[#10B981]/5 transition-colors duration-200">
-            <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ i + 1 }}</td>
-            <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ member.name }}</td>
-            <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ member.email }}</td>
-            <td class="border border-[#6B7280]/20 px-4 py-2">
-              <span *ngIf="member.isBlocked; else activeTemplate" class="px-2 py-1 bg-[#10B981]/20 text-[#10B981] rounded-full text-sm">Blocked</span>
-              <ng-template #activeTemplate>
-                <span class="px-2 py-1 bg-[#10B981]/20 text-[#10B981] rounded-full text-sm">Active</span>
-              </ng-template>
-            </td>
-            <td class="border border-[#6B7280]/20 px-4 py-2 text-[#1F2937]">{{ member.profession }}</td>
-            <td class="border border-[#6B7280]/20 px-4 py-2">
+      <!-- Table (Desktop) -->
+      <div class="hidden sm:block overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-[#F9FAFB]">
+              <th
+                *ngFor="let header of headers"
+                class="px-4 py-2 sm:px-3 sm:py-1.5 text-left text-[#6B7280] font-medium text-sm sm:text-xs"
+              >
+                {{ header.label }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let member of filteredMembersPaginated.length > 0 ? filteredMembersPaginated : filteredMembers; let i = index"
+              class="hover:bg-[#10B981]/5 transition-colors duration-200"
+            >
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ i + 1 }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ member.name }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ member.email }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5 text-[#1F2937] text-sm sm:text-xs">
+                {{ member.role }}
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5">
+                <span
+                  *ngIf="member.isBlocked; else activeTemplate"
+                  class="px-2 py-1 bg-red-600 text-red-900 rounded-full text-sm sm:text-xs"
+                >
+                  Blocked
+                </span>
+                <ng-template #activeTemplate>
+                  <span
+                    class="px-2 py-1 bg-[#10B981]/20 text-[#10B981] rounded-full text-sm sm:text-xs"
+                  >
+                    Active
+                  </span>
+                </ng-template>
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5">
+                <button (click)="openEditModal(member)" class="bg-transparent border-none">
+                  <i
+                    class="fas fa-edit text-[#10B981] hover:text-[#1F2937] transition-colors duration-200 text-lg sm:text-base"
+                  ></i>
+                </button>
+              </td>
+              <td class="border border-[#6B7280]/20 px-4 py-2 sm:px-3 sm:py-1.5">
+                <button (click)="toggleBlockMember(member.id)" class="bg-transparent border-none">
+                  <i
+                    class="fas"
+                    [ngClass]="
+                      member.isBlocked
+                        ? 'fa-user-check text-[#10B981] hover:text-[#1F2937]'
+                        : 'fa-user-lock text-[#10B981] hover:text-[#1F2937]'
+                    "
+                    class="text-lg sm:text-base"
+                  ></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Card Layout (Mobile) -->
+      <div class="block sm:hidden space-y-4">
+        <div
+          *ngFor="let member of filteredMembersPaginated.length > 0 ? filteredMembersPaginated : filteredMembers; let i = index"
+          class="bg-white p-4 rounded-lg shadow-sm border border-[#6B7280]/20 hover:bg-[#10B981]/5 transition-colors duration-200"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium text-[#1F2937]">#{{ i + 1 }}</span>
+            <div class="flex space-x-2">
               <button (click)="openEditModal(member)" class="bg-transparent border-none">
-                <i class="fas fa-edit text-[#10B981] hover:text-[#1F2937] transition-colors duration-200"></i>
+                <i
+                  class="fas fa-edit text-[#10B981] hover:text-[#1F2937] transition-colors duration-200 text-base"
+                ></i>
               </button>
-            </td>
-            <td class="border border-[#6B7280]/20 px-4 py-2">
               <button (click)="toggleBlockMember(member.id)" class="bg-transparent border-none">
                 <i class="fas" [ngClass]="member.isBlocked ? 'fa-user-check text-[#10B981] hover:text-[#1F2937]' : 'fa-user-lock text-[#10B981] hover:text-[#1F2937]'"></i>
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <p class="text-sm text-[#1F2937]"><strong>Name:</strong> {{ member.name }}</p>
+            <p class="text-sm text-[#1F2937]"><strong>Email:</strong> {{ member.email }}</p>
+            <p class="text-sm text-[#1F2937]"><strong>Role:</strong> {{ member.role }}</p>
+            <p class="text-sm text-[#1F2937]">
+              <strong>Status:</strong>
+              <span
+                *ngIf="member.isBlocked; else activeTemplate"
+                class="px-2 py-1 bg-red-600 text-red-900 rounded-full text-xs"
+              >
+                Blocked
+              </span>
+              <ng-template #activeTemplate>
+                <span
+                  class="px-2 py-1 bg-[#10B981]/20 text-[#10B981] rounded-full text-xs"
+                >
+                  Active
+                </span>
+              </ng-template>
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <div class="mt-4 flex justify-center">
-        <button 
-          (click)="previousPage()" 
-          class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded mr-1 hover:bg-[#10B981]/10 transition-colors duration-200"
+      <!-- Pagination -->
+      <div class="mt-4 flex justify-center flex-wrap gap-1">
+        <!-- Previous Button -->
+        <button
+          (click)="previousPage()"
+          [disabled]="page === 1"
+          class="px-3 py-1 sm:px-2 sm:py-0.5 border border-[#6B7280]/50 text-[#1F2937] rounded text-sm sm:text-xs hover:bg-[#10B981]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
           &lt;
         </button>
-        <button 
-          *ngFor="let p of totalPagesArray" 
-          class="px-3 py-1 border border-[#6B7280]/50 rounded mr-1 text-[#1F2937] transition-colors duration-200" 
-          [ngClass]="{'bg-[#10B981] text-[#F9FAFB]': page == p, 'hover:bg-[#10B981]/10': page != p}"
-        >
-          {{ p }}
-        </button>
-        <button 
-          (click)="nextPage()" 
-          class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded hover:bg-[#10B981]/10 transition-colors duration-200"
+
+        <!-- Page Numbers (Limited on Mobile) -->
+        <ng-container *ngFor="let p of totalPagesArray; let i = index">
+          <button
+            *ngIf="totalPages <= 5 || (p >= page - 2 && p <= page + 2)"
+            (click)="goToPage(p)"
+            class="px-3 py-1 sm:px-2 sm:py-0.5 border border-[#6B7280]/50 rounded text-[#1F2937] text-sm sm:text-xs transition-colors duration-200"
+            [ngClass]="{
+              'bg-[#10B981] text-[#F9FAFB]': page === p,
+              'hover:bg-[#10B981]/10': page !== p
+            }"
+          >
+            {{ p }}
+          </button>
+        </ng-container>
+
+        <!-- Next Button -->
+        <button
+          (click)="nextPage()"
+          [disabled]="page === totalPages"
+          class="px-3 py-1 sm:px-2 sm:py-0.5 border border-[#6B7280]/50 text-[#1F2937] rounded text-sm sm:text-xs hover:bg-[#10B981]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
           &gt;
         </button>
@@ -96,17 +194,21 @@
     </div>
   </div>
 
-  <!-- Conditionally render the form modal -->
-  <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-[#1F2937]/50 flex items-center justify-center z-50">
-    <app-form-modal 
+  <!-- Modal -->
+  <div
+    *ngIf="isEditModalOpen"
+    class="fixed inset-0 bg-[#1F2937]/50 flex items-center justify-center z-50 p-4 sm:p-2"
+  >
+    <app-form-modal
       [ActionType]="ActionType"
-      [fields]="fields" 
-      [member]="selectedMember" 
+      [fields]="fields"
+      [member]="selectedMember"
       (close)="closeEditModal()"
       (submit)="requestEditMember($event)"
       (AddMember)="requestAddMemberData($event)"
-      class="bg-[#F9FAFB] rounded-lg shadow-xl p-6 max-w-lg w-full"
+      class="bg-[#F9FAFB] rounded-lg shadow-xl p-6 sm:p-4 max-w-lg w-full sm:max-w-full sm:w-[90%]"
     >
     </app-form-modal>
   </div>
 </div>
+

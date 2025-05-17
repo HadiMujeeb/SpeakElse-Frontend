@@ -14,6 +14,7 @@ export interface IMembersListResponse {
     profession: string;
     country: string;
     language: string;
+    isVerified:boolean;
     isBlocked: boolean;
     createdAt: string;
     
@@ -40,4 +41,9 @@ export interface IMembersListResponse {
     userId: string;
     balance: number;
     transactions?: ITransaction[];
+  }
+
+  export interface IMemberResponse {
+    message:string;
+    member:IMember;
   }

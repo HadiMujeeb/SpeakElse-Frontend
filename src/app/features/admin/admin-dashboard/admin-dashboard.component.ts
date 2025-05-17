@@ -78,7 +78,7 @@ export class AdminDashboardComponent implements AfterViewInit, OnInit {
   fetchTotalUsers() {
     this.memberService.requestRetrieveMembersList().subscribe(
       (response) => {
-        this.totalUsers = response.members.length;
+        this.totalUsers = response.members.filter((u)=> u.role=="USER").length;
         this.populateMonthlyData(response.members, 'createdAt', this.monthlyUserData[0].data,'user');
       },
       (error) => console.error('Error fetching users:', error)

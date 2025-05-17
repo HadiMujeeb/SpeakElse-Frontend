@@ -42,7 +42,6 @@ export class RoomListComponent implements OnInit {
     this.fetchRooms();
 
     this.wsServices.onRoomCreated().subscribe((room: IUserCreatedRoom) => {
-      console.log('Real-time room received:', room);
       this.rooms.push(room);
       this.filteredRooms = this.sortRooms([...this.rooms]);
     });
@@ -58,15 +57,13 @@ export class RoomListComponent implements OnInit {
 
     this.wsServices.getAllRoomsInfo();
     this.wsServices.onRoomsInfo((roomsInfo: RoomInfo[]) => {
-      console.log(roomsInfo);
       this.updateRoomMemberInfo(roomsInfo);
       this.filteredRooms = this.sortRooms([...this.rooms]);
     });
 
-    // Listen for the room deleted event from the backend
+
     this.wsServices.deletedRoom((roomId: string) => {
-      console.log(`Room ${roomId} deleted`);
-      this.removeRoom(roomId); // Call the method to remove room from UI
+      this.removeRoom(roomId);
     });
   }
 
@@ -113,9 +110,8 @@ export class RoomListComponent implements OnInit {
     this.closeModal();
   }
 
-  // Method to remove a room when it is deleted
+ 
   removeRoom(roomId: string): void {
-    // Remove the room from both `rooms` and `filteredRooms` arrays
     this.rooms = this.rooms.filter((room) => room.id !== roomId);
     this.filteredRooms = this.filteredRooms.filter((room) => room.id !== roomId);
   }
@@ -149,7 +145,7 @@ export class RoomListComponent implements OnInit {
       );
     });
 
-    this.filteredRooms = this.sortRooms(this.filteredRooms); // Optional sorting
+    this.filteredRooms = this.sortRooms(this.filteredRooms);
   }
 
   updateRoomMemberInfo(roomsInfo: RoomInfo[]): void {

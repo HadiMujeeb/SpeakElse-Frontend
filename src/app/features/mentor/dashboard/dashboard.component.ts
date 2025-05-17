@@ -37,43 +37,53 @@ export class DashboardComponent implements OnInit {
       (response: any) => {
 
         // Calculate session stats
-        this.totalAttendedSessions = response.rooms.filter((room: IMentorRoom) => room.status === 'ACTIVE').length;
-        this.totalCanceledSessions = response.rooms.filter((room: IMentorRoom) => room.status === 'CANCELED').length;
+        // Count sessions based on room status
+this.totalAttendedSessions = response.rooms.filter((room: IMentorRoom) => room.status === 'ACTIVE').length;
+this.totalCanceledSessions = response.rooms.filter((room: IMentorRoom) => room.status === 'CANCELED').length;
 
-        // Calculate total revenue
-        this.totalRevenue = response.transactions.reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
+// ✅ Calculate total revenue (only CREDITED transactions)
+this.totalRevenue = response.transactions
+  .filter((transaction: ITransaction) => transaction.status === 'CREDITED')
+  .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
 
-        // Calculate today's revenue
-        this.todayRevenue = response.transactions
-          .filter((transaction: ITransaction) => {
-            const transactionDate = new Date(transaction.createdAt!);
-            const today = new Date();
-            return (
-              transactionDate.getDate() === today.getDate() &&
-              transactionDate.getMonth() === today.getMonth() &&
-              transactionDate.getFullYear() === today.getFullYear()
-            );
-          })
-          .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
+// ✅ Calculate today's revenue (only CREDITED transactions from today)
+this.todayRevenue = response.transactions
+  .filter((transaction: ITransaction) => {
+    const transactionDate = new Date(transaction.createdAt!);
+    const today = new Date();
+
+    return (
+      transaction.status === 'CREDITED' &&
+      transactionDate.getDate() === today.getDate() &&
+      transactionDate.getMonth() === today.getMonth() &&
+      transactionDate.getFullYear() === today.getFullYear()
+    );
+  })
+  .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
 
         // Calculate current month's revenue
-        this.monthlyRevenueData[this.currentMonth] = response.transactions
-          .filter((transaction: ITransaction) => {
-            const transactionDate = new Date(transaction.createdAt!);
-            return (
-              transactionDate.getMonth() === this.currentMonth &&
-              transactionDate.getFullYear() === this.currentYear
-            );
-          })
-          .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
+       this.monthlyRevenueData[this.currentMonth] = response.transactions
+  .filter((transaction: ITransaction) => {
+    const transactionDate = new Date(transaction.createdAt!);
+    return (
+      transaction.status === 'CREDITED' &&
+      transactionDate.getMonth() === this.currentMonth &&
+      transactionDate.getFullYear() === this.currentYear
+    );
+  })
+  .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
 
-        // Calculate current year's revenue
-        this.yearlyRevenueData[this.currentYear - 2016] = response.transactions
-          .filter((transaction: ITransaction) => {
-            const transactionDate = new Date(transaction.createdAt!);
-            return transactionDate.getFullYear() === this.currentYear;
-          })
-          .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
+
+     this.yearlyRevenueData[this.currentYear - 2016] = response.transactions
+  .filter((transaction: ITransaction) => {
+    const transactionDate = new Date(transaction.createdAt!);
+    return (
+      transaction.status === 'CREDITED' &&
+      transactionDate.getFullYear() === this.currentYear
+    );
+  })
+  .reduce((total: number, transaction: ITransaction) => total + (transaction.mentorAmount || 0), 0);
+
 
         // Initialize charts after data processing
         this.initializeMonthlyRevenueChart();

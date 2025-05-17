@@ -18,19 +18,15 @@ export class ScorepageComponent {
   timeTaken: number = 0;
   passMessage = '';
   totalScore: string = '';
-  grade = ''; // Variable to store the grade (A1, A2, B1)
+  grade = ''; 
 
   router = inject(Router);
 
   ngOnInit() {
     this.userProfileServices.listeningTestScore$.subscribe(score => this.listeningScore = score);
     this.userProfileServices.readingTestScore$.subscribe(score => this.readingScore = score);
-    console.log(this.listeningScore, this.readingScore);
-    // this.timeTaken = this.userProfileServices.readingTime$.subscribe(time => this.timeTaken = time);
     this.validateTest();
-    // Calculate the score in "X/10" format.
     this.calculateTotalScore();
-    // Determine the grade based on the total score
     this.determineGrade();
   }
 
@@ -50,7 +46,6 @@ backToHome() {
   this.router.navigate(['/user/home']);
 }
   calculateTotalScore() {
-    // Calculate the total score in "X/10" format
     const total = this.listeningScore + this.readingScore;
     this.totalScore = `${total}/20`; // Assuming maximum score is 10 for each section
   }

@@ -1,9 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component} from '@angular/core';
 import { FooterComponent } from '../../../layouts/user/footer/footer.component';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { AuthUserService } from '../../../core/services/user/auth-user.service';
-import { Observable, Subscription } from 'rxjs';
+import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../layouts/user/header/header.component';
 
 @Component({
@@ -13,9 +11,7 @@ import { HeaderComponent } from '../../../layouts/user/header/header.component';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css'],
 })
-export class HomepageComponent implements OnDestroy {
+export class HomepageComponent{
 
-ngOnDestroy(): void {
-  console.log("destory ......")
-}
+
 }

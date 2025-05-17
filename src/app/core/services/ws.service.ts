@@ -22,7 +22,7 @@ export class WsService {
   privateChatID: string = '';
   userData: IMember = JSON.parse(localStorage.getItem('userData') || '{}');
   constructor() {
-    // Initialize the socket connection to the server
+    // Initialize the socket connection to the server 
     this.socket = io(environment.BACKEND_DOMAIN);
     this.socket.on('new chat message', (message: string) => {
       this.messageSubject.next(message);
@@ -83,8 +83,8 @@ export class WsService {
     return this.statusSubject.asObservable();
   }
 
-  sendMessage(message: string): void {
-    this.socket.emit('chat message', message, this.roomID, this.userData.name);
+  sendMessage(message: string,username:string): void {
+    this.socket.emit('chat message', message, this.roomID, username);
   } 
 
   getMessages(): Observable<string> {
@@ -110,12 +110,12 @@ export class WsService {
   }
 
   // Join a room on the server
-  joinRoom(roomID: string): void {
-    if (this.userData) {
+  joinRoom(roomID: string,userData:any): void {
+    if (userData) {
       this.socket.emit('set user data', {
-        userId: this.userData.id,
-        username: this.userData.name,
-        avatar: this.userData.avatar,
+        userId: userData.id,
+        username: userData.name,
+        avatar: userData.avatar,
       });
     }
     this.roomID = roomID;

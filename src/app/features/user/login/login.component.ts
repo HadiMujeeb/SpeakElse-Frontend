@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
       const credentials: IUserLoginCredentials = this.loginForm.value;
       this.authUserServices.loginRequest(credentials).subscribe({
         next: (response) => {
-          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('Token', response.accessToken);
           this.router.navigate(['/user/home']);
         },
         error: (error) => {

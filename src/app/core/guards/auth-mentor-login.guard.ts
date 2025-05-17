@@ -10,7 +10,7 @@ export const authMentorLoginGuard: CanActivateFn = (route, state) :Observable<bo
   return authMentorService.isMentorExisted$().pipe(
     map(isMentor => {
       if (isMentor) {
-        router.navigate(['/mentor/main']);
+        router.navigate(['/mentor/main/dashboard']);
         return false;
       } else {
         return true;

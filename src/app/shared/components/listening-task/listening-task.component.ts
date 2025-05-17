@@ -33,17 +33,14 @@ export class ListeningTaskComponent implements OnInit {
   ngOnInit() {
     this.userProfileServices.getAllQuestions().subscribe((questions:any) => {
       this.Questions = questions.data.filter((question: IQuestions) => question.testType === 'LISTENING');
-      console.log(this.Questions);
       this.getRandomQuestion();
     })
    
   }
   getRandomQuestion() {
     const randomIndex = Math.floor(Math.random()*this.Questions.length);
-    console.log(randomIndex);
     this.currentQuestion = this.Questions[randomIndex];
     this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentQuestion.story);
-    console.log(this.currentQuestion);
   }
 
 
@@ -84,7 +81,6 @@ export class ListeningTaskComponent implements OnInit {
   }
 
   answerQuestion(correctAnswer: number, optionIndex: number) {
-    console.log(correctAnswer, optionIndex);
     if(correctAnswer == optionIndex){
       this.isAnswer = true;
     }else{
@@ -94,7 +90,6 @@ export class ListeningTaskComponent implements OnInit {
   nextQuestion() {
     if(this.isAnswer){
       this.score++;
-      console.log(this.score);
      this.userProfileServices.updateListeningTestScore(this.score);
       this.isAnswer = false
     }

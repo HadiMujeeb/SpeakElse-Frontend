@@ -15,55 +15,44 @@ import { FormModalComponent } from '../../../shared/components/modals/form-modal
   styleUrls: ['./members.component.css'],
 })
 export class MembersComponent implements OnInit {
-
   members: IMember[] = [];
   filteredMembers: IMember[] = [];
+  filteredMembersPaginated: IMember[] = [];
   selectedMember: IMember | null = null;
-
-
   headers = memberHeaders;
   fields: any[] = [];
   isEditModalOpen = false;
   activeRole = 'USER';
 
-
-  totalMembers = 0;
-  totalPages = 1;
-  page = 1;
-  pageSize = 6;
-
+  page: number = 1;
+  pageSize: number = 10;
 
   ActionType!: ModalAction;
 
-
   MembersMgmtServices = inject(MemberMgmtService);
-
 
   ngOnInit(): void {
     this.retrieveMembersList();
+    this.goToPage(1)
+
   }
-  
 
   private retrieveMembersList(): void {
     this.MembersMgmtServices.requestRetrieveMembersList().subscribe(
       (response: any) => {
         this.members = response.members;
-        this.totalMembers = response.totalCount;
-        this.totalPages = Math.ceil(this.totalMembers / this.pageSize);
-        this.filterMembers('USER');
+        this.filterMembers(this.activeRole);
       },
       (error) => {
         console.error('Error fetching members', error);
       }
     );
   }
-  
-
 
   openAddMember(): void {
     this.ActionType = ModalAction.AddMember;
     this.isEditModalOpen = true;
-    const excludedFields = ['description','language','avatar'];
+    const excludedFields = ['description', 'language', 'avatar'];
     this.fields = registerField.filter((f) => !excludedFields.includes(f.name));
   }
 
@@ -71,7 +60,7 @@ export class MembersComponent implements OnInit {
     this.ActionType = ModalAction.EditMember;
     this.selectedMember = member;
     this.isEditModalOpen = true;
-    const excludedFields = ['password', 'confirmPassword','avatar'];
+    const excludedFields = ['password', 'confirmPassword', 'avatar', 'description'];
     this.fields = registerField.filter((f) => !excludedFields.includes(f.name));
   }
 
@@ -79,7 +68,6 @@ export class MembersComponent implements OnInit {
     this.isEditModalOpen = false;
     this.selectedMember = null;
   }
-
 
   filterMembers(role: string): void {
     this.activeRole = role;
@@ -89,14 +77,23 @@ export class MembersComponent implements OnInit {
         : role === 'ADMIN'
         ? this.members.filter((member) => member.role === 'ADMIN')
         : [...this.members];
+
+    this.page = 1; // Reset page to first
+    this.updatePaginatedMembers();
+  }
+
+  updatePaginatedMembers(): void {
+    const startIndex = (this.page - 1) * this.pageSize;
+    this.filteredMembersPaginated = this.filteredMembers.slice(startIndex, startIndex + this.pageSize);
+
   }
 
   requestAddMemberData(event: { data: IMember; file: File | null }): void {
     const { data, file } = event;
     this.MembersMgmtServices.requestAddMemberData(data, file).subscribe(
       (response) => {
-        console.log('Add Member data response:', response);
-        this.filterMembers('USER');
+        this.members.push(response.member);
+        this.filterMembers(this.activeRole);
       },
       (error) => {
         console.log('Add Member response Error:', error.message);
@@ -107,9 +104,7 @@ export class MembersComponent implements OnInit {
   requestEditMember(event: { data: IMember; file: File | null }): void {
     const { data, file } = event;
     if (this.selectedMember) {
-      const index = this.members.findIndex(
-        (member) => member.id === this.selectedMember!.id
-      );
+      const index = this.members.findIndex((member) => member.id === this.selectedMember!.id);
       if (index !== -1) {
         this.members[index] = data;
       }
@@ -130,7 +125,6 @@ export class MembersComponent implements OnInit {
     const memberData = this.members.find((data) => data.id === id);
     if (memberData) {
       memberData.isBlocked = !memberData.isBlocked;
-
       this.MembersMgmtServices.requestUpdateUserStatus(id).subscribe(
         (response) => {
           console.log('Member blocked successfully:', response);
@@ -143,6 +137,9 @@ export class MembersComponent implements OnInit {
     }
   }
 
+  get totalPages(): number {
+    return Math.ceil(this.filteredMembers.length / this.pageSize);
+  }
 
   get totalPagesArray(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
@@ -151,14 +148,21 @@ export class MembersComponent implements OnInit {
   previousPage(): void {
     if (this.page > 1) {
       this.page--;
-      this.retrieveMembersList();
+      this.updatePaginatedMembers();
     }
   }
 
   nextPage(): void {
     if (this.page < this.totalPages) {
       this.page++;
-      this.retrieveMembersList();
+      this.updatePaginatedMembers();
+    }
+  }
+
+  goToPage(p: number): void {
+    if (p >= 1 && p <= this.totalPages) {
+      this.page = p;
+      this.updatePaginatedMembers();
     }
   }
 }

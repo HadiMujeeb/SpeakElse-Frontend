@@ -6,16 +6,14 @@ import { MentorauthService } from '../services/mentor/mentorauth.service';
 export const authMentorGuard: CanActivateFn = (route, state): Observable<boolean> => {
   const authMentorService = inject(MentorauthService);
   const router = inject(Router);
-  const mentorToken:string|null = localStorage.getItem('mentorToken');
-  // console.log(accessToken)
-   return authMentorService.verifyMentorAccess(mentorToken).pipe(
+   return authMentorService.verifyMentorAccess().pipe(
     map((response) => {
       localStorage.setItem('mentorData', JSON.stringify(response.mentorData));
-      localStorage.setItem("mentorToken",response.accessToken);
+      localStorage.setItem("Token",response.accessToken);
        return true
    }),
    catchError(() =>{
-    localStorage.removeItem('mentorToken');
+    localStorage.removeItem('Token');
     localStorage.removeItem('mentorData');
     router.navigate(['/mentor/login']);
     return of(false);

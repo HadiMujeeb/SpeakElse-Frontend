@@ -19,10 +19,13 @@ export class UserWalletComponent implements OnInit {
   totalWalletAmount: number = 0;
   successfulTransactionsCount: number = 0;
   AllRooms: IMentorRoom[] = [];
+  recentRefunedAmount = 0
+  id:string=''
 
   ngOnInit(): void {
     this.totalWalletAmount = this.userData.userWallet.balance;
     this.userWalletService.requestGellAllTransactions(this.userData.id).subscribe((response: any) => {
+      console.log("weewe",response)
      this.AllRooms = response.rooms.filter((room: IMentorRoom) => room.participants.includes(this.userData.id));
      this.allTransactions = response.transactions;
      this.allTransactions = this.allTransactions.map((transaction: ITransaction) => {
@@ -35,11 +38,19 @@ export class UserWalletComponent implements OnInit {
   // Calculate wallet summary from the transactions
   calculateSummary(): void {
   }
+
   requestRefund(transaction: ITransaction): void {
+    
     transaction.mentorId = this.AllRooms.find((room) => room.id === transaction.sessionId)?.mentorId
+    this.recentRefunedAmount=transaction.amount
+    this.id =transaction.id||''
   this.userWalletService.requestRefundTransaction(transaction).subscribe((response: any) => {
-    console.log(response);
-    this.ngOnInit();
+    // console.log(response);
+   
+    this.totalWalletAmount +=this.recentRefunedAmount
+    this.allTransactions = this.allTransactions.map(t =>
+  t.id === this.id ? { ...t, status: IStatus.REFUNDED } : t
+);
   })
   }
   getDisplayStatus(status: IStatus): string {

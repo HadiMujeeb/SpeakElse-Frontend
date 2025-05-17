@@ -1,24 +1,17 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { userData } from '../../../shared/models/socket-io.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RoomService } from '../../../core/services/user/room.service';
 import { WsService } from '../../../core/services/ws.service';
 import { PcService } from '../../../core/services/pc.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
 import { ControlBarComponent } from '../../../shared/components/video-conference/room-controls/control-bar.component';
+import { FormsModule } from '@angular/forms';
 import { NavLogoComponent } from '../../../layouts/user/nav-logo/nav-logo.component';
 import { ChatSidebarComponent } from '../../../shared/components/video-conference/room-chat/chat-sidebar.component';
-import { RatingComponent } from '../../../shared/components/rating/rating.component';
-
-import { userData } from '../../../shared/models/socket-io.model';
-import { IUser } from '../../../shared/models/member.model';
-import { UserProfileService } from '../../../core/services/user/user-profile.service';
-import { CallendComponent } from '../../../shared/components/callend/callend.component';
-import { ReportModalComponent } from '../../../shared/components/modals/report-modal/report-modal.component';
-import { RoomService } from '../../../core/services/user/room.service';
 
 @Component({
-  selector: 'app-room',
+  selector: 'app-mentor-room',
   standalone: true,
   imports: [
     FormsModule,
@@ -26,22 +19,21 @@ import { RoomService } from '../../../core/services/user/room.service';
     ControlBarComponent,
     NavLogoComponent,
     ChatSidebarComponent,
-    RatingComponent,
-    CallendComponent,
-    ReportModalComponent
   ],
-  templateUrl: './room.component.html',
-  styleUrls: ['./room.component.css'],
+  templateUrl: './mentor-room.component.html',
+  styleUrl: './mentor-room.component.css',
 })
-export class RoomComponent implements OnInit , OnDestroy {
+export class MentorRoomComponent implements OnInit, OnDestroy {
   modalOpen: boolean = false;
-  screenSharing : boolean = false;
+  screenSharing: boolean = false;
   getRaterId: string = '';
   isRoomJoined: boolean = false;
   showRatingModal: boolean = false;
   isChatOpen: boolean = false;
   isReportOpen: boolean = false;
   reportUserId: string = '';
+  memberType: string | null = null;
+
   // Room-related properties
   roomID: string = '';
   messages: string[] = [];
@@ -63,53 +55,57 @@ export class RoomComponent implements OnInit , OnDestroy {
   followers: any[] = [];
   following: any[] = [];
 
-  openModal() {
-    this.modalOpen = true;
-  }
+  // Current user (mentor or user)
+  currentUser:any
 
-  closeModal() {
-    this.modalOpen = false;
-  }
   // Injected services
   router = inject(Router);
   userRoomServices = inject(RoomService);
-  userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
   constructor(
     private wsService: WsService,
     private pcService: PcService,
-    private activeRoute: ActivatedRoute,
-    private userProfileService: UserProfileService
+    private activeRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.memberType = this.userRoomServices.getMemberType();
+
+    if (this.memberType === 'MENTOR') {
+      console.log('Mentor joined the room');
+      this.currentUser = JSON.parse(localStorage.getItem('mentorData') || '{}');
+    } else {
+      console.log('User joined the room');
+      this.currentUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    }
+
     this.initializeLocalStream();
     this.subscribeToStreamEvents();
     this.subscribeToSocketEvents();
-    this.updateFriendsList();
   }
 
   ngOnDestroy(): void {
-    this.leaveRoom()
+    this.leaveRoom();
   }
 
-  // Stream-related methods
   private initializeLocalStream(): void {
-    this.pcService.initLocalStream(this.userData);
-    this.pcService.localStream$.subscribe((streamData) => {
-      if (streamData) {
-        this.localStream = streamData;
-      }
-    });
+    if (this.currentUser) {
+      this.pcService.initLocalStream(this.currentUser);
+      this.pcService.localStream$.subscribe((streamData) => {
+        if (streamData) {
+          this.localStream = streamData;
+        }
+      });
+    }
   }
 
   private subscribeToStreamEvents(): void {
     this.pcService.remoteStreams$.subscribe((remoteStreams) => {
       this.remoteParticipants = remoteStreams;
+      console.log('remoteParticipants', this.remoteParticipants);
     });
   }
 
-  // Socket event subscriptions
   private subscribeToSocketEvents(): void {
     this.wsService.getMessages().subscribe((message: string) => {
       this.messages.push(message);
@@ -128,49 +124,45 @@ export class RoomComponent implements OnInit , OnDestroy {
         this.localStream = null;
       }
       this.pcService.closeAllConnections();
-      this.router.navigate(['/user/roomList']);   
+      this.router.navigate(['/mentor/main/sessions']);
     });
 
     this.wsService.onUserAudioStatusChange((userId: string) => {
-      this.remoteParticipants.map((participant) => {
+      this.remoteParticipants.forEach((participant) => {
         if (participant.participantId === userId) {
           participant.isAudioEnabled = !participant.isAudioEnabled;
-          console.log('audio', participant.isAudioEnabled);
         }
       });
     });
 
     this.wsService.onUserVideoStatusChange((userId: string) => {
-      this.remoteParticipants.map((participant) => {
+      this.remoteParticipants.forEach((participant) => {
         if (participant.participantId === userId) {
           participant.isVideoEnabled = !participant.isVideoEnabled;
-          console.log('video', participant.isVideoEnabled);
         }
       });
     });
   }
 
-  // Room control methods
   joinRoom(): void {
     this.isRoomJoined = true;
-
     this.roomID = this.activeRoute.snapshot.paramMap.get('roomId') || '';
-    if (this.roomID) {
-      this.wsService.joinRoom(this.roomID,this.userData);
-      this.userRoomServices.updateRoomWithParticipant(this.roomID, this.userData.id,1);
-      this.wsService.updateRoomCountWithParticipant(this.roomID, this.userData.id);
+    if (this.roomID && this.currentUser) {
+      this.wsService.joinRoom(this.roomID, this.currentUser);
     }
   }
-  
 
   leaveRoom(): void {
-    this.wsService.leaveRoom(this.localStream?.userId || '');
+    if (this.currentUser) {
+      this.wsService.leaveRoom(this.currentUser.id);
+    }
     if (this.localStream?.mediaStream) {
       this.localStream.mediaStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
     this.pcService.closeAllConnections();
-    this.router.navigate(['/user/roomList']);
+    this.userRoomServices.removeMemberType()
+    this.router.navigate(['/mentor/main/sessions']);
   }
 
   toggleAudio(): void {
@@ -192,69 +184,50 @@ export class RoomComponent implements OnInit , OnDestroy {
       this.wsService.updateVideoStatus();
     }
   }
-  
-
 
   shareScreen(): void {
-    if(!this.screenSharing){
-      this.pcService.startScreenSharing(this.userData);
-      this.screenSharing = !this.screenSharing
-    }else{
-      this.pcService.stopScreenSharing(this.userData);
-      this.screenSharing = !this.screenSharing
+    if (!this.screenSharing && this.currentUser) {
+      this.pcService.startScreenSharing(this.currentUser);
+    } else if (this.screenSharing && this.currentUser) {
+      this.pcService.stopScreenSharing(this.currentUser);
     }
-    
+    this.screenSharing = !this.screenSharing;
   }
-
-
 
   toggleChat(): void {
     this.isChatOpen = !this.isChatOpen;
   }
 
   sendMessage(message: string): void {
-    this.wsService.sendMessage(message,this.userData.name);
-    this.messages.push(`You: ${message}`);
+    if (this.currentUser) {
+      this.wsService.sendMessage(message, this.currentUser.name);
+      this.messages.push(`You: ${message}`);
+    }
   }
 
-  // Rating modal
+  openModal() {
+    this.modalOpen = true;
+  }
+
+  closeModal() {
+    this.modalOpen = false;
+  }
+
   openRatingModal(userId: string): void {
     this.getRaterId = userId;
-    this.showRatingModal = !this.showRatingModal;
-  }
-
-  // Friend management
-  private updateFriendsList(): void {
-    this.userProfileService.requestGetAllFriends(this.userData.id).subscribe((friends: any) => {
-      this.followers = [];
-      this.following = [];
-
-      friends.followers.forEach((element: IUser) => {
-        this.followers.push(element.id);
-      });
-      friends.following.forEach((element: IUser) => {
-        this.following.push(element.id);
-      });
-    });
-  }
-
-  followUser(friendId: string): void {
-    const userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
-    this.userProfileService.requestFollowUnFollow(userId, friendId).subscribe(() => {
-      this.updateFriendsList();
-    });
+    this.showRatingModal = true;
   }
 
   selectParticipant(participant: any): void {
     this.selectedParticipant = participant;
   }
+
   closeReportModal(): void {
     this.isReportOpen = false;
   }
+
   reportUser(userId: string): void {
     this.isReportOpen = true;
     this.reportUserId = userId;
   }
-
-  
 }

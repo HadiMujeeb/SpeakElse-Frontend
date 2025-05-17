@@ -40,9 +40,8 @@ export class MentorauthService {
     );
   }
 
-  verifyMentorAccess(mentorToken: string | null): Observable<ImentorauthResponse> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${mentorToken}`);
-    return this.httpClient.get<ImentorauthResponse>(`${this.api}/requestMentorAuthenticate`, { headers })
+  verifyMentorAccess(): Observable<ImentorauthResponse> {
+    return this.httpClient.get<ImentorauthResponse>(`${this.api}/requestMentorAuthenticate`)
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
   }
 }

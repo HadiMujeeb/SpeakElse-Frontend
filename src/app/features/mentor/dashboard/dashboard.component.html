@@ -1,35 +1,35 @@
-<div class="p-6 bg-gray-50 min-h-screen">
+<div class="p-6 sm:p-4 bg-gray-50 min-h-screen">
   <!-- Summary Cards Section -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-gray-500">Total Attended Sessions</h2>
-      <p class="text-2xl font-bold">{{ totalAttendedSessions }}</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-3 mb-6">
+    <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md">
+      <h2 class="text-gray-500 text-sm sm:text-xs">Total Created Sessions</h2>
+      <p class="text-2xl sm:text-xl font-bold">{{ totalAttendedSessions }}</p>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-gray-500">Canceled Sessions</h2>
-      <p class="text-2xl font-bold">{{ totalCanceledSessions }}</p>
+    <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md">
+      <h2 class="text-gray-500 text-sm sm:text-xs">Canceled Sessions</h2>
+      <p class="text-2xl sm:text-xl font-bold">{{ totalCanceledSessions }}</p>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-gray-500">Total Revenue</h2>
-      <p class="text-2xl font-bold">{{ totalRevenue | currency:'INR' }}</p>
+    <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md">
+      <h2 class="text-gray-500 text-sm sm:text-xs">Total Revenue</h2>
+      <p class="text-2xl sm:text-xl font-bold">{{ totalRevenue | currency:'INR' }}</p>
     </div>
-    <div class="bg-white p-4 rounded-lg shadow-md">
-      <h2 class="text-gray-500">Today's Revenue</h2>
-      <p class="text-2xl font-bold">{{ todayRevenue | currency:'INR' }}</p>
+    <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md">
+      <h2 class="text-gray-500 text-sm sm:text-xs">Today's Revenue</h2>
+      <p class="text-2xl sm:text-xl font-bold">{{ todayRevenue | currency:'INR' }}</p>
     </div>
   </div>
 
   <!-- Graph Section -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Monthly Revenue Chart -->
-    <div class="bg-white p-4 rounded-lg shadow-md w-full">
-      <h2 class="text-xl font-bold mb-4">Monthly Revenue (Current Year)</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-4">
+    <!-- Monthly Revenue Chart (Unchanged) -->
+    <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md w-full">
+      <h2 class="text-xl sm:text-lg font-bold mb-4">Monthly Revenue (Current Year)</h2>
       <canvas #monthlyRevenueChartCanvas></canvas>
     </div>
 
-    <!-- Yearly Revenue Chart -->
-    <div class="bg-white p-4 rounded-lg shadow-md w-full">
-      <h2 class="text-xl font-bold mb-4">Yearly Revenue (2016 - {{ currentYear }})</h2>
+    <!-- Yearly Revenue Chart (Unchanged) -->
+    <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md w-full">
+      <h2 class="text-xl sm:text-lg font-bold mb-4">Yearly Revenue (2016 - {{ currentYear }})</h2>
       <canvas #yearlyRevenueChartCanvas></canvas>
     </div>
   </div>

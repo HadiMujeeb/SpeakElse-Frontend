@@ -43,9 +43,8 @@ export class AuthUserService {
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Google Login Failed'))));
   }
 
-  getProtectedData(accessToken: string | null): Observable<IProtectedDataResponse> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${accessToken}`);
-    return this.httpClient.get<IProtectedDataResponse>(`${this.api}/verify-Token`, { headers })
+  getProtectedData(): Observable<IProtectedDataResponse> {
+    return this.httpClient.get<IProtectedDataResponse>(`${this.api}/verify-Token`)
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
   }
 

@@ -42,11 +42,9 @@ export class AdminLoginComponent {
   onSubmit() {
    if (this.loginForm.valid){
     const { email, password } = this.loginForm.value;
-    console.log('Admin Side', this.loginForm.value);
     this.adminServices.adminLogin(email, password).subscribe(
       (response) => { 
-        console.log('Login successful:', response.admin);
-        localStorage.setItem('adminToken', response.accessToken);
+        localStorage.setItem('Token', response.accessToken);
         this.router.navigate(['/admin/main/dashboard']);
       },
       (error) => { 

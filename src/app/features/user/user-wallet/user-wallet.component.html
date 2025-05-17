@@ -6,7 +6,7 @@
       <!-- Wallet Amount -->
       <div class="p-4 bg-purple-50 rounded-lg shadow">
         <h3 class="text-lg font-semibold text-purple-600">Total Wallet Amount</h3>
-        <p class="text-3xl font-bold text-purple-700">${{ totalWalletAmount.toFixed(2) }}</p>
+        <p class="text-3xl font-bold text-purple-700">{{ totalWalletAmount.toFixed(2)| currency: 'INR' }}</p>
       </div>
 
       <!-- Successful Transactions -->
@@ -42,7 +42,7 @@
       <tbody>
         <tr *ngFor="let transaction of allTransactions">
           <td class="border px-4 py-2">{{ transaction.id }}</td>
-          <td class="border px-4 py-2">${{ transaction.amount }}</td>
+          <td class="border px-4 py-2">{{ transaction.amount| currency: 'INR' }}</td>
           <td class="border px-4 py-2">{{ transaction.type }}</td>
           <td class="border px-4 py-2"
           [ngClass]="{

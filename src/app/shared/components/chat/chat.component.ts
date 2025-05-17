@@ -18,20 +18,20 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @Output() close = new EventEmitter<void>();
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
-  // Chat state
+  // Tabs
   activeTab: 'friends' | 'chats' = 'friends';
   selectedList: 'followers' | 'following' = 'followers';
   searchQuery: string = '';
   isOpen: boolean = true;
-  
-  // User data
+
+  // User Info
   userId = JSON.parse(localStorage.getItem('userData') || '{}').id;
   friends: IUser[] = [];
   filteredFriends: IUser[] = [];
   followers: IUser[] = [];
   following: IUser[] = [];
-  
-  // Chat data
+
+  // Chat Info
   chats: IChat[] = [];
   filteredChats: IChat[] = [];
   currentChat: IChat | null = null;
@@ -46,13 +46,27 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.loadFriends();
     this.loadChats();
+
+    // Subscribe to subject for friend status updates
+    this.wsService.onFriendStatus().subscribe((status: string) => {
+      console.log('Status update received:', status);
+      this.status = status;
+    });
+
+    // Subscribe to subject for private chat messages
+    this.wsService.onPrivateMessage().subscribe((message: IMessage) => {
+      console.log('Private message received:', message);
+      if (this.currentChat && message.chatId === this.currentChat.id) {
+        this.currentChat.messages = this.currentChat.messages || [];
+        this.currentChat.messages.push(message);
+      }
+    });
   }
 
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
 
-  // Data loading methods
   private loadFriends() {
     this.userProfileServices.requestGetAllFriends(this.userId).subscribe({
       next: (friends: any) => {
@@ -60,9 +74,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.following = friends.following || [];
         this.selectList('followers');
       },
-      error: (error) => {
-        console.error('Error fetching friends:', error);
-      },
+      error: (error) => console.error('Error fetching friends:', error),
     });
   }
 
@@ -80,13 +92,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         });
         this.filteredChats = [...this.chats];
       },
-      error: (error) => {
-        console.error('Error fetching chats:', error);
-      },
+      error: (error) => console.error('Error fetching chats:', error),
     });
   }
 
-  // UI interaction methods
   onSearch() {
     if (this.activeTab === 'friends') {
       const source = this.selectedList === 'followers' ? this.followers : this.following;
@@ -105,7 +114,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.searchQuery = '';
     if (tab === 'friends') {
       this.selectList(this.selectedList);
-    } else if (tab === 'chats') {
+    } else {
       this.filteredChats = [...this.chats];
     }
   }
@@ -116,19 +125,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.onSearch();
   }
 
-  // Chat methods
   openChat(friendId: string) {
     if (!friendId) return;
-    
-    // Check if chat already exists
+
     let existingChat = this.chats.find((chat) => chat.friend?.id === friendId);
-    
     if (existingChat) {
       this.currentChat = existingChat;
       this.wsService.joinPrivateChat(this.currentChat.id);
-      this.setupWebSocketListeners();
     } else {
-      // Create new chat
       this.friendChatServices.requestCreateChat(this.userId, friendId).subscribe({
         next: (response: any) => {
           const newChat = response.chat;
@@ -137,50 +141,31 @@ export class ChatComponent implements OnInit, AfterViewChecked {
             this.filteredChats = [...this.chats];
           }
           this.currentChat = newChat;
-          // this.wsService.joinPrivateChat(this.currentChat.id);
-          this.setupWebSocketListeners();
+          this.wsService.joinPrivateChat(newChat.id);
         },
-        error: (error) => {
-          console.error('Error creating chat:', error);
-        },
+        error: (error) => console.error('Error creating chat:', error),
       });
     }
   }
 
-  private setupWebSocketListeners() {
-    this.wsService.onPrivateMessage().subscribe((message: IMessage) => {
-      if (this.currentChat && message.chatId === this.currentChat.id) {
-        this.currentChat.messages?.push(message);
-      }
-    });
-
-    this.wsService.onFriendStatus().subscribe((status: string) => {
-      this.status = status;
-    });
-  }
-
   sendMessage() {
     if (!this.newMessage.trim() || !this.currentChat) return;
-    
+
     const message: IMessage = {
       content: this.newMessage,
       senderId: this.userId,
       chatId: this.currentChat.id,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
-    // Optimistically update UI
     this.currentChat.messages = this.currentChat.messages || [];
     this.currentChat.messages.push(message);
     this.newMessage = '';
-    
-    // Send via WebSocket
+
     this.wsService.sendPrivateMessage(message);
-    
-    // Persist to server
     this.friendChatServices.requestSendMessage(message).subscribe({
       next: (res) => console.log(res.message),
-      error: (err) => console.error('Error sending message:', err)
+      error: (err) => console.error('Error sending message:', err),
     });
   }
 
@@ -204,7 +189,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
       }
     } catch (err) {
-      console.error('Error while scrolling:', err);
+      console.error('Scroll error:', err);
     }
   }
 }

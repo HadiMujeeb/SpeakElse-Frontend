@@ -21,9 +21,8 @@ export class AdminService {
     );
   }
 
-  adminAuthTokenRequest(adminAccessToken: string | null): Observable<IadminauthResponse> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${adminAccessToken}`);
-    return this.httpClient.get<IadminauthResponse>(`${this.api}/adminAuthToken`, { headers })
+  adminAuthTokenRequest(): Observable<IadminauthResponse> {
+    return this.httpClient.get<IadminauthResponse>(`${this.api}/adminAuthToken`)
       .pipe(catchError((err) => throwError(() => new Error(err.error?.message || 'Unknown error occurred'))));
   }
 

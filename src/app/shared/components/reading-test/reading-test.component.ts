@@ -28,7 +28,6 @@ export class ReadingTestComponent implements OnInit , OnDestroy{
   ngOnInit() {
     this.userProfileServices.getAllQuestions().subscribe((questions:any) => {
       this.Questions = questions.data.filter((questions:IQuestions)=> questions.testType === 'READING');
-      console.log(this.Questions);
       this.getRandomQuestion();
     })
    
@@ -36,9 +35,7 @@ export class ReadingTestComponent implements OnInit , OnDestroy{
 
   getRandomQuestion() {
     const randomIndex = Math.floor(Math.random()*this.Questions.length);
-    console.log(randomIndex);
     this.currentQuestion = this.Questions[randomIndex];
-    console.log(this.currentQuestion);
   }
 
   startTest() {

@@ -17,15 +17,36 @@ import { USER_API } from '../../../../routes/routesFile';
 })
 export class RoomService {
   private api: string = USER_API.ROOM;
+  private paymentapi:string = USER_API.WALLET
   private rooms = new BehaviorSubject<IUserCreatedRoom[]>([]);
   private filters = new BehaviorSubject<any>(null);
   private createRoom = new Subject<IUserCreatedRoom>();
+  private memberType = new BehaviorSubject<string | null>(this.getMemberTypeFromStorage());
 
 
   room$ = this.rooms.asObservable();
   filters$ = this.filters.asObservable();
   createRoom$ = this.createRoom.asObservable();
+  memberType$ = this.memberType.asObservable();
+    setMemberType(type: string): void {
+    localStorage.setItem('memberType', type);
+    this.memberType.next(type);
+  }
 
+  getMemberType(): string | null {
+  const type = localStorage.getItem('memberType');
+  this.memberType.next(type);
+  return type;
+}
+
+  removeMemberType(): void {
+    localStorage.removeItem('memberType');
+    this.memberType.next(null);
+  }
+
+  private getMemberTypeFromStorage(): string | null {
+    return localStorage.getItem('memberType');
+  }
 
   sendRooms(rooms: IUserCreatedRoom[]): void {
     this.rooms.next(rooms);
@@ -99,7 +120,7 @@ export class RoomService {
   }
 
   requestVerifyPayment(transactionData:ITransaction): Observable<any> {
-    return this.httpClient.post<any>(`${this.api}/requestPaymentTransation`, transactionData)
+    return this.httpClient.post<any>(`${this.paymentapi}/requestPaymentTransation`, transactionData)
     .pipe(catchError((err) => throwError(() => new Error(err.error?.message))))
   }
 

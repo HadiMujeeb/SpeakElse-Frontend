@@ -26,6 +26,7 @@ export class FormModalComponent {
   @Output() AddMember = new EventEmitter<any>();
   @Output() EditUserProfile = new EventEmitter<any>();
   @Output() EditMentorProfile = new EventEmitter<any>();
+  action:string=''
   selectedFile: File | null = null;
   constructor(private fb: FormBuilder) {
     this.memberForm = this.fb.group({});
@@ -33,6 +34,7 @@ export class FormModalComponent {
 
   ngOnInit() {
     this.initForm();
+    this.formHeader();
   }
 
  initForm() {
@@ -50,6 +52,14 @@ export class FormModalComponent {
     this.memberForm.addControl(field.name, control);
   });
 }
+
+  formHeader(){
+    if(this.ActionType==ModalAction.AddMember){
+     this.action = "ADD Member"
+    }else if(this.ActionType==ModalAction.EditMember){
+      this.action = "Edit Member"
+    }
+  }
 
 
   onFileSelected(event: Event): void {

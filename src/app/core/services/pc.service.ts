@@ -29,23 +29,23 @@ export class PcService {
 
   localStream$ = this.localStreamSubject.asObservable();
   remoteStreams$ = this.remoteStreamsSubject.asObservable();
-  user = JSON.parse(localStorage.getItem('userData') || '{}');
+  // user = JSON.parse(localStorage.getItem('userData') || '{}');
 
   constructor(private wsService: WsService) {
     this.setupSocketListeners();
   }
 
   // Initialize local media (video/audio)
-  initLocalStream(): void {
+  initLocalStream(user:any): void {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream: MediaStream) => {
 
         
         this.localStream = stream;
         const updatedUserData: userData = {
-          userId: this.user.userId,
-          username: this.user.name,
-          avatar: this.user.avatar,
+          userId: user.id,
+          username: user.name,
+          avatar: user.avatar,
           mediaStream: stream
         };
         this.localStreamSubject.next(updatedUserData);
@@ -68,7 +68,7 @@ export class PcService {
   //   recorder.start(1000); // Send chunks every second
   // }
 
-    startScreenSharing(): void {
+    startScreenSharing(user:any): void {
       navigator.mediaDevices
         .getDisplayMedia({ video: true })
         .then((screenStream: MediaStream) => {
@@ -87,16 +87,16 @@ export class PcService {
   
           // Update local stream with screen sharing
           const updatedUserData: userData = {
-            userId: this.user.userId,
-            username: this.user.name,
-            avatar: this.user.avatar,
+            userId: user.id,
+            username: user.name,
+            avatar: user.avatar,
             mediaStream: screenStream,
           };
           this.localStreamSubject.next(updatedUserData);
   
           // Stop screen sharing and revert to the camera when sharing stops
           screenTrack.onended = () => {
-            this.stopScreenSharing();
+            this.stopScreenSharing(user);
           };
         })
         .catch((err: Error) => {
@@ -104,7 +104,7 @@ export class PcService {
         });
     }
   
-    stopScreenSharing(): void {
+    stopScreenSharing(user:any): void {
       if (this.screenStream) {
         this.screenStream.getTracks().forEach((track) => track.stop());
         this.screenStream = null;
@@ -123,9 +123,9 @@ export class PcService {
   
         // Update local stream back to the camera
         const updatedUserData: userData = {
-          userId: this.user.userId,
-          username: this.user.name,
-          avatar: this.user.avatar,
+          userId: user.id,
+          username: user.name,
+          avatar: user.avatar,
           mediaStream: this.localStream,
         };
         this.localStreamSubject.next(updatedUserData);

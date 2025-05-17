@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
-import { IMentorRoom, IReshedulement } from '../../../shared/models/mentorform.model';
+import { IMentorRoom, IReshedulement, IResponseMentorRoom } from '../../../shared/models/mentorform.model';
 import { MENTOR_API } from '../../../../routes/routesFile';
 
 @Injectable({
@@ -18,8 +18,8 @@ export class MentorSessionService {
     .pipe(catchError((err) => throwError(err.message ? err.message : err)))
   }
   
-  requestGetAllSessions(): Observable<IMentorRoom[]> {
-    return this.httpClient.get<IMentorRoom[]>(`${this.api}/requestgetAllRooms`)
+  requestGetAllSessions(): Observable<IResponseMentorRoom> {
+    return this.httpClient.get<IResponseMentorRoom>(`${this.api}/requestgetAllRooms`)
     .pipe(catchError((err) => throwError(err.message ? err.message : err)))
   }
 

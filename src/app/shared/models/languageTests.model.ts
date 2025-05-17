@@ -11,3 +11,8 @@ export interface IQuestions {
   createdAt?: string;    
   updatedAt?: string;    
 }
+
+export interface IReponseAddQuestion {
+  message:string;
+  question:IQuestions;
+}

@@ -5,6 +5,7 @@ import { MentorProfileService } from '../../../core/services/mentor/mentor-profi
 import { IMentorRoom, IReshedulement } from '../../../shared/models/mentorform.model';
 import { Router } from '@angular/router';
 import { MentorSessionService } from '../../../core/services/mentor/mentor-session.service';
+import { RoomService } from '../../../core/services/user/room.service';
 
 @Component({
   selector: 'app-mentor-sessions',
@@ -14,16 +15,18 @@ import { MentorSessionService } from '../../../core/services/mentor/mentor-sessi
   styleUrls: ['./mentor-sessions.component.css']
 })
 export class MentorSessionsComponent implements OnInit {
-  currentDateTime: Date = new Date();
+  currentDateTime = new Date();
+
   isModalOpen = false;
   isRescheduleModalOpen = false;
   sessionForm: FormGroup;
   rescheduleForm: FormGroup;
   currentSessionId: string | null = null;
-  mentor: any;
+  mentor = JSON.parse(localStorage.getItem('mentorData') || '{}');
   sessions: IMentorRoom[] = [];
   paginatedSessions: IMentorRoom[] = [];
   mentorServices = inject(MentorSessionService);
+  userRoomServices = inject(RoomService);
   router = inject(Router);
 
   // Pagination variables
@@ -48,24 +51,18 @@ export class MentorSessionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mentor = JSON.parse(localStorage.getItem('mentorData') || '{}');
+    console.log(this.currentDateTime)
     this.getAllSessions();
   }
 
   getAllSessions() {
-    this.mentorServices.requestGetAllSessions().subscribe((res: any) => {
-      this.sessions = res.rooms
-        .filter((room: IMentorRoom) => room.createdAt)
-        .map((room: IMentorRoom) => ({
-          ...room,
-          startTime: new Date(room.startTime),
-          endTime: new Date(room.endTime),
-          createdAt: new Date(room.createdAt),
-        }))
-        .sort((a: IMentorRoom, b: IMentorRoom) => {
-          return b.createdAt.getTime() - a.createdAt.getTime();
-        });
-      this.updatePaginatedSessions();
+    this.mentorServices.requestGetAllSessions().subscribe((res) => {
+   
+       this.sessions = res.mentorRooms.map(session => ({
+    ...session,
+    startTime: new Date(session.startTime),
+    endTime: new Date(session.endTime)
+  }));
     });
   }
 
@@ -112,7 +109,8 @@ export class MentorSessionsComponent implements OnInit {
   }
 
   joinSession(id: string) {
-    this.router.navigate([`/mentor/room/${id}`]);
+    this.userRoomServices.setMemberType("MENTOR")
+    this.router.navigate([`/mentor/mentorRoom/${id}`]);
   }
 
   rescheduleSession(id: string) {

@@ -42,6 +42,11 @@ export interface IMentorRoom {
     status?:string
     
 }
+
+export interface IResponseMentorRoom {
+  message:string;
+  mentorRooms:IMentorRoom[]
+}
 export interface ImentorWallet {
     id: string;
     mentorId: string;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environment/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IQuestions } from '../../../shared/models/languageTests.model';
+import { IQuestions, IReponseAddQuestion } from '../../../shared/models/languageTests.model';
 import { ADMIN_API } from '../../../../routes/routesFile';
 
 @Injectable({
@@ -18,8 +18,8 @@ export class LanguageTestService {
     return this.httpClient.get<IQuestions[]>(`${this.api}/getAllQuestions`);
   }
 
-  addQuestion(data: IQuestions): Observable<IQuestions> {
-    return this.httpClient.post<IQuestions>(`${this.api}/addQuestion`, data);
+  addQuestion(data: IQuestions): Observable<IReponseAddQuestion> {
+    return this.httpClient.post<IReponseAddQuestion>(`${this.api}/addQuestion`, data);
   }
 
   editQuestion(data: IQuestions): Observable<any> {

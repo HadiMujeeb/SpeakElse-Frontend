@@ -19,7 +19,6 @@ import { RoomComponent } from '../app/features/user/room/room.component';
 import { guestOnlyGuard } from '../app/core/guards/guestOnly.guard';
 import { RatingComponent } from '../app/shared/components/rating/rating.component';
 import { ChatSidebarComponent } from '../app/shared/components/video-conference/room-chat/chat-sidebar.component';
-import { ChatingPageComponent } from '../app/shared/components/chating-page/chating-page.component';
 import { authAdminLoginGuard } from '../app/core/guards/auth-admin-login.guard';
 import { CallendComponent } from '../app/shared/components/callend/callend.component';
 import { MainContentComponent } from '../app/features/admin/main-content/main-content.component';
@@ -48,6 +47,7 @@ import { AdminWalletComponent } from '../app/features/admin/admin-wallet/admin-w
 import { AdminDashboardComponent } from '../app/features/admin/admin-dashboard/admin-dashboard.component';
 import { DashboardComponent } from '../app/features/mentor/dashboard/dashboard.component';
 import { MysessionComponent } from '../app/features/user/mysession/mysession.component';
+import { MentorRoomComponent } from '../app/features/mentor/mentor-room/mentor-room.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'user/home', pathMatch: 'full' },
@@ -92,7 +92,7 @@ export const routes: Routes = [
          { path: 'sessions', component: MentorSessionsComponent },
          { path: 'wallet', component: MentorWalletComponent },
       ]},
-      { path: 'room/:roomId', component: RoomComponent },
+      { path: 'mentorRoom/:roomId', component: MentorRoomComponent },
     ]
   },
   {

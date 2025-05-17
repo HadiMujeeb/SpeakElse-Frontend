@@ -3,6 +3,7 @@ import { environment } from '../../../../environment/environment.development';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import {
   IMember,
+  IMemberResponse,
   IMembersListResponse,
 } from '../../../shared/models/member.model';
 import { HttpClient } from '@angular/common/http';
@@ -70,13 +71,13 @@ export class MemberMgmtService {
   requestAddMemberData(
     newMember: IMember,
     file: File | null
-  ): Observable<IErrorResponse> {
+  ): Observable<IMemberResponse>{
     const formData = this.appendDataToFormData(newMember, file);
 
     return this.httpClient
-      .post<IErrorResponse>(`${this.api}/addMember`, formData)
+      .post<IMemberResponse>(`${this.api}/addMember`, formData)
       .pipe(
-        map((response) => response as IErrorResponse),
+        map((response) => response),
         catchError((err) => throwError(err.message ? err.message : err))
       );
   }

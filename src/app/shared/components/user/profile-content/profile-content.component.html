@@ -75,11 +75,11 @@
       <div class="flex justify-between items-center mb-2">
         <!-- Avatar and name -->
         <div class="flex items-center">
-          <img
-            [src]="feedback.avatar"
-            alt="{{ feedback.name }}'s Avatar"
-            class="w-8 h-8 rounded-full mr-2"
-          />
+           @if(feedback.avatar){
+              <img  [src]="feedback.avatar" alt="User Avatar" class="w-8 h-8 rounded-full mr-2">
+            }@else{
+              <img  src="assets/images/defaultImage.avif" alt="User Avatar" class="w-8 h-8 rounded-full mr-2">
+            }
           <div>
             <span class="font-semibold">{{ feedback.name }}</span>
             <span class="text-gray-600 text-sm ml-2">{{ feedback.date }}</span>

@@ -33,8 +33,8 @@ export class MysessionComponent implements OnInit {
 
   // Fetch all sessions and filter for the ones booked by the user
   getUserSessions() {
-    this.mentorSessionService.requestGetAllSessions().subscribe((res: any) => {
-      this.sessions = res.rooms
+    this.mentorSessionService.requestGetAllSessions().subscribe((res) => {
+      this.sessions = res.mentorRooms
         .map((room: IMentorRoom) => ({
           ...room,
           startTime: new Date(room.startTime),

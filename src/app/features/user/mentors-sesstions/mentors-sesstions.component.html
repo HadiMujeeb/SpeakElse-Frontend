@@ -1,104 +1,139 @@
 <header>
-    <app-header></app-header>
-  </header>
-  
-  <div class="p-6 bg-gray-50 min-h-screen">
-  
-    <!-- Mentors List -->
-    <div>
-      <h2 class="text-xl font-bold text-gray-800 mb-4">{{ sessions.length }} Sessions Found</h2>
-      <div class="space-y-6">
-  
+  <app-header></app-header>
+</header>
+
+<div class="p-4 sm:p-6 bg-gray-100 min-h-screen flex flex-col">
+  <!-- Mentors List -->
+  <div class="max-w-7xl mx-auto w-full flex-grow">
+    <div class="mb-6">
+      <h2
+        class="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent"
+      >
+        {{ sessions.length }} Mentorship Sessions
+      </h2>
+    </div>
+
+    <div *ngIf="paginatedSessions.length > 0; else noSessions">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <!-- Session Card -->
         <div
-          *ngFor="let session of sessions"
-          class="flex items-start p-6 bg-white shadow-md rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
+          *ngFor="let session of paginatedSessions"
+          class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-200"
           [ngClass]="{
-            'bg-red-100 border-red-300': session.status === 'CANCELED',
-            'bg-white': session.status !== 'CANCELED'
+            'bg-red-50 border-red-200': session.status === 'CANCELED'
           }"
         >
-          <!-- Mentor Image -->
-          <div class="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
-            <img
-              [src]="session.mentor?.avatar"
-              alt="Mentor Photo"
-              class="w-full h-full object-cover border border-gray-300"
-            />
-          </div>
-  
-          <!-- Mentor Info -->
-          <div class="ml-6 flex-1">
-            <h2 class="text-xl font-semibold text-gray-800">{{ session.mentor?.name }}</h2>
-            <p class="text-gray-500 text-sm">{{ session.topic }}</p>
-            <p class="text-gray-600 mt-2">{{ session.mentor?.description }}</p>
-  
-            <div class="mt-3 text-sm text-gray-500">
-              <span class="mr-2 font-medium">Language:</span>{{ session.language }}
-            </div>
-  
-            <div class="mt-3 text-sm text-gray-500">
-              <span class="mr-2 font-medium">Start Time:</span>{{ session.startTime | date: 'short' }}
-            </div>
-  
-            <div class="mt-1 text-sm text-gray-500">
-              <span class="mr-2 font-medium">End Time:</span>{{ session.endTime | date: 'short' }}
-            </div>
-  
-            <!-- Reschedule Info -->
-            <div *ngIf="session.rescheduleCount > 0" class="mt-2 text-sm text-yellow-600">
-              <span class="font-medium">This session has been rescheduled {{ session.rescheduleCount }} time(s).</span>
-              <div *ngIf="session.rescheduleReason.length > 0">
-                <p><span class="font-medium">Reason:</span> {{ session.rescheduleReason.join(', ') }}</p>
+          <!-- Card Header -->
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-4">
+              <div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                <!-- <img
+                  [src]="session.mentor?.avatar"
+                  alt="Mentor Photo"
+                  class="w-full h-full object-cover border border-gray-200"
+                /> -->
+                 @if(session.mentor?.avatar){
+              <img  [src]="session.mentor?.avatar" alt="Mentor Avata" class="w-full h-full object-cover border border-gray-200">
+            }@else{
+              <img  src="assets/images/defaultImage.avif" alt="Mentor Avatar" class="w-full h-full object-cover border border-gray-200">
+            }
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">
+                  {{ session.mentor?.name }}
+                </h3>
               </div>
             </div>
-  
-            <!-- Cancellation Info -->
-            <div *ngIf="session.status === 'CANCELED'" class="mt-4 text-sm text-red-600 font-medium">
-              This session has been canceled.
+          </div>
+
+          <!-- Card Body -->
+          <div class="p-4">
+            <div class="mt-3 space-y-2 text-sm text-gray-500">
+              <p><span class="font-medium">Topic:</span> {{ session.topic }}</p>
+              <p><span class="font-medium">Language:</span> {{ session.language }}</p>
+              <p><span class="font-medium">Start:</span> {{ session.startTime | date: 'short' }}</p>
+              <p><span class="font-medium">End:</span> {{ session.endTime | date: 'short' }}</p>
+            </div>
+            <div *ngIf="session.rescheduleCount > 0" class="mt-3 text-sm text-yellow-600">
+              <p>Rescheduled {{ session.rescheduleCount }} time(s).</p>
             </div>
           </div>
-  
-          <!-- Actions -->
-          <div class="ml-6 text-right flex-shrink-0">
-            <div class="text-lg font-semibold text-gray-800 mb-4">
-              {{ session.bookingFee | currency: 'USD' }}
+
+          <!-- Card Footer -->
+          <div class="p-4 border-t border-gray-200 flex justify-between items-center">
+            <div class="text-lg font-semibold text-gray-900">
+              {{ session.bookingFee | currency: 'INR' }}
             </div>
-  
-            <!-- Session Ended -->
-            <div *ngIf="currentDateTime > session.endTime" class="text-sm text-red-500 italic">
-              Session has ended.
-            </div>
-  
-            <!-- Actions for Upcoming or Canceled Sessions -->
-            <div *ngIf="currentDateTime < session.endTime" class="flex flex-col space-y-3">
-              <!-- Book Button -->
-              <button
-                *ngIf="!session.participants.includes(user?.id) && session.status !== 'CANCELED'"
-                class="px-5 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-                (click)="initiatePayment(session)"
-              >
-                Book Session
-              </button>
-  
-              <!-- Join Button -->
-              <button
-                *ngIf="session.participants.includes(user?.id)"
-                class="px-5 py-2 text-white rounded-lg focus:outline-none focus:ring-2"
-                [ngClass]="{
-                  'bg-green-500 hover:bg-green-600 focus:ring-green-400': session.status !== 'CANCELED',
-                  'bg-gray-400 cursor-not-allowed': session.status === 'CANCELED'
-                }"
-                [disabled]="session.status === 'CANCELED'"
-                (click)="joinSession(session.id)"
-              >
-                Join Session
-              </button>
+            <div class="flex flex-col gap-1 items-end">
+              <div *ngIf="session.status === 'CANCELED'" class="text-sm text-red-600 font-medium">
+                Session Canceled
+              </div>
+              <div *ngIf="currentDateTime > session.endTime" class="text-sm text-red-500 italic">
+                Session Ended
+              </div>
+              <div *ngIf="currentDateTime < session.endTime" class="flex space-x-2">
+                <button
+                  *ngIf="!session.participants.includes(user?.id) && session.status !== 'CANCELED'"
+                  class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  (click)="initiatePayment(session)"
+                >
+                  Book
+                </button>
+                <button
+                  *ngIf="session.participants.includes(user?.id)"
+                  class="px-4 py-2 text-white rounded-lg text-sm transition-colors focus:outline-none focus:ring-2"
+                  [ngClass]="{
+                    'bg-green-600 hover:bg-green-700 focus:ring-green-500': session.status !== 'CANCELED',
+                    'bg-gray-400 cursor-not-allowed': session.status === 'CANCELED'
+                  }"
+                  [disabled]="session.status === 'CANCELED'"
+                  (click)="joinSession(session.id)"
+                >
+                  Join
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  
+
+    <!-- No Sessions Message -->
+    <ng-template #noSessions>
+      <div class="flex justify-center items-center h-40 text-gray-500 text-lg italic">
+        No sessions available.
+      </div>
+    </ng-template>
+
+    <!-- Pagination Controls -->
+    <div class="mt-6 flex justify-center">
+      <button 
+        (click)="previousPage()" 
+        [disabled]="page === 1"
+        class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded mr-1 hover:bg-[#10B981]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        &lt;
+      </button>
+
+      <button 
+        *ngFor="let p of totalPagesArray" 
+        (click)="goToPage(p)"
+        class="px-3 py-1 border border-[#6B7280]/50 rounded mr-1 text-[#1F2937] transition-colors duration-200" 
+        [ngClass]="{
+          'bg-[#10B981] text-[#F9FAFB]': page === p,
+          'hover:bg-[#10B981]/10': page !== p
+        }"
+      >
+        {{ p }}
+      </button>
+
+      <button 
+        (click)="nextPage()" 
+        [disabled]="page === totalPages"
+        class="px-3 py-1 border border-[#6B7280]/50 text-[#1F2937] rounded hover:bg-[#10B981]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        &gt;
+      </button>
+    </div>
   </div>
-  
+</div>

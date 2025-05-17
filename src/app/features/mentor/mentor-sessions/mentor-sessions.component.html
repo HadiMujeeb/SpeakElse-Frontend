@@ -1,10 +1,14 @@
-<div class="p-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+<div class="p-4 sm:p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
   <!-- Header Section -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Mentors Available</h1>
-    <p class="mt-2 text-lg text-gray-600">Connect with a mentor tailored to your goals and schedule a session!</p>
+  <div class="max-w-7xl mx-auto mb-8">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+      Mentors Available
+    </h1>
+    <p class="mt-2 text-base sm:text-lg text-gray-600">
+      Connect with a mentor tailored to your goals and schedule a session!
+    </p>
     <button
-      class="mt-4 px-6 py-2 bg-purple-600 text-white rounded-full hover:brightness-110 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-purple-300"
+      class="mt-4 px-4 sm:px-6 py-2 bg-purple-600 text-white rounded-full hover:brightness-110 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-purple-300 text-sm sm:text-base"
       (click)="openModal()"
     >
       Create a Session
@@ -12,82 +16,84 @@
   </div>
 
   <!-- Mentors List -->
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="max-w-7xl mx-auto grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
     <div
       *ngFor="let data of sessions"
-      class="p-6 bg-white rounded-xl shadow-lg border border-gray-200 hover:scale-105 transition-transform duration-300"
+      class="p-4 sm:p-6 bg-white rounded-xl shadow-sm hover:shadow-md border border-gray-200 hover:scale-105 transition-transform duration-300"
       [ngClass]="{
         'bg-red-50 border-2 border-red-300': data.status === 'CANCELED',
         'bg-white': data.status !== 'CANCELED'
       }"
     >
-      <!-- Mentor Image -->
-      <div class="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
-        <img
-          [src]="data.mentor?.avatar"
-          alt="Mentor Photo"
-          class="w-full h-full object-cover border-2 border-purple-200"
-        />
+      <!-- Card Header: Mentor Image and Name -->
+      <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+          <!-- <img
+            [src]="data.mentor?.avatar"
+            alt="Mentor Photo"
+            class="w-full h-full object-cover border-2 border-purple-200"
+          /> -->
+           @if(mentor?.avatar){
+              <img  [src]="mentor?.avatar" alt="Mentor Avata" class="w-full h-full object-cover border-2 border-purple-200">
+            }@else{
+              <img  src="assets/images/defaultImage.avif" alt="Mentor Avatar" class="w-full h-full object-cover border-2 border-purple-200">
+            }
+        </div>
+        <div>
+          <h2 class="text-base sm:text-lg font-semibold text-gray-900">
+            {{ data.mentor?.name }}
+          </h2>
+          <p class="text-sm text-gray-500">{{ data.topic }}</p>
+        </div>
       </div>
 
-      <!-- Mentor Info -->
-      <div class="mt-4 sm:mt-0 sm:ml-4 flex-1 text-center sm:text-left">
-        <h2 class="text-lg font-semibold text-gray-900">{{ data.mentor?.name }}</h2>
-        <p class="text-sm text-gray-500">{{ data.topic }}</p>
-        <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ data.mentor?.description }}</p>
-
-        <div class="mt-2 text-sm text-gray-500">
-          <span class="font-medium">Language:</span> {{ data.language }}
-        </div>
-
-        <div class="mt-1 text-sm text-gray-500">
-          <span class="font-medium">Start:</span> {{ data.startTime | date: 'short' }}
-        </div>
-
-        <div class="mt-1 text-sm text-gray-500">
-          <span class="font-medium">End:</span> {{ data.endTime | date: 'short' }}
+      <!-- Card Body: Session Details -->
+      <div class="mt-4">
+        <p class="text-sm text-gray-600 line-clamp-2">
+          {{ data.mentor?.description }}
+        </p>
+        <div class="mt-3 space-y-2 text-sm text-gray-500">
+          <p><span class="font-medium">Language:</span> {{ data.language }}</p>
+          <p><span class="font-medium">Start:</span> {{ data.startTime | date: 'short' }}</p>
+          <p><span class="font-medium">End:</span> {{ data.endTime | date: 'short' }}</p>
         </div>
 
         <!-- Reschedule Info -->
-        <div *ngIf="data.rescheduleCount > 0" class="mt-2 text-sm text-yellow-600">
-          <span class="font-medium">Rescheduled {{ data.rescheduleCount }} time(s).</span>
-          <div *ngIf="data.rescheduleReason.length > 0">
-            <p><span class="font-medium">Reason:</span> {{ data?.rescheduleReason?.join(', ') }}</p>
-          </div>
+        <div *ngIf="data.rescheduleCount > 0" class="mt-3 text-sm text-yellow-600">
+          <p>Rescheduled {{ data.rescheduleCount }} time(s).</p>
+          <!-- <p *ngIf="data.rescheduleReason?.length > 0">
+            <span class="font-medium">Reason:</span> {{ data.rescheduleReason.join(', ') }}
+          </p> -->
         </div>
 
         <!-- Canceled Message -->
-        <div *ngIf="data.status === 'CANCELED'" class="mt-3 text-sm text-red-600 font-medium">
-          Session Canceled
-        </div>
+        
       </div>
 
-      <!-- Actions -->
-      <div class="mt-4 sm:ml-4 text-center sm:text-right flex-shrink-0">
-        <div class="text-lg font-semibold text-gray-900 mb-3">
+      <!-- Card Footer: Actions -->
+      <div class="mt-4 flex justify-between items-center">
+        <div class="text-base sm:text-lg font-semibold text-gray-900">
           {{ data.bookingFee | currency: 'INR' }}
         </div>
-
-        <div *ngIf="currentDateTime > data.endTime" class="text-sm text-red-500 italic">
-          Session Ended
-        </div>
-
-        <div *ngIf="currentDateTime < data.startTime" class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-2">
           <!-- Join Session Button -->
           <button
-            class="px-4 py-2 bg-purple-600 text-white rounded-full hover:brightness-110 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            [disabled]="data.status === 'CANCELED'"
+            *ngIf="currentDateTime <= data.endTime && data.status != 'CANCELED'"
+            class="px-4 py-2 bg-purple-600 text-white rounded-full hover:brightness-110 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
             (click)="joinSession(data.id)"
           >
-            Join Session
+            Join
           </button>
-        </div>
 
-        <div class="flex flex-col space-y-2 mt-3">
+          <!-- Session Ended -->
+          <div *ngIf="currentDateTime > data.endTime" class="text-sm text-red-500 italic">
+            Session Ended
+          </div>
+
           <!-- Reschedule Button -->
           <button
-            class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:brightness-110 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            [disabled]="data.status === 'CANCELED' || currentDateTime >= data.startTime"
+            *ngIf="currentDateTime < data.startTime && data.status !== 'CANCELED'"
+            class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:brightness-110 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
             (click)="rescheduleSession(data.id)"
           >
             Reschedule
@@ -95,31 +101,36 @@
 
           <!-- Cancel Button -->
           <button
-            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:brightness-110 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            [disabled]="data.status === 'CANCELED' || currentDateTime >= data.startTime"
+            *ngIf="currentDateTime < data.startTime && data.status !== 'CANCELED'"
+            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:brightness-110 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
             (click)="cancelSession(data.id)"
           >
             Cancel
           </button>
+          <div *ngIf="data.status === 'CANCELED'" class="mt-3 text-sm text-red-600 font-medium">
+          Session Canceled
+        </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="mt-8 flex justify-center items-center space-x-4">
+  <div class="mt-8 max-w-7xl mx-auto flex justify-center items-center space-x-4">
     <button
       (click)="changePage(currentPage - 1)"
       [disabled]="currentPage === 1"
-      class="px-5 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400"
+      class="px-4 sm:px-5 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400 text-sm sm:text-base"
     >
       Previous
     </button>
-    <span class="text-lg font-semibold text-gray-900">Page {{ currentPage }} of {{ getTotalPages() }}</span>
+    <span class="text-base sm:text-lg font-semibold text-gray-900">
+      Page {{ currentPage }} of {{ getTotalPages() }}
+    </span>
     <button
       (click)="changePage(currentPage + 1)"
       [disabled]="currentPage === getTotalPages()"
-      class="px-5 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400"
+      class="px-4 sm:px-5 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-200 disabled:bg-gray-100 disabled:text-gray-400 text-sm sm:text-base"
     >
       Next
     </button>
@@ -131,8 +142,8 @@
     *ngIf="isModalOpen"
     @slideInOut
   >
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Create a New Session</h2>
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Create a New Session</h2>
       <form [formGroup]="sessionForm" (ngSubmit)="createSession()">
         <!-- Language -->
         <div class="mb-4">
@@ -142,7 +153,7 @@
             id="language"
             formControlName="language"
             placeholder="e.g., English"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="sessionForm.get('language')?.invalid && sessionForm.get('language')?.touched">
             Language is required.
@@ -157,7 +168,7 @@
             id="topic"
             formControlName="topic"
             placeholder="e.g., Career Coaching"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="sessionForm.get('topic')?.invalid && sessionForm.get('topic')?.touched">
             Topic is required.
@@ -172,7 +183,7 @@
             id="limit"
             formControlName="limit"
             placeholder="e.g., 10"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline.Schedule a session with top mentors tailored to your goals!none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="sessionForm.get('limit')?.invalid && sessionForm.get('limit')?.touched">
             Limit must be a number greater than 0.
@@ -186,7 +197,7 @@
             type="datetime-local"
             id="startTime"
             formControlName="startTime"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="sessionForm.get('startTime')?.invalid && sessionForm.get('startTime')?.touched">
             Start time is required.
@@ -200,7 +211,7 @@
             type="datetime-local"
             id="endTime"
             formControlName="endTime"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="sessionForm.get('endTime')?.invalid && sessionForm.get('endTime')?.touched">
             End time is required.
@@ -215,7 +226,7 @@
             id="bookingFee"
             formControlName="bookingFee"
             placeholder="e.g., 500"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="sessionForm.get('bookingFee')?.invalid && sessionForm.get('bookingFee')?.touched">
             Booking fee must be a positive number.
@@ -226,14 +237,14 @@
         <div class="flex justify-end space-x-3">
           <button
             type="button"
-            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200"
+            class="px-4 sm:px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 text-sm sm:text-base"
             (click)="closeModal()"
           >
             Cancel
           </button>
           <button
             type="submit"
-            class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:brightness-110 transition-all duration-200"
+            class="px-4 sm:px-6 py-2 bg-purple-600 text-white rounded-lg hover:brightness-110 transition-all duration-200 text-sm sm:text-base"
           >
             Create
           </button>
@@ -248,8 +259,8 @@
     *ngIf="isRescheduleModalOpen"
     @slideInOut
   >
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Reschedule Session</h2>
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Reschedule Session</h2>
       <form [formGroup]="rescheduleForm" (ngSubmit)="submitReschedule()">
         <!-- New Start Time -->
         <div class="mb-4">
@@ -258,7 +269,7 @@
             type="datetime-local"
             id="startTime"
             formControlName="startTime"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="rescheduleForm.get('startTime')?.invalid && rescheduleForm.get('startTime')?.touched">
             Start time is required.
@@ -272,7 +283,7 @@
             type="datetime-local"
             id="endTime"
             formControlName="endTime"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all"
           />
           <small class="text-red-500 mt-1" *ngIf="rescheduleForm.get('endTime')?.invalid && rescheduleForm.get('endTime')?.touched">
             End time is required.
@@ -286,7 +297,7 @@
             id="reason"
             formControlName="reason"
             placeholder="e.g., Scheduling conflict"
-            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all resize-none h-24"
+            class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-300 focus:outline-none transition-all resize-none h-24"
           ></textarea>
           <small class="text-red-500 mt-1" *ngIf="rescheduleForm.get('reason')?.invalid && rescheduleForm.get('reason')?.touched">
             Reason is required and must be at least 10 characters.
@@ -297,19 +308,19 @@
         <div class="flex justify-end space-x-3">
           <button
             type="button"
-            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200"
+            class="px-4 sm:px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 text-sm sm:text-base"
             (click)="closeRescheduleModal()"
           >
             Cancel
           </button>
           <button
             type="submit"
-            class="px-6 py-2 bg-yellow-500 text-white rounded-lg hover:brightness-110 transition-all duration-200"
+            class="px-4 sm:px-6 py-2 bg-yellow-500 text-white rounded-lg hover:brightness-110 transition-all duration-200 text-sm sm:text-base"
           >
             Submit
           </button>
         </div>
       </form>
-    </div>``  
+    </div>
   </div>
 </div>

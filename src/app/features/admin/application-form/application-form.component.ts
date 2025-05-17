@@ -53,14 +53,16 @@ export class ApplicationFormComponent implements OnInit {
   fetchAllApplications() {
     this.mentorFormService.requestGetMentorForm().subscribe((data: any) => {
       this.AllApplications = data.applications;
+      this.totalApplications = this.AllApplications.length
+       const filtered = this.AllApplications.filter(app => app.approvalStatus === status);
+       this.pendingApplications = filtered.length;
       this.filterApplications(this.activeFilter);
     });
   }
 
   filterApplications(status: string) {
     this.activeFilter = status;
-    const filtered = this.AllApplications.filter(app => app.approvalStatus === status);
-    this.totalApplications = filtered.length;
+    const filtered = this.AllApplications.filter(app => app.approvalStatus === status);;
     this.totalPages = Math.ceil(this.totalApplications / this.pageSize);
     this.totalPagesArray = Array(this.totalPages).fill(0).map((_, i) => i + 1);
     this.page = 1;

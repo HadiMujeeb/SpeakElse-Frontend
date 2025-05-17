@@ -51,7 +51,7 @@ export class MentorLoginComponent implements OnDestroy{
       this.authMentorServices.requestMentorLogin(credentials).subscribe(
         (response) => {
           console.log('Login successful:', response);
-          localStorage.setItem('mentorToken', response.accessToken);
+          localStorage.setItem('Token', response.accessToken);
           this.router.navigate(['/mentor/main/dashboard']);
         },
         (error) => {
