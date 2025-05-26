@@ -28,6 +28,7 @@
         <thead>
           <tr class="bg-gray-100">
             <th *ngFor="let header of headers" class="px-4 py-2 text-left">{{ header.label }}</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -38,13 +39,13 @@
             <td class="border px-4 py-2">{{ item.description || '-' }}</td>
             <td class="border px-4 py-2">{{ item.amount }}₹</td>
             <td class="border px-4 py-2">{{ item.status }}</td>
-            <!-- <td class="border px-4 py-2">
+            <td class="border px-4 py-2">
               <button 
                 (click)="viewSessionDetails(item)" 
                 class="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600">
                 Session Details
               </button>
-            </td> -->
+            </td>
           </tr>
         </tbody>
       </table>
@@ -79,7 +80,7 @@
   </div>
 
   <!-- Modal -->
-  <!-- <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-white w-1/2 rounded-lg shadow-lg p-6">
       <h2 class="text-xl font-bold mb-4">Session Details</h2>
       <div class="mb-4">
@@ -107,5 +108,5 @@
       </div>
     </div>
   </div>
-   -->
+  
 </div>
